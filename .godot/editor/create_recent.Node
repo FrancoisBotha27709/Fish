@@ -1,0 +1,14 @@
+VBoxContainer
+RichTextLabel
+MarginContainer
+Panel
+Label
+Sprite2D
+Control
+Button
+GridContainer
+PanelContainer
+SubViewport
+Camera3D
+Sprite3D
+CanvasLayer

@@ -1,0 +1,23 @@
+63f7b34db8d8cdea90c76aacccf841ec
+::res://::1785203678
+game.gd::GDScript::2720609789287797973::1785202315::0::1::::<>Node3D<><>0<>0<><>::
+game.tscn::PackedScene::4282062377697059738::1785200863::0::1::::<><><>0<>0<><>::uid://be05bs45xs7rt::::res://game.gd<>uid://cmgeix184m3bt::::res://Player/player.tscn
+icon.svg::CompressedTexture2D::384466872588370099::1785197518::1785197528::1::::<><><>0<>0<>2f701fd4f2edd447d3ac57f42853bcb8<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
+::res://Items/::1785203647
+Item.gd::GDScript::3916531593040843423::1785203342::0::1::::Item<>Resource<><>0<>0<><>::
+Rarity.gd::GDScript::7667329003463449732::1785203647::0::1::::Rarity<>Resource<><>0<>0<><>::
+::res://Items/Fish/::1785203457
+Fish.gd::GDScript::6682563668140669236::1785203457::0::1::::Fish<>Item<><>0<>0<><>::
+::res://Items/Fish/Species/::1785200014
+FishSpecies.gd::GDScript::8425899522735754554::1785199997::0::1::::FishSpecies<>Resource<><>0<>0<><>::
+::res://Player/::1785203656
+player.gd::GDScript::5996342294580088445::1785203384::0::1::::Player<>Node3D<><>0<>0<><>::
+player.tscn::PackedScene::5627752161629849333::1785203656::0::1::::<><><>0<>0<><>::uid://crow48bcpdbsn::::res://Player/player.gd<>uid://uhh2dw8abi5d::::res://Player/User Interface/ui.tscn<>uid://bv2gx52vgqttn::::res://Items/Item.gd<>uid://c2hc32pqdutke::::res://Items/Fish/Fish.gd<>uid://dhid12qjhao65::::res://Items/Rarity.gd<>uid://dsbtlmhqbd8gc::::res://Items/Fish/Species/FishSpecies.gd
+::res://Player/User Interface/::1785202851
+ui.gd::GDScript::5423592775080649340::1785202450::0::1::::UserInterface<>Control<><>0<>0<><>::
+ui.tscn::PackedScene::1418700945479029703::1785202851::0::1::::<><><>0<>0<><>::uid://cjjh1snbt38w3::::res://Player/User Interface/ui.gd<>uid://d2vbvhw4dahng::::res://Player/User Interface/Item_box/Item_box.tscn
+::res://Player/User Interface/Item_box/::1785203647
+item_box.gd::GDScript::2588027610274450517::1785203606::0::1::::ItemBox<>Button<><>0<>0<><>::
+Item_box.tscn::PackedScene::9097811383776995116::1785203342::0::1::::<><><>0<>0<><>::uid://bc4wo30ety1q4::::res://Player/User Interface/Item_box/item_box.gd
+item_tooltip.gd::GDScript::3693332235283537533::1785203647::0::1::::ItemTooltip<>Control<><>0<>0<><>::
+item_tooltip.tscn::PackedScene::6114810991267339379::1785203647::0::1::::<><><>0<>0<><>::uid://bsvcv3rpman4p::::res://Player/User Interface/Item_box/item_tooltip.gd
