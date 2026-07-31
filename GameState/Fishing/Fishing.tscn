@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://c24dav20t54oe"]
+
+[ext_resource type="Script" uid="uid://cnakfkctdb2cq" path="res://GameState/Fishing/fishing.gd" id="1_5woiu"]
+[ext_resource type="PackedScene" uid="uid://c2x5n3xa7tbvj" path="res://GameState/environment.tscn" id="4_cgxg8"]
+[ext_resource type="PackedScene" uid="uid://b2sp7qcrjg13i" path="res://GameState/Fishing/camera_rig.tscn" id="5_08esg"]
+[ext_resource type="PackedScene" uid="uid://63mku0k5ogqq" path="res://Player/Fishing/PlayerFish.tscn" id="5_ndv5f"]
+[ext_resource type="PackedScene" uid="uid://cmnu6yv52pp56" path="res://GameState/Fishing/spots/fishing_spot.tscn" id="6_45qf1"]
+[ext_resource type="Script" uid="uid://chavq1q5fnwrr" path="res://GameState/Fishing/Water/Systems/BuoyancySystem.gd" id="7_08esg"]
+[ext_resource type="PackedScene" uid="uid://cyiehf5ppu4hq" path="res://GameState/Fishing/Water/wo_ws_water.tscn" id="7_ib3f6"]
+[ext_resource type="Script" uid="uid://qb20sj6bngyb" path="res://GameState/Fishing/Water/Systems/WaterBiomeSystem.gd" id="8_ib3f6"]
+
+[node name="Fishing" type="Node3D" unique_id=1517055507 node_paths=PackedStringArray("player")]
+script = ExtResource("1_5woiu")
+player = NodePath("PlayerFish")
+
+[node name="Environment" parent="." unique_id=2110845524 instance=ExtResource("4_cgxg8")]
+
+[node name="CameraRig" parent="." unique_id=2083488559 node_paths=PackedStringArray("target") instance=ExtResource("5_08esg")]
+transform = Transform3D(0.44059196, 0.5864284, 0.67969143, 0.16846986, -0.7977027, 0.57904077, 0.8817577, -0.1406132, -0.4502569, 0, -0.74191463, 0)
+target = NodePath("../PlayerFish")
+target_height = 10.0
+distance = 35.0
+
+[node name="PlayerFish" parent="." unique_id=1016697865 instance=ExtResource("5_ndv5f")]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 11.29248, 0)
+max_speed = 1.0
+acceleration = 0.3
+deceleration = 0.2
+turn_speed = 0.1
+
+[node name="CollisionShape3D2" parent="PlayerFish" index="3" unique_id=1167984669]
+water_path = NodePath("../../WoWs Water")
+
+[node name="CollisionShape3D4" parent="PlayerFish" index="4" unique_id=801783395]
+water_path = NodePath("../../WoWs Water")
+
+[node name="CollisionShape3D5" parent="PlayerFish" index="5" unique_id=1178138991]
+water_path = NodePath("../../WoWs Water")
+
+[node name="fishingSpot" parent="." unique_id=73682153 node_paths=PackedStringArray("player") groups=["floating"] instance=ExtResource("6_45qf1")]
+transform = Transform3D(-0.97612, 0.11148695, -0.18644129, -0.1350077, -0.9837212, 0.11859853, -0.17018405, 0.14093742, 0.97528154, -15, -0.3489526, -31)
+player = NodePath("../PlayerFish")
+
+[node name="WoWs Water" parent="." unique_id=2069854430 instance=ExtResource("7_ib3f6")]
+ripple_wavelength = 3.0
+ripple_width = 2.0
+
+[node name="Systems" type="Node" parent="." unique_id=621716690]
+
+[node name="Buyoncy" type="Node" parent="Systems" unique_id=730281467]
+script = ExtResource("7_08esg")
+water_path = NodePath("../../WoWs Water")
+
+[node name="WaterBiome" type="Node" parent="Systems" unique_id=504966038]
+script = ExtResource("8_ib3f6")
+water_path = NodePath("../../WoWs Water")
+
+[editable path="PlayerFish"]

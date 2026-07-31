@@ -1,48 +1,7 @@
 [gd_scene format=3 uid="uid://cmgeix184m3bt"]
 
-[ext_resource type="Script" uid="uid://crow48bcpdbsn" path="res://Player/player.gd" id="1_btcbx"]
+[ext_resource type="Script" uid="uid://b3tyg1i5mfjgd" path="res://Player/Market/player_market.gd" id="1_5gt1b"]
 [ext_resource type="PackedScene" uid="uid://uhh2dw8abi5d" path="res://Player/User Interface/ui.tscn" id="2_gwnis"]
-[ext_resource type="Script" uid="uid://bv2gx52vgqttn" path="res://Items/Item.gd" id="2_k53q1"]
-[ext_resource type="Script" uid="uid://c2hc32pqdutke" path="res://Items/Fish/Fish.gd" id="3_fhl08"]
-[ext_resource type="Script" uid="uid://dhid12qjhao65" path="res://Items/Rarity.gd" id="3_vtle1"]
-[ext_resource type="Script" uid="uid://dsbtlmhqbd8gc" path="res://Items/Fish/Species/FishSpecies.gd" id="4_vtle1"]
-
-[sub_resource type="Resource" id="Resource_x3vf3"]
-script = ExtResource("3_vtle1")
-level = 1
-color = Color(1, 0, 0, 1)
-accent_color = Color(1, 1, 1, 1)
-display_name = "Rare"
-metadata/_custom_type_script = "uid://dhid12qjhao65"
-
-[sub_resource type="Resource" id="Resource_od3ui"]
-script = ExtResource("4_vtle1")
-display_name = "S"
-scientific_name = "S"
-metadata/_custom_type_script = "uid://dsbtlmhqbd8gc"
-
-[sub_resource type="Resource" id="Resource_00tjw"]
-script = ExtResource("3_fhl08")
-species = SubResource("Resource_od3ui")
-id = "SS"
-display_name = "Salmon"
-description = "This is a damn salmon
-Its a big bitchreeggegergegererg
-erg
-erg
-ergerg
-
-erg
-eg
-erg
-e
-ger
-g
-erg
-erg
-ergerg"
-rarity = SubResource("Resource_x3vf3")
-metadata/_custom_type_script = "uid://c2hc32pqdutke"
 
 [sub_resource type="BoxMesh" id="BoxMesh_hvfyp"]
 size = Vector3(1, 1, 0.1)
@@ -50,13 +9,15 @@ size = Vector3(1, 1, 0.1)
 [sub_resource type="BoxMesh" id="BoxMesh_l8h54"]
 size = Vector3(0.1, 0.5, 2)
 
-[node name="Player" type="Node3D" unique_id=225779099 node_paths=PackedStringArray("ui_node")]
-script = ExtResource("1_btcbx")
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5gt1b"]
+
+[node name="Player" type="CharacterBody3D" unique_id=581411738 node_paths=PackedStringArray("ui_node")]
+script = ExtResource("1_5gt1b")
 ui_node = NodePath("CanvasLayer/UI")
-invententory = Array[ExtResource("2_k53q1")]([SubResource("Resource_00tjw")])
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1102374348]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.06438053, 0.662239, 0)
+current = true
 
 [node name="Stall" type="Node3D" parent="." unique_id=806966457]
 
@@ -83,3 +44,6 @@ transform = Transform3D(1.9106855e-15, 1, 4.371139e-08, 4.371139e-08, -4.371139e
 
 [node name="UI" parent="CanvasLayer" unique_id=2005672883 instance=ExtResource("2_gwnis")]
 offset_left = 865.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1111661627]
+shape = SubResource("CapsuleShape3D_5gt1b")

@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cjjh1snbt38w3" path="res://Player/User Interface/ui.gd" id="1_lfgwr"]
 [ext_resource type="PackedScene" uid="uid://d2vbvhw4dahng" path="res://Player/User Interface/Item_box/Item_box.tscn" id="2_uxcms"]
 
-[node name="UI" type="Control" unique_id=2005672883 node_paths=PackedStringArray("inventory_lbl", "inventory_grid")]
+[node name="UI" type="Control" unique_id=2005672883 node_paths=PackedStringArray("end_day_btn", "end_night_btn", "inventory_lbl", "inventory_grid")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,6 +11,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_lfgwr")
+end_day_btn = NodePath("MarginContainer/PanelContainer/MarginContainer/VBoxContainer/EndDayBtn")
+end_night_btn = NodePath("MarginContainer/PanelContainer/MarginContainer/VBoxContainer/EndNightBtn")
 inventory_lbl = NodePath("MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Label")
 inventory_grid = NodePath("MarginContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer")
 inventory_button = ExtResource("2_uxcms")
@@ -40,3 +42,11 @@ text = "Inventory"
 custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
 columns = 3
+
+[node name="EndDayBtn" type="Button" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=57272319]
+layout_mode = 2
+text = "End the day..."
+
+[node name="EndNightBtn" type="Button" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=244906313]
+layout_mode = 2
+text = "End the Night..."

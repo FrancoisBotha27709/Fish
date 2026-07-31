@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="FishSpecies" format=3 uid="uid://det3bmij3t8il"]
+
+[ext_resource type="Script" uid="uid://dsbtlmhqbd8gc" path="res://Items/Fish/FishSpecies.gd" id="1_byidi"]
+
+[resource]
+script = ExtResource("1_byidi")
+display_name = "Salmon"
+scientific_name = "Ursus Victa"
+normal_weight = 5.0
+minimum_weight = 1.0
+maximum_weight = 30.0
+metadata/_custom_type_script = "uid://dsbtlmhqbd8gc"

@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://b2sp7qcrjg13i"]
+
+[ext_resource type="Script" uid="uid://cheulf08cvleb" path="res://Player/Fishing/camera_rig.gd" id="1_xdslm"]
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_n3wae"]
+
+[node name="CameraRig" type="Node3D" unique_id=2083488559 node_paths=PackedStringArray("camera")]
+script = ExtResource("1_xdslm")
+camera = NodePath("Camera3D")
+follow_speed = 4.0
+target_height = 2.0
+distance = 7.0
+pitch = 17.5
+mouse_sensitivity = 0.083
+recenter_speed = 1.2
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=819927767]
+transform = Transform3D(1, 0, 0, 0, 0.8788171, 0.47715878, 0, -0.47715878, 0.8788171, 0, 2, 2.41)
+attributes = SubResource("CameraAttributesPractical_n3wae")
+doppler_tracking = 1
+current = true

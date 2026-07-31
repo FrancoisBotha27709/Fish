@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://b2ai7awj1qfre"]
 
-[ext_resource type="Script" uid="uid://be05bs45xs7rt" path="res://game.gd" id="1_feb5d"]
-[ext_resource type="PackedScene" uid="uid://cmgeix184m3bt" path="res://Player/player.tscn" id="2_fc0e3"]
+[ext_resource type="Script" uid="uid://be05bs45xs7rt" path="res://GameState/Market/game.gd" id="1_feb5d"]
+[ext_resource type="PackedScene" uid="uid://cmgeix184m3bt" path="res://Player/Market/PlayerMarket.tscn" id="2_fc0e3"]
+[ext_resource type="PackedScene" uid="uid://c2x5n3xa7tbvj" path="res://GameState/environment.tscn" id="3_8mqhf"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ryrav"]
 size = Vector2(10, 10)
@@ -14,3 +15,5 @@ mesh = SubResource("PlaneMesh_ryrav")
 
 [node name="Player" parent="." unique_id=225779099 instance=ExtResource("2_fc0e3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.48784482, 0)
+
+[node name="Environment" parent="." unique_id=2110845524 instance=ExtResource("3_8mqhf")]

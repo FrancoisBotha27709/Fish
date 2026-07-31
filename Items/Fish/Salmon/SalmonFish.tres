@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="Fish" format=3 uid="uid://db5u6fhyhwtf2"]
+
+[ext_resource type="Texture2D" uid="uid://fqid35ait2ff" path="res://icon.svg" id="1_qcn3w"]
+[ext_resource type="Resource" uid="uid://eiexci1n8x7x" path="res://Items/Common.tres" id="2_ky3dc"]
+[ext_resource type="Script" uid="uid://c2hc32pqdutke" path="res://Items/Fish/Fish.gd" id="3_pkrwe"]
+[ext_resource type="Resource" uid="uid://det3bmij3t8il" path="res://Items/Fish/Salmon/SalmonSpecies.tres" id="4_xn8fp"]
+[ext_resource type="PackedScene" uid="uid://bqgnl8jwi8e3w" path="res://Items/Fish/Salmon/SalmonWorld.tscn" id="5_k2tdp"]
+
+[resource]
+script = ExtResource("3_pkrwe")
+species = ExtResource("4_xn8fp")
+id = "sal_sal"
+display_name = "Salmon"
+description = "This is a red fresh water salmon. It writhes in your hands trying to escape the greedy paws."
+tags = Array[String](["Writhing"])
+rarity = ExtResource("2_ky3dc")
+icon = ExtResource("1_qcn3w")
+world_scene = ExtResource("5_k2tdp")
+metadata/_custom_type_script = "uid://c2hc32pqdutke"

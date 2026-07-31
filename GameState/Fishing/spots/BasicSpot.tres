@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="FishingSpot" format=3 uid="uid://bexb88rto5cvs"]
+
+[ext_resource type="Script" uid="uid://cxhya6l2oceb1" path="res://GameState/Fishing/spots/spot.gd" id="1_j63ni"]
+[ext_resource type="Resource" uid="uid://db5u6fhyhwtf2" path="res://Items/Fish/Salmon/SalmonFish.tres" id="1_tt0sf"]
+[ext_resource type="Resource" uid="uid://7wjtiu8ly50r" path="res://GameState/Fishing/Minigames/BasicFishing.tres" id="2_sdthe"]
+
+[resource]
+script = ExtResource("1_j63ni")
+display_name = "Basic"
+active_fish = ExtResource("1_tt0sf")
+current_amount_available = 6
+minigame = ExtResource("2_sdthe")
+metadata/_custom_type_script = "uid://cxhya6l2oceb1"

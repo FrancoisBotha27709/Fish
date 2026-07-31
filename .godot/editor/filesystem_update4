@@ -1,2 +1,13 @@
-res://Player/player.tscn
-res://Player/User Interface/Item_box/item_tooltip.tscn
+res://Items/Fish/Salmon/SalmonWorld.tscn
+res://Shaders/water.gdshader
+res://GameState/Fishing/Water/WoWsWater.gdshader
+res://GameState/Fishing/Water/wo_ws_water.tscn
+res://GameState/Fishing/Water/wo_ws_water.gd
+res://GameState/Fishing/Fishing.tscn
+res://GameState/Fishing/BuoyancySystem.gd
+res://Player/Fishing/player_fish.gd
+res://GameState/Fishing/Water/Systems/BuoyancySystem.gd
+res://GameState/Fishing/Water/WaterBiome.gd
+res://GameState/Fishing/Water/Systems/WaterBiomeSystem.gd
+res://GameState/Fishing/spots/fishing_spot.tscn
+res://Player/Fishing/PlayerFish.tscn

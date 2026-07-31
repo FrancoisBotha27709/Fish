@@ -1,0 +1,89 @@
+[gd_scene format=3 uid="uid://c47md0jykphh2"]
+
+[ext_resource type="Script" uid="uid://borfnjsqt68hh" path="res://GameState/Fishing/Minigames/Stardew_fishing.gd" id="1_4ai7q"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8m7oy"]
+size = Vector2(176, 183)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_48umr"]
+size = Vector2(106, 107.5)
+
+[node name="StardewFishin" type="Control" unique_id=403702767 node_paths=PackedStringArray("target_box", "target_collision", "fish_area", "leave_button", "catch_progress_bar")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_4ai7q")
+target_box = NodePath("MarginContainer/ColorRect/PlayArea/TargetBox")
+target_collision = NodePath("MarginContainer/ColorRect/PlayArea/TargetBox/CollisionShape2D")
+min_x = -50.0
+fish_area = NodePath("MarginContainer/ColorRect/PlayArea/Fish")
+leave_button = NodePath("Button")
+catch_progress_bar = NodePath("MarginContainer/ColorRect/PlayArea/ProgressBar")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=267962899]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer" unique_id=591079607]
+layout_mode = 2
+color = Color(0.10747976, 0.10747973, 0.10747973, 1)
+
+[node name="PlayArea" type="Control" parent="MarginContainer/ColorRect" unique_id=542853111]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/ColorRect/PlayArea" unique_id=1875476756]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 196.0
+offset_bottom = 223.0
+grow_horizontal = 2
+show_percentage = false
+
+[node name="TargetBox" type="Area2D" parent="MarginContainer/ColorRect/PlayArea" unique_id=201580138]
+position = Vector2(120, 317)
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MarginContainer/ColorRect/PlayArea/TargetBox" unique_id=1518425152]
+shape = SubResource("RectangleShape2D_8m7oy")
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/ColorRect/PlayArea/TargetBox" unique_id=1003837272]
+custom_minimum_size = Vector2(100, 100)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.7137255, 1, 1)
+
+[node name="Fish" type="Area2D" parent="MarginContainer/ColorRect/PlayArea" unique_id=677619931]
+position = Vector2(120, 317)
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MarginContainer/ColorRect/PlayArea/Fish" unique_id=1001741235]
+shape = SubResource("RectangleShape2D_48umr")
+
+[node name="Camera2D" type="Camera2D" parent="MarginContainer/ColorRect/PlayArea" unique_id=1261318142]
+position = Vector2(578, 324)
+
+[node name="Button" type="Button" parent="." unique_id=2043209753]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -31.0
+offset_right = 53.0
+grow_vertical = 0
+text = "Leave"
