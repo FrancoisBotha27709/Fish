@@ -11,8 +11,11 @@ extends Node3D
 @export var water_height: float = 0.0       # world-space Y of the water surface
 @export var wake_interval: float = 0.25     # seconds between wake ripples while moving through water
 @export var min_speed_for_wake: float = 0.3 # m/s, below this no wake is emitted
-@export var wake_strength: float = 0.6
-@export var splash_strength: float = 1.6    # one-off ripple strength when first entering the water
+@export var wake_strength: float = 0.0
+@export var splash_strength: float = 0.0    # one-off ripple strength when first entering the water
+
+@export var stick_to_surface : bool = false
+@export var float_weight : float = 10.0
 
 var _water: Node = null
 var _timer := 0.0
@@ -21,12 +24,14 @@ var _was_submerged := false
 
 func _ready() -> void:
 	_water = get_node_or_null(water_path)
+	set_meta("float_weight", float_weight)
+
 	if _water == null:
 		push_warning("WaterWakeSource: water_path is not set or invalid.")
 	_last_pos = global_position
 
 func _physics_process(delta: float) -> void:
-	if _water == null:
+	if _water == null or stick_to_surface:
 		return
 
 	var pos := global_position

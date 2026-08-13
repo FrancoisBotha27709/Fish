@@ -7,8 +7,9 @@
 [sub_resource type="PlaneMesh" id="PlaneMesh_ryrav"]
 size = Vector2(10, 10)
 
-[node name="Game" type="Node3D" unique_id=1574762249]
+[node name="Game" type="Node3D" unique_id=1574762249 node_paths=PackedStringArray("player")]
 script = ExtResource("1_feb5d")
+player = NodePath("Player")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2020656167]
 mesh = SubResource("PlaneMesh_ryrav")

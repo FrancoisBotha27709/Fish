@@ -4,13 +4,12 @@
 [ext_resource type="Resource" uid="uid://bexb88rto5cvs" path="res://GameState/Fishing/spots/BasicSpot.tres" id="2_awlgp"]
 [ext_resource type="Script" uid="uid://ba6kn6lpvd0hp" path="res://GameState/Fishing/floaters/WoWsFloat.gd" id="3_fud2u"]
 [ext_resource type="PackedScene" uid="uid://c47md0jykphh2" path="res://GameState/Fishing/Minigames/StardewFishing.tscn" id="3_i61mi"]
+[ext_resource type="PackedScene" uid="uid://bfo2ifyhaebs2" path="res://Assets/3D/Buoy/Buoy.gltf" id="4_7x6oc"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_awlgp"]
-size = Vector3(5, 5, 5)
+size = Vector3(13, 5, 13)
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_i61mi"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_i61mi"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_cqy0j"]
 
 [node name="fishingSpot" type="Area3D" unique_id=73682153 node_paths=PackedStringArray("collision", "popup_window", "minigame", "catch_message_label")]
 script = ExtResource("1_opw16")
@@ -23,15 +22,17 @@ catch_message_label = NodePath("CatchLbl")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2071046652]
 shape = SubResource("BoxShape3D_awlgp")
 
-[node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=570086992]
+[node name="Buoy" type="RigidBody3D" parent="." unique_id=570086992 groups=["floating"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3165636, 0)
 script = ExtResource("3_fud2u")
+stick_to_surface = true
+float_weight = 40.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=884667659]
-shape = SubResource("CapsuleShape3D_i61mi")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Buoy" unique_id=884667659]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.26218414, 0)
+shape = SubResource("BoxShape3D_cqy0j")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D" unique_id=996618470]
-mesh = SubResource("CapsuleMesh_i61mi")
+[node name="blockbench_export" parent="Buoy" unique_id=1529206926 instance=ExtResource("4_7x6oc")]
 
 [node name="CatchLbl" type="Label" parent="." unique_id=330683765]
 visible = false

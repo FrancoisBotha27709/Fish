@@ -1,5 +1,6 @@
-Node3D
 CollisionShape3D
+Camera3D
+Node3D
 Area3D
 RigidBody3D
 Node
@@ -11,4 +12,3 @@ ProgressBar
 Camera2D
 CollisionShape2D
 StaticBody2D
-Area2D

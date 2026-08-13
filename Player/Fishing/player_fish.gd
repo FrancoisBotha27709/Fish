@@ -10,6 +10,7 @@ class_name PlayerFish
 
 @export_group("Physics")
 @export var gravity: float = 20.0
+@export var float_weight : float = 10.0
 
 @export_group("Camera")
 @export var camera_target: Node3D
@@ -19,15 +20,10 @@ var _current_speed: float = 0.0
 var playing_minigame: bool = false
 
 func _ready() -> void:
+	super.set_meta("float_weight", float_weight)
 	super._ready()
 
 func _physics_process(delta: float) -> void:
-	# Apply gravity
-	if not is_on_floor():
-		velocity.y -= gravity * delta
-	else:
-		velocity.y = 0.0
-
 	_handle_movement(delta)
 	move_and_slide()
 

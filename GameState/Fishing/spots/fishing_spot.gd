@@ -25,14 +25,13 @@ var _fishing_active : bool = false
 func _ready() -> void:
 	await get_tree().process_frame
 	data_resource.minigame.active_fish = data_resource.active_fish
-	
 	minigame.fish_caught.connect(_on_fish_caught)
 	minigame.leave_requested.connect(_on_leave_requested)
 	minigame.stop() # guarantee a clean, hidden state regardless of editor wiring
 	_setup_popup()
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
-	print("FishingSpotObject ready")
+
 func _setup_popup() -> void:
 	_confirm_popup = ConfirmationDialog.new()
 	_confirm_popup.get_ok_button().text = "Fish"
@@ -41,8 +40,8 @@ func _setup_popup() -> void:
 	_confirm_popup.canceled.connect(_on_fish_declined)
 	_confirm_popup.close_requested.connect(_on_fish_declined)
 	add_child(_confirm_popup)
+
 func _on_body_entered(body: Node3D) -> void:
-	print("Body entered:", body.name)
 	if body != player:
 		return
 	if not data_resource.has_fish():
@@ -52,16 +51,19 @@ func _on_body_entered(body: Node3D) -> void:
 		data_resource.display_name
 	]
 	_confirm_popup.popup_centered()
+
 func _on_body_exited(body: Node3D) -> void:
-	print("Body exited:", body.name)
 	popup_window.visible = false
 	_confirm_popup.hide()
 	_stop_fishing()
+
 func _on_fish_confirmed() -> void:
 	popup_window.visible = true
 	_start_fishing()
+
 func _on_fish_declined() -> void:
 	pass # Player chose not to fish -- stay free to move around.
+
 func _start_fishing() -> void:
 	if not data_resource.has_fish():
 		return
@@ -69,12 +71,14 @@ func _start_fishing() -> void:
 	popup_window.show()
 	player.playing_minigame = true
 	minigame.start(data_resource.minigame)
+
 func _stop_fishing() -> void:
 	_fishing_active = false
 	player.playing_minigame = false
 	minigame.stop()
 	if catch_message_label:
 		catch_message_label.visible = false
+
 func _on_fish_caught(fish: Fish) -> void:
 	if player:
 		player.catch_fish(fish)
@@ -91,6 +95,7 @@ func _on_fish_caught(fish: Fish) -> void:
 	# Fish left in the spot -- go again after the little celebration beat.
 	data_resource.minigame.active_fish = data_resource.active_fish
 	minigame.start(data_resource.minigame)
+
 func _celebrate_catch() -> void:
 	if catch_message_label:
 		catch_message_label.text = "Nice catch!"
@@ -98,5 +103,6 @@ func _celebrate_catch() -> void:
 	await get_tree().create_timer(catch_pause_seconds).timeout
 	if catch_message_label:
 		catch_message_label.visible = false
+
 func _on_leave_requested() -> void:
 	_stop_fishing()

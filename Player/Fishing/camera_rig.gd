@@ -19,18 +19,16 @@ class_name CameraRig
 @export var minimum_move_speed := 0.25
 
 var orbit_offset := 0.0
+@onready var switch_anim: AnimationPlayer = $Camera3D/blockbench_export/AnimationPlayer
 
 var _rotating := false
 var _time_since_input := 0.0
+var forward = false
 
 
 func _ready() -> void:
 	if target:
-		global_position = Vector3(
-			target.global_position.x,
-			target_height,
-			target.global_position.z
-		)
+		global_position = Vector3(target.global_position.x, target_height, target.global_position.z)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -46,21 +44,31 @@ func _unhandled_input(event: InputEvent) -> void:
 		_time_since_input = 0.0
 
 
+func _unhandled_key_input(event: InputEvent) -> void:
+	if event.is_action_pressed("boat_forward"):
+		if not forward:
+			forward = true
+			switch(forward)
+	elif event.is_action_pressed("boat_reverse"):
+		if forward:
+			forward = false
+			switch(forward)
+
+func switch(value : bool) -> void:
+	if value == false:
+		switch_anim.play_backwards("pull_animation")
+	elif value == true:
+		switch_anim.play("pull_animation")
+
+
 func _process(delta: float) -> void:
 	if target == null:
 		return
 
 	# Smoothly follow the boat horizontally.
-	var desired_position := Vector3(
-		target.global_position.x,
-		target_height,
-		target.global_position.z
-	)
+	var desired_position := Vector3(target.global_position.x, target_height, target.global_position.z)
 
-	global_position = global_position.lerp(
-		desired_position,
-		1.0 - exp(-follow_speed * delta)
-	)
+	global_position = global_position.lerp(desired_position, 1.0 - exp(-follow_speed * delta))
 
 	_time_since_input += delta
 
@@ -68,32 +76,16 @@ func _process(delta: float) -> void:
 	if (
 		not _rotating
 		and _time_since_input > recenter_delay
-		and Vector2(target.velocity.x, target.velocity.z).length() > minimum_move_speed
-	):
-		orbit_offset = lerp(
-			orbit_offset,
-			0.0,
-			1.0 - exp(-recenter_speed * delta)
-		)
+		and Vector2(target.velocity.x, target.velocity.z).length() > minimum_move_speed):
+		orbit_offset = lerp(orbit_offset, 0.0, 1.0 - exp(-recenter_speed * delta))
 
 	# Boat yaw + player orbit.
 	var final_yaw := target.global_rotation.y + deg_to_rad(orbit_offset)
 
-	var horizontal := Vector3(
-		sin(final_yaw),
-		0.0,
-		cos(final_yaw)
-	) * distance
+	var horizontal := Vector3(sin(final_yaw), 0.0, cos(final_yaw)) * distance
 
 	var vertical := tan(deg_to_rad(pitch)) * distance
 
-	camera.global_position = global_position + Vector3(
-		horizontal.x,
-		vertical,
-		horizontal.z
-	)
+	camera.global_position = global_position + Vector3(horizontal.x, vertical, horizontal.z)
 
-	camera.look_at(
-		target.global_position + Vector3.UP,
-		Vector3.UP
-	)
+	camera.look_at(target.global_position + Vector3.UP, Vector3.UP)

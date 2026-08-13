@@ -1,29 +1,6 @@
 shader_type spatial;
 render_mode blend_mix, depth_draw_always, cull_back, diffuse_burley, specular_schlick_ggx, world_vertex_coords;
 
-//==============================================================================
-// STYLIZED "WORLD OF WARSHIPS"-LIKE OCEAN SHADER — Godot 4.6
-// Small-map / calm-water version, with biomes
-//
-// Apply to a ShaderMaterial on a HEAVILY SUBDIVIDED PlaneMesh (waves are
-// vertex displacement, so a low-poly plane will snap/facet).
-//
-// The water sits mostly flat with tiny non-repeating ripples. Two things
-// change that locally:
-//   1. Object interaction: `ripple_data` — filled by WaterManager.gd,
-//      driven by BuoyancySystem.gd. Expanding decaying rings from contact
-//      points.
-//   2. Biomes: `biome_data` / `biome_chop` / `biome_ripple` / `biome_look` /
-//      `biome_tint` — filled by WaterBiomeSystem.gd, driven by WaterBiome.gd
-//      (Area3D markers). Each biome is an approximate circle in XZ with a
-//      soft falloff band; inside it, the ambient chop and ripple physics
-//      are locally re-scaled (bigger/longer/faster/wilder), and the color/
-//      foam/roughness can shift too (e.g. darker, foamier storm water).
-//
-// If your map/world uses different units than meters, set `meters_per_unit`
-// once instead of retuning every frequency slider.
-//==============================================================================
-
 // ---------------- COLOR ----------------
 group_uniforms Color;
 uniform vec4 color_deep : source_color = vec4(0.008, 0.09, 0.16, 1.0);
