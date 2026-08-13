@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://63mku0k5ogqq"]
+
+[ext_resource type="Script" uid="uid://lxycyrd3rjyd" path="res://Player/Fishing/player_fish.gd" id="1_e0vli"]
+[ext_resource type="PackedScene" uid="uid://uhh2dw8abi5d" path="res://Player/User Interface/ui.tscn" id="2_a5qob"]
+
+[sub_resource type="PrismMesh" id="PrismMesh_kf124"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_kf124"]
+top_radius = 0.105
+bottom_radius = 0.21
+height = 0.58
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_kf124"]
+points = PackedVector3Array(-0.5, -0.5, -0.5, 0.014651676, 0.47069666, 0.47069666, 0.073521286, 0.35295743, 0.47060993, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.014651676, 0.47069666, -0.47069666, 0.5, -0.5, 0.5, -0.014651676, 0.47069666, 0.47069666, 0.014651676, 0.47069666, -0.47069666)
+
+[node name="PlayerFish" type="CharacterBody3D" unique_id=1016697865 node_paths=PackedStringArray("camera_target", "ui_node") groups=["floating"]]
+collision_mask = 2
+script = ExtResource("1_e0vli")
+float_weight = 400.0
+camera_target = NodePath("CameraTarget")
+ui_node = NodePath("CanvasLayer/UI")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1770705033]
+layer = 0
+
+[node name="UI" parent="CanvasLayer" unique_id=2005672883 instance=ExtResource("2_a5qob")]
+offset_left = 997.0
+
+[node name="CameraTarget" type="Node3D" parent="." unique_id=280868501]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=570671286]
+transform = Transform3D(-1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("PrismMesh_kf124")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D" unique_id=600338791]
+transform = Transform3D(-1, -8.742278e-08, 0, 8.742278e-08, -1, 0, 0, 0, 1, -6.6660945e-08, -0.7625123, 0.22164142)
+mesh = SubResource("CylinderMesh_kf124")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=1167984669]
+transform = Transform3D(-1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_kf124")

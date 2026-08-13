@@ -1,0 +1,86 @@
+[gd_scene format=4 uid="uid://cyiehf5ppu4hq"]
+
+[ext_resource type="Shader" uid="uid://nu355s8hg2ii" path="res://GameState/Fishing/Water/sea_of_thieves.gdshader" id="1_fy73t"]
+[ext_resource type="Script" uid="uid://cnpby6s4prbu4" path="res://GameState/Fishing/Water/wo_ws_water.gd" id="2_fy73t"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_fy73t"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cjfj7"]
+noise = SubResource("FastNoiseLite_fy73t")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fy73t"]
+render_priority = 0
+shader = ExtResource("1_fy73t")
+shader_parameter/swell_amplitude = 3.2
+shader_parameter/swell_wavelength_scale = 1.0
+shader_parameter/chop_amplitude = 0.35
+shader_parameter/wave_speed = 1.0
+shader_parameter/wave_choppiness = 0.9
+shader_parameter/wind_direction_deg = 30.0
+shader_parameter/wave_direction_jitter = 20.0
+shader_parameter/chop_patchiness = 0.5
+shader_parameter/domain_warp_amount = 35.0
+shader_parameter/domain_warp_scale = 0.004
+shader_parameter/domain_warp_speed = 0.02
+shader_parameter/meters_per_unit = 1.0
+shader_parameter/mesh_vertex_spacing = 1.25
+shader_parameter/color_deep = Color(0.015, 0.16, 0.28, 1)
+shader_parameter/color_shallow = Color(0.04, 0.45, 0.48, 1)
+shader_parameter/color_crest = Color(0.45, 0.8, 0.7, 1)
+shader_parameter/color_foam = Color(1, 1, 1, 1)
+shader_parameter/color_horizon_fresnel = Color(0.55, 0.78, 0.82, 1)
+shader_parameter/light_bands = 2
+shader_parameter/band_softness = 0.08
+shader_parameter/rim_power = 4.0
+shader_parameter/rim_strength = 0.25
+shader_parameter/foam_jacobian_threshold = 0.6050000762374999
+shader_parameter/foam_edge_softness = 0.32100001454898
+shader_parameter/foam_threshold_jitter = 0.3670000174325
+shader_parameter/foam_noise_scale = 0.4080000186814799
+shader_parameter/foam_scroll_speed = 0.426000020235
+shader_parameter/foam_amount = 0.40400001919
+shader_parameter/foam_dither_amount = 0.0610000028975
+shader_parameter/use_custom_foam_texture = true
+shader_parameter/foam_texture = SubResource("NoiseTexture2D_cjfj7")
+shader_parameter/foam_uv_scale = 0.75300003413756
+shader_parameter/foam_uv_scale_2 = 3.63500017103256
+shader_parameter/foam_warp_amount = 0.0
+shader_parameter/foam_speed = 0.386000018335
+shader_parameter/foam_crest_threshold = 0.7550000358625
+shader_parameter/foam_crest_softness = 0.6850000318389801
+shader_parameter/sparkle_intensity = 0.6
+shader_parameter/sparkle_grid_scale = 120.0
+shader_parameter/sparkle_speed = 0.6
+shader_parameter/sparkle_sharpness = 300.0
+shader_parameter/sparkle_rarity = 0.985
+shader_parameter/ripple_data = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/ripple_count = 0
+shader_parameter/sim_time = 0.0
+shader_parameter/ripple_lifetime = 6.0
+shader_parameter/ripple_speed = 2.2
+shader_parameter/ripple_wavelength = 0.7
+shader_parameter/ripple_width = 1.2
+shader_parameter/ripple_amplitude = 0.4
+shader_parameter/biome_data = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/biome_count = 0
+shader_parameter/biome_chop = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/biome_ripple = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/biome_look = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/biome_tint = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/enable_shore_foam = true
+shader_parameter/shore_foam_distance = 0.6
+
+[sub_resource type="QuadMesh" id="QuadMesh_cjfj7"]
+material = SubResource("ShaderMaterial_fy73t")
+size = Vector2(500, 500)
+subdivide_width = 400
+subdivide_depth = 400
+orientation = 1
+
+[node name="WoWs Water" type="MeshInstance3D" unique_id=2069854430]
+mesh = SubResource("QuadMesh_cjfj7")
+script = ExtResource("2_fy73t")
+sea_state_min = 0.1
+sea_state_max = 0.7
+sea_state_speed_influence = 3.795

@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://bqgnl8jwi8e3w"]
+
+[ext_resource type="Texture2D" uid="uid://fqid35ait2ff" path="res://icon.svg" id="1_6nd4q"]
+[ext_resource type="Script" uid="uid://k2burymtyo35" path="res://Items/Fish/Salmon/salmon_world.gd" id="1_o5gks"]
+
+[node name="SalmonWorld" type="Node2D" unique_id=210724534]
+script = ExtResource("1_o5gks")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1148209983]
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("1_6nd4q")

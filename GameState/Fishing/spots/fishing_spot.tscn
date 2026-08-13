@@ -1,0 +1,63 @@
+[gd_scene format=3 uid="uid://cmnu6yv52pp56"]
+
+[ext_resource type="Script" uid="uid://c1n36vv1ows0h" path="res://GameState/Fishing/spots/fishing_spot.gd" id="1_opw16"]
+[ext_resource type="Resource" uid="uid://bexb88rto5cvs" path="res://GameState/Fishing/spots/BasicSpot.tres" id="2_awlgp"]
+[ext_resource type="Script" uid="uid://ba6kn6lpvd0hp" path="res://GameState/Fishing/floaters/WoWsFloat.gd" id="3_fud2u"]
+[ext_resource type="PackedScene" uid="uid://c47md0jykphh2" path="res://GameState/Fishing/Minigames/StardewFishing.tscn" id="3_i61mi"]
+[ext_resource type="PackedScene" uid="uid://bfo2ifyhaebs2" path="res://Assets/3D/Buoy/Buoy.gltf" id="4_7x6oc"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_awlgp"]
+size = Vector3(13, 5, 13)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cqy0j"]
+
+[node name="fishingSpot" type="Area3D" unique_id=73682153 node_paths=PackedStringArray("collision", "popup_window", "minigame", "catch_message_label")]
+script = ExtResource("1_opw16")
+collision = NodePath("CollisionShape3D")
+popup_window = NodePath("PopupPanel")
+minigame = NodePath("PopupPanel/Minigame")
+data_resource = ExtResource("2_awlgp")
+catch_message_label = NodePath("CatchLbl")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2071046652]
+shape = SubResource("BoxShape3D_awlgp")
+
+[node name="Buoy" type="RigidBody3D" parent="." unique_id=570086992 groups=["floating"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3165636, 0)
+script = ExtResource("3_fud2u")
+stick_to_surface = true
+float_weight = 40.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Buoy" unique_id=884667659]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.26218414, 0)
+shape = SubResource("BoxShape3D_cqy0j")
+
+[node name="blockbench_export" parent="Buoy" unique_id=1529206926 instance=ExtResource("4_7x6oc")]
+
+[node name="CatchLbl" type="Label" parent="." unique_id=330683765]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -65.0
+offset_top = -11.5
+offset_right = 65.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Caught Fish!!!!!!!!!"
+
+[node name="PopupPanel" type="PopupPanel" parent="." unique_id=1885219939]
+oversampling_override = 1.0
+initial_position = 1
+size = Vector2i(1122, 447)
+always_on_top = true
+extend_to_title = true
+
+[node name="Minigame" parent="PopupPanel" unique_id=403702767 instance=ExtResource("3_i61mi")]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 1118.0
+offset_bottom = 443.0
