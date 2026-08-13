@@ -22,8 +22,9 @@ render_mode blend_mix, depth_draw_always, cull_back, world_vertex_coords, diffus
 //        obviously repeating cycle instead of wandering irregularly. Both
 //        problems are worse than the perf win, so this noise stays as-is.
 //      - Fragment-only cosmetics with no CPU equivalent (foam warp UVs,
-//        foam-threshold jitter, the procedural foam fallback pattern) use
-//        fbm2 (2 octaves) or fbm3 (3 octaves) instead of 4. This is where
+//        foam-threshold jitter, the procedural foam fallback pattern, the
+//        underwater reveal, and the color-variation blend below) use fbm2
+//        (2 octaves) or fbm3 (3 octaves) instead of 4. This is where
 //        cutting octaves is actually safe and where it matters most for
 //        perf, since the fragment shader runs per-pixel - far more
 //        invocations than the vertex shader on the same mesh.
@@ -37,12 +38,20 @@ render_mode blend_mix, depth_draw_always, cull_back, world_vertex_coords, diffus
 //
 // 4. Branches that stayed: `if (i >= biome_count) break;`, `if (i >=
 //    ripple_count) break;`, `if (use_custom_foam_texture)`, `if
-//    (enable_shore_foam)`. These are uniform (same value for every
-//    vertex/fragment in the draw call), so the GPU takes one coherent path
-//    for the whole draw - cheap by construction. Removing them would either
-//    do nothing (the break; case) or force an unconditional texture sample
-//    that's currently skipped entirely (the two bool cases), which would be
-//    a regression, not an optimization.
+//    (enable_shore_foam)`, `if (enable_underwater_reveal)`. These are
+//    uniform (same value for every vertex/fragment in the draw call), so
+//    the GPU takes one coherent path for the whole draw - cheap by
+//    construction. Removing them would either do nothing (the break; case)
+//    or force an unconditional texture sample that's currently skipped
+//    entirely (the bool cases), which would be a regression, not an
+//    optimization.
+//
+// 5. water_color_variants[10] below IS indexed dynamically (var_idx_a/b/c
+//    are computed, not constants). That's a deliberate exception to note 1's
+//    "no dynamic indexing" rule - that rule was about the hot vertex-shader
+//    wave loop specifically. This is a 10-element fragment-only lookup for
+//    a cosmetic tint; the cost is trivial and dynamic indexing is the
+//    simplest way to get a smooth, organic-looking blend across 10 colors.
 // ============================================================================
 
 group_uniforms Waves;
@@ -70,6 +79,17 @@ uniform vec4 color_shallow  : source_color = vec4(0.04, 0.45, 0.48, 1.0);
 uniform vec4 color_crest    : source_color = vec4(0.45, 0.80, 0.70, 1.0);
 uniform vec4 color_foam     : source_color = vec4(1.0, 1.0, 1.0, 1.0);
 uniform vec4 color_horizon_fresnel : source_color = vec4(0.55, 0.78, 0.82, 1.0);
+
+group_uniforms Color_Variation;
+// 10 subtle water color variants blended together via slow, large-scale
+// noise (see the fragment shader) so the surface isn't one flat color per
+// height band - patches read like real variation in algae, sediment, or
+// mineral content. Tweak these to taste; keep them close in value to the
+// Colors group above unless you want big obvious zones.
+uniform vec4 water_color_variants[10] : source_color;
+uniform float color_variation_scale : hint_range(0.0005, 0.05) = 0.003;   // world-space size of the color patches - smaller = tighter mottling, larger = broad slow regions
+uniform float color_variation_speed : hint_range(0.0, 0.05) = 0.006;      // how fast the patches drift over time
+uniform float color_variation_strength : hint_range(0.0, 1.0) = 0.35;     // how strongly the variant colors blend over the base height gradient
 
 group_uniforms Toon_Shading;
 uniform int light_bands : hint_range(2, 6) = 3;
@@ -125,6 +145,13 @@ group_uniforms Depth;
 uniform sampler2D depth_texture : hint_depth_texture, filter_linear_mipmap, repeat_disable;
 uniform bool enable_shore_foam = true;
 uniform float shore_foam_distance : hint_range(0.0, 12.0) = 0.6;
+
+group_uniforms Underwater_Depth;
+uniform bool enable_underwater_reveal = true;
+uniform sampler2D screen_texture : hint_screen_texture, filter_linear_mipmap;
+uniform float underwater_visibility_distance : hint_range(0.1, 40.0) = 7.0;  // meters of water depth at which submerged objects (seaweed, hulls, wrecks) fade fully into the water color
+uniform float underwater_distortion : hint_range(0.0, 0.15) = 0.035;         // screen-space wobble on the reveal, so it reads as "through water" rather than a flat cutout
+uniform float underwater_tint_strength : hint_range(0.0, 1.0) = 0.85;        // how strongly the water's own color tints objects seen through it near the surface
 
 varying vec3 v_world_pos;
 varying float v_jacobian;
@@ -189,7 +216,8 @@ float fbm2(vec2 p) {
 }
 
 // 3-octave fbm (manually unrolled) - used only where extra detail is
-// actually visible (domain warp shape, close-up foam detail).
+// actually visible (domain warp shape, close-up foam detail, and the
+// large-scale color variation blend).
 float fbm3(vec2 p) {
 	float v = 0.0;
 	float amp = 0.5;
@@ -507,8 +535,54 @@ void fragment() {
 	}
 	base = mix(base, color_shallow.rgb, clamp(shore_mask * 1.2, 0.0, 1.0));
 
+	// ---- underwater reveal: lets seaweed, wrecks, hulls, rocks etc. show
+	// vaguely through the surface near the shallows, fading to full water
+	// color with depth (Beer-Lambert style) so deep water still reads as
+	// solid and opaque. Uniform branch, same reasoning as enable_shore_foam
+	// above - this samples its own depth pass separately from shore foam
+	// since the two toggles are independent.
+	if (enable_underwater_reveal) {
+		float depth_raw_uw = texture(depth_texture, SCREEN_UV).r;
+		vec3 ndc_uw = vec3(SCREEN_UV * 2.0 - 1.0, depth_raw_uw);
+		vec4 view_pos_uw = INV_PROJECTION_MATRIX * vec4(ndc_uw, 1.0);
+		view_pos_uw.xyz /= view_pos_uw.w;
+		float scene_depth_uw = -view_pos_uw.z;
+		float water_depth_uw = -VERTEX.z;
+		float underwater_diff = max(scene_depth_uw - water_depth_uw, 0.0);
+
+		vec2 distort_uv = clamp(SCREEN_UV + NORMAL.xz * underwater_distortion, vec2(0.001), vec2(0.999));
+		vec3 scene_color = textureLod(screen_texture, distort_uv, 0.0).rgb;
+
+		// tint the revealed scene toward the water's own color as depth
+		// increases - a hull at 1m reads mostly true-color, a wreck at
+		// 15m reads almost as pure water color with just a hint of shape
+		vec3 tinted_scene = mix(scene_color, base, clamp(underwater_diff / max(underwater_visibility_distance, 0.001), 0.0, 1.0));
+		float reveal_amount = exp(-underwater_diff / max(underwater_visibility_distance, 0.001)) * underwater_tint_strength;
+		base = mix(base, tinted_scene, reveal_amount);
+	}
+
 	// biome tint (storm grey-green, cold pale blue, etc.)
 	base = mix(base, v_biome_tint, clamp(look.x, 0.0, 1.0));
+
+	// ---- large-scale color variation: blends across the 10
+	// water_color_variants so the surface reads as naturally uneven
+	// (algae, sediment, depth haze) instead of one flat color per height
+	// band. See PERFORMANCE NOTES item 5 for why dynamic array indexing
+	// is fine here despite being avoided in the vertex wave loop.
+	vec2 var_uv = wpos.xz * color_variation_scale + vec2(t * color_variation_speed, -t * color_variation_speed * 0.6);
+	float var_walk = fbm3(var_uv) * 9.0;
+	int var_idx_a = int(clamp(floor(var_walk), 0.0, 9.0));
+	int var_idx_b = int(clamp(floor(var_walk) + 1.0, 0.0, 9.0));
+	float var_t = smoothstep(0.0, 1.0, fract(var_walk));
+	vec3 variant_color = mix(water_color_variants[var_idx_a].rgb, water_color_variants[var_idx_b].rgb, var_t);
+
+	// a second, differently-scaled noise nudges the blend toward a third
+	// variant so the pattern doesn't read as a simple 10-step gradient walk
+	float var_walk2 = fbm3(var_uv * 2.3 + vec2(19.0, -4.0)) * 9.0;
+	int var_idx_c = int(clamp(floor(var_walk2), 0.0, 9.0));
+	variant_color = mix(variant_color, water_color_variants[var_idx_c].rgb, 0.2);
+
+	base = mix(base, variant_color, color_variation_strength);
 
 	// ---- wave-crest fold foam (Gerstner wave breaking) ----
 	float threshold_noise = (fbm2(wpos.xz * 0.04 + vec2(12.3, -7.1)) - 0.5) * 2.0 * foam_threshold_jitter;

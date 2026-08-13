@@ -2,7 +2,7 @@ extends MeshInstance3D
 
 class_name WaterManager
 
-const MAX_RIPPLES := 16
+const MAX_RIPPLES := 32
 
 # Keep these in sync with the shader's uniforms of the same name — they're
 # pushed to the material in _ready so the script is the single source of
