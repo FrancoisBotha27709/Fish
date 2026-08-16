@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://c2x5n3xa7tbvj" path="res://GameState/environment.tscn" id="4_cgxg8"]
 [ext_resource type="PackedScene" uid="uid://b2sp7qcrjg13i" path="res://GameState/Fishing/camera_rig.tscn" id="5_08esg"]
 [ext_resource type="PackedScene" uid="uid://63mku0k5ogqq" path="res://Player/Fishing/PlayerFish.tscn" id="5_ndv5f"]
+[ext_resource type="PackedScene" uid="uid://dcbrwdbk28bco" path="res://Assets/3D/Temp_Crate/Crate.gltf" id="5_os8xo"]
 [ext_resource type="PackedScene" uid="uid://cmnu6yv52pp56" path="res://GameState/Fishing/spots/fishing_spot.tscn" id="6_45qf1"]
 [ext_resource type="Script" uid="uid://chavq1q5fnwrr" path="res://GameState/Fishing/Water/Systems/BuoyancySystem.gd" id="7_08esg"]
 [ext_resource type="PackedScene" uid="uid://cyiehf5ppu4hq" path="res://GameState/Fishing/Water/wo_ws_water.tscn" id="7_ib3f6"]
@@ -15,18 +16,22 @@ player = NodePath("PlayerFish")
 
 [node name="Environment" parent="." unique_id=2110845524 instance=ExtResource("4_cgxg8")]
 
-[node name="CameraRig" parent="." unique_id=2083488559 node_paths=PackedStringArray("target") instance=ExtResource("5_08esg")]
+[node name="CameraRig" parent="." unique_id=2083488559 node_paths=PackedStringArray("target", "characterTarget") instance=ExtResource("5_08esg")]
 transform = Transform3D(0.44059196, 0.5864284, 0.67969143, 0.16846986, -0.7977027, 0.57904077, 0.8817577, -0.1406132, -0.4502569, 0, -0.74191463, 0)
-target = NodePath("../PlayerFish")
+target = NodePath("../PlayerFish/CameraTarget")
+characterTarget = NodePath("../PlayerFish")
 target_height = 5.0
-distance = 17.5
+distance = 20.0
 
 [node name="PlayerFish" parent="." unique_id=1016697865 instance=ExtResource("5_ndv5f")]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 16.910425, -21.227451)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.910425, -21.227451)
 max_speed = 1.5
 acceleration = 0.5
 deceleration = 0.8
 turn_speed = 0.6
+
+[node name="Crate2" parent="PlayerFish" unique_id=358170141 instance=ExtResource("5_os8xo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4822502, 0)
 
 [node name="fishingSpot" parent="." unique_id=73682153 node_paths=PackedStringArray("player") instance=ExtResource("6_45qf1")]
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -51.337135)

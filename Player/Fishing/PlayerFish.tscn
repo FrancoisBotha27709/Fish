@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://lxycyrd3rjyd" path="res://Player/Fishing/player_fish.gd" id="1_e0vli"]
 [ext_resource type="PackedScene" uid="uid://uhh2dw8abi5d" path="res://Player/User Interface/ui.tscn" id="2_a5qob"]
+[ext_resource type="PackedScene" uid="uid://1p82itlf0ktq" path="res://Assets/3D/Boat/Boat_Test.gltf" id="3_0flux"]
 
 [sub_resource type="PrismMesh" id="PrismMesh_kf124"]
 
@@ -27,15 +28,20 @@ layer = 0
 offset_left = 997.0
 
 [node name="CameraTarget" type="Node3D" parent="." unique_id=280868501]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.5)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=570671286]
 transform = Transform3D(-1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0, 1, 0, 0, 0)
+visible = false
 mesh = SubResource("PrismMesh_kf124")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D" unique_id=600338791]
 transform = Transform3D(-1, -8.742278e-08, 0, 8.742278e-08, -1, 0, 0, 0, 1, -6.6660945e-08, -0.7625123, 0.22164142)
+visible = false
 mesh = SubResource("CylinderMesh_kf124")
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=1167984669]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1167984669]
 transform = Transform3D(-1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0, 1, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_kf124")
+
+[node name="Boat_Test" parent="." unique_id=1091986385 instance=ExtResource("3_0flux")]

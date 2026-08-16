@@ -11,20 +11,26 @@
 		{
 			"name":"Scene",
 			"nodes":[
-				0
+				1
 			]
 		}
 	],
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Temp_Crate/Crate",
+			"name":"Crate",
 			"rotation":[
 				0.7071068286895752,
 				0,
 				0,
 				0.7071068286895752
 			]
+		},
+		{
+			"children":[
+				0
+			],
+			"name":"Crate.001"
 		}
 	],
 	"materials":[
@@ -46,7 +52,7 @@
 	],
 	"meshes":[
 		{
-			"name":"Temp_Crate/Temp_Crate.001",
+			"name":"Crate.003",
 			"primitives":[
 				{
 					"attributes":{
@@ -79,13 +85,13 @@
 			"componentType":5126,
 			"count":352,
 			"max":[
-				0.416666716337204,
-				0.46666666865348816,
+				0.30000007152557373,
+				0.375,
 				0
 			],
 			"min":[
-				-0.18333330750465393,
-				-0.28333336114883423,
+				-0.2999999523162842,
+				-0.375,
 				-0.75
 			],
 			"type":"VEC3"
