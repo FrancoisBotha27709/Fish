@@ -41,10 +41,7 @@ player = NodePath("../PlayerFish")
 water_path = NodePath("../../WoWs Water")
 
 [node name="WoWs Water" parent="." unique_id=2069854430 instance=ExtResource("7_ib3f6")]
-ripple_lifetime = 12.0
-ripple_wavelength = 6.59
-ripple_width = 4.0
-wave_speed = 0.325
+ripple_wavelength = 6.045
 sea_state_max = 0.935
 
 [node name="Systems" type="Node" parent="." unique_id=621716690]
@@ -59,4 +56,5 @@ water_path = NodePath("../../WoWs Water")
 
 [editable path="CameraRig"]
 [editable path="PlayerFish"]
+[editable path="PlayerFish/Boat_Test"]
 [editable path="fishingSpot"]
