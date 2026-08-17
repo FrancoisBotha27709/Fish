@@ -15,7 +15,7 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Boat"
+			"name":"Hull"
 		},
 		{
 			"children":[
@@ -38,7 +38,7 @@
 	],
 	"meshes":[
 		{
-			"name":"Boat",
+			"name":"Hull",
 			"primitives":[
 				{
 					"attributes":{
@@ -69,61 +69,61 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":2993,
+			"count":7457,
 			"max":[
-				1.667414665222168,
+				1.981871247291565,
 				4.83914852142334,
 				4.587419509887695
 			],
 			"min":[
 				-3.1942596435546875,
 				-1.5573532581329346,
-				-4.337202548980713
+				-4.330749988555908
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":2993,
+			"count":7457,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":2993,
+			"count":7457,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":5661,
+			"count":11535,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":35916,
+			"byteLength":89484,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":35916,
-			"byteOffset":35916,
+			"byteLength":89484,
+			"byteOffset":89484,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":23944,
-			"byteOffset":71832,
+			"byteLength":59656,
+			"byteOffset":178968,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":11322,
-			"byteOffset":95776,
+			"byteLength":23070,
+			"byteOffset":238624,
 			"target":34963
 		}
 	],
@@ -135,7 +135,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":107100,
+			"byteLength":261696,
 			"uri":"Boat_Test.bin"
 		}
 	]
