@@ -2,4 +2,4 @@
 
 [ext_resource type="PackedScene" uid="uid://1p82itlf0ktq" path="res://Assets/3D/Boat/Boat_Test.gltf" id="1_0n0nv"]
 
-[node name="Boat_Test" unique_id=1201399981 instance=ExtResource("1_0n0nv")]
+[node name="Boat_Test" unique_id=1673754650 instance=ExtResource("1_0n0nv")]
