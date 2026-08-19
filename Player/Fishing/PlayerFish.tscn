@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://lxycyrd3rjyd" path="res://Player/Fishing/player_fish.gd" id="1_e0vli"]
 [ext_resource type="PackedScene" uid="uid://uhh2dw8abi5d" path="res://Player/User Interface/ui.tscn" id="2_a5qob"]
-[ext_resource type="PackedScene" uid="uid://1p82itlf0ktq" path="res://Assets/3D/Boat/Boat_Test.gltf" id="3_0flux"]
+[ext_resource type="PackedScene" uid="uid://c11ng80capk1b" path="res://Assets/3D/Boat/boat_test.tscn" id="3_0flux"]
 
 [sub_resource type="PrismMesh" id="PrismMesh_kf124"]
 
@@ -43,7 +43,7 @@ transform = Transform3D(-1, -8.742278e-08, 0, 8.742278e-08, -1, 0, 0, 0, 1, -6.6
 visible = false
 mesh = SubResource("CylinderMesh_kf124")
 
-[node name="Boat_Test" parent="." unique_id=1091986385 instance=ExtResource("3_0flux")]
+[node name="Boat_Test" parent="." unique_id=1201399981 instance=ExtResource("3_0flux")]
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=642116343]
 transform = Transform3D(-1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0, 1, 0, -0.01814878, 0)
