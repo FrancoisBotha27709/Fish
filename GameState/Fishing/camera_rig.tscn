@@ -288,8 +288,9 @@ _data = {
 &"pull_animation": SubResource("Animation_cxtrs")
 }
 
-[node name="CameraRig" type="Node3D" unique_id=2083488559 node_paths=PackedStringArray("camera")]
+[node name="CameraRig" type="Node3D" unique_id=2083488559 node_paths=PackedStringArray("ray_cast", "camera")]
 script = ExtResource("1_xdslm")
+ray_cast = NodePath("Camera3D/RayCast3D")
 camera = NodePath("Camera3D")
 follow_speed = 4.0
 target_height = 2.0
@@ -346,3 +347,7 @@ mesh = SubResource("ArrayMesh_f4aeo")
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Camera3D/blockbench_export" unique_id=1801974586]
 libraries/ = SubResource("AnimationLibrary_7xnmh")
 speed_scale = 0.425
+
+[node name="RayCast3D" type="RayCast3D" parent="Camera3D" unique_id=206282526]
+transform = Transform3D(1, 0, 0, 0, -2.9802322e-08, -0.99999994, 0, 0.99999994, -2.9802322e-08, 0, 0, 0)
+target_position = Vector3(0, -60, 0)

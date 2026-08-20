@@ -17,9 +17,10 @@ size = Vector3(3, 1.35, 9)
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_0flux"]
 points = PackedVector3Array(1.5, -0.675, 4.5, 0, 0.675, 4.5, -1.5, -0.675, 4.5, 1.5, -0.675, -4.5, 0, 0.675, -4.5, -1.5, -0.675, -4.5)
 
-[node name="PlayerFish" type="CharacterBody3D" unique_id=1016697865 node_paths=PackedStringArray("camera_target", "ui_node") groups=["floating"]]
+[node name="PlayerFish" type="CharacterBody3D" unique_id=1016697865 node_paths=PackedStringArray("model", "camera_target", "ui_node") groups=["floating"]]
 collision_mask = 2
 script = ExtResource("1_e0vli")
+model = NodePath("Boat_Test")
 float_weight = 400.0
 camera_target = NodePath("CameraTarget")
 ui_node = NodePath("CanvasLayer/UI")
@@ -28,13 +29,15 @@ ui_node = NodePath("CanvasLayer/UI")
 layer = 0
 
 [node name="UI" parent="CanvasLayer" unique_id=2005672883 instance=ExtResource("2_a5qob")]
-offset_left = 997.0
+anchors_preset = -1
+anchor_left = 0.76000005
+offset_left = -1.2000732
 
 [node name="CameraTarget" type="Node3D" parent="." unique_id=280868501]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2758617, 1.6723526)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=570671286]
-transform = Transform3D(-1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(-1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0, 1, 0, 0, 2.7613494)
 visible = false
 mesh = SubResource("PrismMesh_kf124")
 
@@ -44,12 +47,13 @@ visible = false
 mesh = SubResource("CylinderMesh_kf124")
 
 [node name="Boat_Test" parent="." unique_id=1201399981 instance=ExtResource("3_0flux")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.7613494)
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=642116343]
-transform = Transform3D(-1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0, 1, 0, -0.01814878, 0)
+transform = Transform3D(-1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0, 1, 0, -0.01814878, 2.7613494)
 visible = false
 mesh = SubResource("PrismMesh_0flux")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=403349602]
-transform = Transform3D(-1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0, 1, 0, -0.01814878, 0)
+transform = Transform3D(-1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0, 1, 0, -0.01814878, 2.7613494)
 shape = SubResource("ConvexPolygonShape3D_0flux")

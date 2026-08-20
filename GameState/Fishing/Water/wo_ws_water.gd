@@ -43,11 +43,10 @@ const MAX_RIPPLES := 32
 # of whatever the sea state currently is.
 @export_group("Sea State (Temporal Variation)")
 @export var enable_sea_state_variation: bool = true
-@export var sea_state_min: float = 0.2               # calmest multiplier on swell/chop amplitude (0.2 = 20% of your base height)
-@export var sea_state_max: float = 1.6                # wildest multiplier on swell/chop amplitude
-@export var sea_state_change_speed: float = 0.015     # how fast the sea state drifts; lower = longer, slower-building stretches of calm/storm
-@export var sea_state_speed_influence: float = 0.4    # 0 = wave_speed never changes with sea state; 1 = wave_speed scales fully with the same multiplier as amplitude
-
+@export var sea_state_min: float = 0.2
+@export var sea_state_max: float = 1.6
+@export var sea_state_change_speed: float = 0.015
+@export var sea_state_speed_influence: float = 0.4
 var _material: ShaderMaterial
 
 var _slot_pos: Array[Vector2] = []

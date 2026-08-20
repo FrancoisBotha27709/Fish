@@ -1,5 +1,33 @@
 [gd_scene format=3 uid="uid://c11ng80capk1b"]
 
 [ext_resource type="PackedScene" uid="uid://1p82itlf0ktq" path="res://Assets/3D/Boat/Boat_Test.gltf" id="1_0n0nv"]
+[ext_resource type="Script" uid="uid://cwt2jnyk3k0q3" path="res://Assets/3D/Boat/boat_test.gd" id="2_t3r12"]
 
-[node name="Boat_Test" unique_id=1673754650 instance=ExtResource("1_0n0nv")]
+[node name="Boat_Test" unique_id=1673754650 node_paths=PackedStringArray("rudder", "anchor", "prop", "lights_z", "lights_x") instance=ExtResource("1_0n0nv")]
+script = ExtResource("2_t3r12")
+rudder = NodePath("Boat/Rudder")
+anchor = NodePath("Boat/Anchor")
+prop = NodePath("Boat/Propeller")
+lights_z = [NodePath("Boat/Side Light L Z"), NodePath("Boat/Side Light R Z"), NodePath("Boat/Top Light Z")]
+lights_x = [NodePath("Boat/Side Light L Z/Side Light L X"), NodePath("Boat/Side Light R Z/Side Light R X"), NodePath("Boat/Top Light Z/Top Light X")]
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Boat/Side Light L Z/Side Light L X/Side Light L Attach" parent_id_path=PackedInt32Array(1223743998) index="0" unique_id=543029205]
+light_color = Color(1, 0.83137256, 0.60784316, 1)
+light_energy = 3.15
+spot_range = 44.738
+spot_angle = 14.7
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Boat/Side Light R Z/Side Light R X/Side Light R Attach" parent_id_path=PackedInt32Array(1384194368) index="0" unique_id=239256706]
+light_color = Color(1, 0.83137256, 0.60784316, 1)
+light_energy = 3.15
+spot_range = 44.738
+spot_angle = 14.7
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Boat/Top Light Z/Top Light X/Top Light Attach" parent_id_path=PackedInt32Array(756774937) index="0" unique_id=2082456990]
+light_color = Color(1, 0.83137256, 0.60784316, 1)
+light_energy = 3.15
+spot_range = 44.738
+spot_angle = 14.7
+
+[node name="Camera3D" type="Camera3D" parent="." index="1" unique_id=1362342968]
+transform = Transform3D(0.8950122, 0, 0.4460416, 0, 1, 0, -0.4460416, 0, 0.8950122, 1.3560449, -0.6576962, 4.5488577)

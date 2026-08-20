@@ -22,11 +22,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Control" type="Control" parent="VBoxContainer" unique_id=72698319]
-layout_mode = 2
-
-[node name="Sprite2D" type="Sprite2D" parent="VBoxContainer/Control" unique_id=1232431893]
-
 [node name="Label" type="Label" parent="VBoxContainer" unique_id=2001078542]
 layout_mode = 2
 text = "Salmon"
+
+[node name="Control" type="Control" parent="VBoxContainer" unique_id=72698319]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+
+[node name="Sprite2D" type="Sprite2D" parent="VBoxContainer/Control" unique_id=1232431893]
+scale = Vector2(0.515, 0.515)
