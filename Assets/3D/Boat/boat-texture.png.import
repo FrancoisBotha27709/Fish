@@ -2,21 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d3ibcbh1bm3xt"
-path.s3tc="res://.godot/imported/Crate_Texture.png-d286a05c28d1db0b0b61f173ae3242bb.s3tc.ctex"
+uid="uid://bap8hvj6wbrn5"
+path="res://.godot/imported/boat-texture.png-25bf22b4b750ebdf54538631692e6c05.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/3D/Temp_Crate/Crate_Texture.png"
-dest_files=["res://.godot/imported/Crate_Texture.png-d286a05c28d1db0b0b61f173ae3242bb.s3tc.ctex"]
+source_file="res://Assets/3D/Boat/boat-texture.png"
+dest_files=["res://.godot/imported/boat-texture.png-25bf22b4b750ebdf54538631692e6c05.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

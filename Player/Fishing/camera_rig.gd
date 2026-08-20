@@ -1,7 +1,11 @@
 extends Node3D
 class_name CameraRig
 
-@export var target: CharacterBody3D
+# Node3d that the camera points rowards
+@export var target: Node3D
+# CharacterBody - used for when target velocity is required
+@export var characterTarget: CharacterBody3D
+
 @export var camera: Camera3D
 
 @export_group("Follow")
@@ -76,7 +80,7 @@ func _process(delta: float) -> void:
 	if (
 		not _rotating
 		and _time_since_input > recenter_delay
-		and Vector2(target.velocity.x, target.velocity.z).length() > minimum_move_speed):
+		and Vector2(characterTarget.velocity.x, characterTarget.velocity.z).length() > minimum_move_speed):
 		orbit_offset = lerp(orbit_offset, 0.0, 1.0 - exp(-recenter_speed * delta))
 
 	# Boat yaw + player orbit.

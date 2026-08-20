@@ -42,6 +42,8 @@ sky_material = SubResource("ShaderMaterial_7kxe7")
 [sub_resource type="Environment" id="Environment_a6qg4"]
 background_mode = 2
 sky = SubResource("Sky_8bpc5")
+ambient_light_color = Color(0.5934, 0.7755767, 0.86, 1)
+ambient_light_sky_contribution = 0.75
 tonemap_mode = 2
 glow_enabled = true
 

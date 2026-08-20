@@ -27,6 +27,10 @@ window/size/mode=2
 window/stretch/mode="viewport"
 window/stretch/aspect="keep_height"
 
+[dotnet]
+
+project/assembly_name="Fisher"
+
 [global_group]
 
 floating="This is a group for objects that need to interact with the water"
