@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://biivol3m8ppmq"
-path="res://.godot/imported/Salmon.gltf-5b43204890bd6dee237f567c6ee45242.scn"
+uid="uid://c875sk5arhj8v"
+path="res://.godot/imported/Salmon Steak.gltf-0996843999c2ce2b1448a260de4b9a2f.scn"
 
 [deps]
 
-source_file="res://Assets/3D/Fish/Salmon.gltf"
-dest_files=["res://.godot/imported/Salmon.gltf-5b43204890bd6dee237f567c6ee45242.scn"]
+source_file="res://Assets/3D/Fish/Salmon Steak.gltf"
+dest_files=["res://.godot/imported/Salmon Steak.gltf-0996843999c2ce2b1448a260de4b9a2f.scn"]
 
 [params]
 

@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://biivol3m8ppmq"
-path="res://.godot/imported/Salmon.gltf-5b43204890bd6dee237f567c6ee45242.scn"
+uid="uid://c3o3ua4k57krw"
+path="res://.godot/imported/Salmon Bones.gltf-ba532962825e3d5c01404a6744a8f903.scn"
 
 [deps]
 
-source_file="res://Assets/3D/Fish/Salmon.gltf"
-dest_files=["res://.godot/imported/Salmon.gltf-5b43204890bd6dee237f567c6ee45242.scn"]
+source_file="res://Assets/3D/Fish/Salmon Bones.gltf"
+dest_files=["res://.godot/imported/Salmon Bones.gltf-ba532962825e3d5c01404a6744a8f903.scn"]
 
 [params]
 

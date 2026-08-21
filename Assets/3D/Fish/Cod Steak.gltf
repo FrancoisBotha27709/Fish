@@ -15,7 +15,7 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Salmon"
+			"name":"Cod Steak"
 		}
 	],
 	"materials":[
@@ -33,7 +33,7 @@
 	],
 	"meshes":[
 		{
-			"name":"Salmon Mesh",
+			"name":"Cod Steak Mesh",
 			"primitives":[
 				{
 					"attributes":{
@@ -64,61 +64,61 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":106,
+			"count":76,
 			"max":[
-				0.3076964318752289,
-				0.30427268147468567,
-				0.6952647566795349
+				0.15919768810272217,
+				0.220363587141037,
+				0.25643014907836914
 			],
 			"min":[
-				-0.3076964318752289,
-				-0.23276391625404358,
-				-0.4759320914745331
+				-0.15919768810272217,
+				-0.21595878899097443,
+				-0.2160978466272354
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":106,
+			"count":76,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":106,
+			"count":76,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":138,
+			"count":120,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":1272,
+			"byteLength":912,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1272,
-			"byteOffset":1272,
+			"byteLength":912,
+			"byteOffset":912,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":848,
-			"byteOffset":2544,
+			"byteLength":608,
+			"byteOffset":1824,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":276,
-			"byteOffset":3392,
+			"byteLength":240,
+			"byteOffset":2432,
 			"target":34963
 		}
 	],
@@ -130,8 +130,8 @@
 	],
 	"buffers":[
 		{
-			"byteLength":3668,
-			"uri":"Salmon.bin"
+			"byteLength":2672,
+			"uri":"Cod%20Steak.bin"
 		}
 	]
 }

@@ -15,7 +15,7 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Salmon"
+			"name":"Salmon Bones"
 		}
 	],
 	"materials":[
@@ -33,7 +33,7 @@
 	],
 	"meshes":[
 		{
-			"name":"Salmon Mesh",
+			"name":"Salmon Bones Mesh",
 			"primitives":[
 				{
 					"attributes":{
@@ -64,14 +64,14 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":106,
+			"count":339,
 			"max":[
-				0.3076964318752289,
-				0.30427268147468567,
+				0.1379285454750061,
+				0.24270181357860565,
 				0.6952647566795349
 			],
 			"min":[
-				-0.3076964318752289,
+				-0.1379285454750061,
 				-0.23276391625404358,
 				-0.4759320914745331
 			],
@@ -80,45 +80,45 @@
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":106,
+			"count":339,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":106,
+			"count":339,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":138,
+			"count":483,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":1272,
+			"byteLength":4068,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1272,
-			"byteOffset":1272,
+			"byteLength":4068,
+			"byteOffset":4068,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":848,
-			"byteOffset":2544,
+			"byteLength":2712,
+			"byteOffset":8136,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":276,
-			"byteOffset":3392,
+			"byteLength":966,
+			"byteOffset":10848,
 			"target":34963
 		}
 	],
@@ -130,8 +130,8 @@
 	],
 	"buffers":[
 		{
-			"byteLength":3668,
-			"uri":"Salmon.bin"
+			"byteLength":11816,
+			"uri":"Salmon%20Bones.bin"
 		}
 	]
 }
