@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://ba6kn6lpvd0hp" path="res://GameState/Fishing/floaters/WoWsFloat.gd" id="3_fud2u"]
 [ext_resource type="PackedScene" uid="uid://c47md0jykphh2" path="res://GameState/Fishing/Minigames/StardewFishing.tscn" id="3_i61mi"]
 [ext_resource type="PackedScene" uid="uid://bfo2ifyhaebs2" path="res://Assets/3D/Buoy/Buoy.gltf" id="4_7x6oc"]
+[ext_resource type="Script" uid="uid://chp1iqgmfn3ur" path="res://GameState/Fishing/spots/fish_models_spawn.gd" id="6_lddl5"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_awlgp"]
 size = Vector3(13, 5, 13)
@@ -61,3 +62,8 @@ offset_left = 4.0
 offset_top = 4.0
 offset_right = 1118.0
 offset_bottom = 443.0
+
+[node name="FishModels" type="Marker3D" parent="." unique_id=1943415072]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.1907141, 0)
+script = ExtResource("6_lddl5")
+swim_radius = 6.0

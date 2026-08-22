@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://bvawdc8nodb7q"]
+
+[ext_resource type="Script" uid="uid://5t2h6dfffcod" path="res://Items/Fish/fish_swimmer.gd" id="1_277ut"]
+[ext_resource type="PackedScene" uid="uid://6tpbusfaai5d" path="res://Assets/3D/Fish/Salmon.gltf" id="2_q5wdl"]
+
+[node name="SalmonExternalMesh" type="Node3D" unique_id=1177121655]
+script = ExtResource("1_277ut")
+
+[node name="Salmon2" parent="." unique_id=1348139217 instance=ExtResource("2_q5wdl")]

@@ -1,0 +1,702 @@
+[gd_scene format=3 uid="uid://djypbw33m7rmv"]
+
+[ext_resource type="PackedScene" uid="uid://byrxm8dyfi0pw" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Bush_Common.gltf" id="1_paod3"]
+[ext_resource type="PackedScene" uid="uid://cw6fdkk8vehnt" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Bush_Common_Flowers.gltf" id="2_ltdh3"]
+[ext_resource type="PackedScene" uid="uid://bkf3hecpnjrlt" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Clover_1.gltf" id="3_5mntn"]
+[ext_resource type="PackedScene" uid="uid://dsj4b4em2lj3n" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Clover_2.gltf" id="4_ajfg8"]
+[ext_resource type="PackedScene" uid="uid://dj71vc1sop005" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/CommonTree_1.gltf" id="5_f3a81"]
+[ext_resource type="PackedScene" uid="uid://bpgke8hfblwj6" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/CommonTree_2.gltf" id="6_4mcwf"]
+[ext_resource type="PackedScene" uid="uid://b301j33erl3va" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/CommonTree_3.gltf" id="7_gu4nm"]
+[ext_resource type="PackedScene" uid="uid://bqr606rd3i4h6" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/CommonTree_4.gltf" id="8_of54k"]
+[ext_resource type="PackedScene" uid="uid://brw2cm7npiihb" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/CommonTree_5.gltf" id="9_3haoi"]
+[ext_resource type="PackedScene" uid="uid://teqeqsbsghbb" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/DeadTree_1.gltf" id="10_j86yg"]
+[ext_resource type="PackedScene" uid="uid://b3ve1fwpknsda" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/DeadTree_2.gltf" id="11_v7ij3"]
+[ext_resource type="PackedScene" uid="uid://cxikei6rot5gu" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/DeadTree_3.gltf" id="12_glx4i"]
+[ext_resource type="PackedScene" uid="uid://cj4h68xjqtwyy" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/DeadTree_4.gltf" id="13_occo5"]
+[ext_resource type="PackedScene" uid="uid://dyxj0j14jk6y7" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/DeadTree_5.gltf" id="14_j5lhq"]
+[ext_resource type="PackedScene" uid="uid://ce4heshyvxm3n" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Fern_1.gltf" id="15_etu4i"]
+[ext_resource type="PackedScene" uid="uid://cghqbv4dyfmkg" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Flower_3_Group.gltf" id="16_gx7kb"]
+[ext_resource type="PackedScene" uid="uid://dr8uuqu288qcn" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Flower_3_Single.gltf" id="17_j2epu"]
+[ext_resource type="PackedScene" uid="uid://8wbkwqhvf6va" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Flower_4_Group.gltf" id="18_iuebw"]
+[ext_resource type="PackedScene" uid="uid://330it2fd2ls6" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Flower_4_Single.gltf" id="19_0mb0i"]
+[ext_resource type="PackedScene" uid="uid://iueww5rilb4n" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Grass_Common_Short.gltf" id="20_3haoi"]
+[ext_resource type="PackedScene" uid="uid://v36t5nmip5kh" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Grass_Common_Tall.gltf" id="21_j86yg"]
+[ext_resource type="PackedScene" uid="uid://u4x5oit3vfj4" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Grass_Wispy_Short.gltf" id="22_v7ij3"]
+[ext_resource type="PackedScene" uid="uid://c35dpvb4svwmk" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Grass_Wispy_Tall.gltf" id="23_glx4i"]
+[ext_resource type="PackedScene" uid="uid://bfmlg2nolvg55" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Mushroom_Common.gltf" id="24_occo5"]
+[ext_resource type="PackedScene" uid="uid://box13da14vb01" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Mushroom_Laetiporus.gltf" id="25_j5lhq"]
+[ext_resource type="PackedScene" uid="uid://dkeiu7fi1srno" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Pebble_Round_1.gltf" id="26_etu4i"]
+[ext_resource type="PackedScene" uid="uid://bpwvbtsr2duby" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Pebble_Round_2.gltf" id="27_gx7kb"]
+[ext_resource type="PackedScene" uid="uid://b4mpjybw8i26x" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Pebble_Round_3.gltf" id="28_uv4o8"]
+[ext_resource type="PackedScene" uid="uid://buo5wnrpifgk4" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Pebble_Round_4.gltf" id="29_mayfe"]
+[ext_resource type="PackedScene" uid="uid://dn8p6oowp3q81" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Pebble_Round_5.gltf" id="30_wrv47"]
+[ext_resource type="PackedScene" uid="uid://cpgaysnx0mndm" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Pebble_Square_1.gltf" id="31_ktfcd"]
+[ext_resource type="PackedScene" uid="uid://chug6p03jwjb3" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Pebble_Square_2.gltf" id="32_rdckt"]
+[ext_resource type="PackedScene" uid="uid://dby4wan61sjks" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Pebble_Square_3.gltf" id="33_fg8ku"]
+[ext_resource type="PackedScene" uid="uid://bgnnjnehitxcq" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Pebble_Square_4.gltf" id="34_035kk"]
+[ext_resource type="PackedScene" uid="uid://2nrpokdjfm40" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Pebble_Square_5.gltf" id="35_up6lo"]
+[ext_resource type="PackedScene" uid="uid://q7jxopcf45g6" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Pebble_Square_6.gltf" id="36_x8f2e"]
+[ext_resource type="PackedScene" uid="uid://c4wb31drdtxfx" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Petal_1.gltf" id="37_27i0y"]
+[ext_resource type="PackedScene" uid="uid://b7c7auy25ahbi" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Petal_2.gltf" id="38_xws2p"]
+[ext_resource type="PackedScene" uid="uid://dw5fjlwu5r5o0" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Petal_3.gltf" id="39_eh17a"]
+[ext_resource type="PackedScene" uid="uid://eplm3sikfo1x" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Petal_4.gltf" id="40_o7hp2"]
+[ext_resource type="PackedScene" uid="uid://v1spcp5vhgbv" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Petal_5.gltf" id="41_aoore"]
+[ext_resource type="PackedScene" uid="uid://bb4eeti0glwod" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Pine_1.gltf" id="42_ofk4x"]
+[ext_resource type="PackedScene" uid="uid://drk830l0tecb6" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Pine_2.gltf" id="43_usbvh"]
+[ext_resource type="PackedScene" uid="uid://b7spyt1frg7yi" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Pine_3.gltf" id="44_kapcm"]
+[ext_resource type="PackedScene" uid="uid://cdp1qitfvrqbn" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Pine_4.gltf" id="45_pm1ou"]
+[ext_resource type="PackedScene" uid="uid://cfjmqlel17kym" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Pine_5.gltf" id="46_wn4ad"]
+[ext_resource type="PackedScene" uid="uid://d3wy46b86vysd" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Plant_1.gltf" id="47_37pip"]
+[ext_resource type="PackedScene" uid="uid://3qeok2j0j1rv" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Plant_1_Big.gltf" id="48_m4lg1"]
+[ext_resource type="PackedScene" uid="uid://dmxqst4shmu0g" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Plant_7.gltf" id="49_gdrmu"]
+[ext_resource type="PackedScene" uid="uid://bvl578uyklvck" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Plant_7_Big.gltf" id="50_jpquy"]
+[ext_resource type="PackedScene" uid="uid://xgbn86uuxa42" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/RockPath_Round_Small_1.gltf" id="51_kjvlp"]
+[ext_resource type="PackedScene" uid="uid://6hq3ilkbd2i8" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/RockPath_Round_Small_2.gltf" id="52_ddsvj"]
+[ext_resource type="PackedScene" uid="uid://bcpf5r1iklxvp" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/RockPath_Round_Small_3.gltf" id="53_8rbuv"]
+[ext_resource type="PackedScene" uid="uid://nuk04m5xljpi" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/RockPath_Round_Thin.gltf" id="54_djk34"]
+[ext_resource type="PackedScene" uid="uid://cjt02autdd25w" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/RockPath_Round_Wide.gltf" id="55_hrwu1"]
+[ext_resource type="PackedScene" uid="uid://b10brywyofq4f" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/RockPath_Square_Small_1.gltf" id="56_bt2ke"]
+[ext_resource type="PackedScene" uid="uid://bhg4mwpy7rtnn" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/RockPath_Square_Small_2.gltf" id="57_hgy24"]
+[ext_resource type="PackedScene" uid="uid://dotbi4e7p46w0" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/RockPath_Square_Small_3.gltf" id="58_o1k3j"]
+[ext_resource type="PackedScene" uid="uid://0fxbx8gc734n" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/RockPath_Square_Thin.gltf" id="59_yp2g4"]
+[ext_resource type="PackedScene" uid="uid://yvi6xnomw6or" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/RockPath_Square_Wide.gltf" id="60_abjwj"]
+[ext_resource type="PackedScene" uid="uid://cxu2xf7gkmg2c" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Rock_Medium_1.gltf" id="61_mbve4"]
+[ext_resource type="PackedScene" uid="uid://cp7jnbcfyt5u7" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Rock_Medium_2.gltf" id="62_8el0n"]
+[ext_resource type="PackedScene" uid="uid://dmf2jn4c650gp" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/Rock_Medium_3.gltf" id="63_6ih1f"]
+[ext_resource type="PackedScene" uid="uid://ncquq4fd4jgi" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/TwistedTree_1.gltf" id="64_lmov1"]
+[ext_resource type="PackedScene" uid="uid://dfesql5exdf4u" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/TwistedTree_2.gltf" id="65_c5hfr"]
+[ext_resource type="PackedScene" uid="uid://drlbwfh25fiyt" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/TwistedTree_3.gltf" id="66_tulg4"]
+[ext_resource type="PackedScene" uid="uid://c8v7ldv6ayopk" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/TwistedTree_4.gltf" id="67_2xxlh"]
+[ext_resource type="PackedScene" uid="uid://dio42u1ocmt50" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/TwistedTree_5.gltf" id="68_uv2je"]
+
+[sub_resource type="Gradient" id="Gradient_n2sld"]
+offsets = PackedFloat32Array(0.2, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_2oc3u"]
+noise_type = 2
+frequency = 0.03
+cellular_jitter = 3.0
+cellular_return_type = 0
+domain_warp_enabled = true
+domain_warp_type = 1
+domain_warp_amplitude = 50.0
+domain_warp_fractal_type = 2
+domain_warp_fractal_lacunarity = 1.5
+domain_warp_fractal_gain = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kwkhw"]
+noise = SubResource("FastNoiseLite_2oc3u")
+color_ramp = SubResource("Gradient_n2sld")
+seamless = true
+
+[sub_resource type="Terrain3DMaterial" id="Terrain3DMaterial_vb3a5"]
+_shader_parameters = {
+&"bias_distance": null,
+&"blend_sharpness": null,
+&"depth_blur": null,
+&"enable_macro_variation": null,
+&"enable_projection": null,
+&"flat_terrain_normals": null,
+&"macro_variation1": null,
+&"macro_variation2": null,
+&"macro_variation_slope": null,
+&"mipmap_bias": null,
+&"noise1_angle": null,
+&"noise1_offset": null,
+&"noise1_scale": null,
+&"noise2_scale": null,
+&"noise_texture": SubResource("NoiseTexture2D_kwkhw"),
+&"projection_threshold": null
+}
+show_checkered = true
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_ew1kt"]
+name = "Bush_Common"
+scene_file = ExtResource("1_paod3")
+density = 1.6800613
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_80t3v"]
+name = "Bush_Common_Flowers"
+id = 1
+scene_file = ExtResource("2_ltdh3")
+density = 1.6800613
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_veqla"]
+name = "Clover_1"
+id = 2
+scene_file = ExtResource("3_5mntn")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_2s7pd"]
+name = "Clover_2"
+id = 3
+scene_file = ExtResource("4_ajfg8")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_taj3b"]
+name = "CommonTree_1"
+id = 4
+scene_file = ExtResource("5_f3a81")
+density = 0.06974417
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_uhjk5"]
+name = "CommonTree_2"
+id = 5
+scene_file = ExtResource("6_4mcwf")
+density = 0.06854253
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_vp017"]
+name = "CommonTree_3"
+id = 6
+scene_file = ExtResource("7_gu4nm")
+density = 0.061574847
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_rfy1a"]
+name = "CommonTree_4"
+id = 7
+scene_file = ExtResource("8_of54k")
+density = 0.073749356
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_v64u6"]
+name = "CommonTree_5"
+id = 8
+scene_file = ExtResource("9_3haoi")
+density = 0.09213711
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_bcdsg"]
+name = "DeadTree_1"
+id = 9
+scene_file = ExtResource("10_j86yg")
+density = 0.029793119
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_c2anj"]
+name = "DeadTree_2"
+id = 10
+scene_file = ExtResource("11_v7ij3")
+density = 0.020278478
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_mesxb"]
+name = "DeadTree_3"
+id = 11
+scene_file = ExtResource("12_glx4i")
+density = 0.018333204
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_xixce"]
+name = "DeadTree_4"
+id = 12
+scene_file = ExtResource("13_occo5")
+density = 0.012720217
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_3fg0c"]
+name = "DeadTree_5"
+id = 13
+scene_file = ExtResource("14_j5lhq")
+density = 0.01
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_5uudp"]
+name = "Fern_1"
+id = 14
+scene_file = ExtResource("15_etu4i")
+density = 1.5872796
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_c4lxm"]
+name = "Flower_3_Group"
+id = 15
+scene_file = ExtResource("16_gx7kb")
+density = 2.0548313
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_ealie"]
+name = "Flower_3_Single"
+id = 16
+scene_file = ExtResource("17_j2epu")
+density = 6.0774775
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_8i6yw"]
+name = "Flower_4_Group"
+id = 17
+scene_file = ExtResource("18_iuebw")
+density = 1.6515054
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_t0dyk"]
+name = "Flower_4_Single"
+id = 18
+scene_file = ExtResource("19_0mb0i")
+density = 4.9879313
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_j2epu"]
+name = "Grass_Common_Short"
+id = 19
+scene_file = ExtResource("20_3haoi")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_iuebw"]
+name = "Grass_Common_Tall"
+id = 20
+scene_file = ExtResource("21_j86yg")
+density = 6.0071483
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_0mb0i"]
+name = "Grass_Wispy_Short"
+id = 21
+scene_file = ExtResource("22_v7ij3")
+density = 5.8328543
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_n2sld"]
+name = "Grass_Wispy_Tall"
+id = 22
+scene_file = ExtResource("23_glx4i")
+density = 2.4370415
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_2oc3u"]
+name = "Mushroom_Common"
+id = 23
+scene_file = ExtResource("24_occo5")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_kwkhw"]
+name = "Mushroom_Laetiporus"
+id = 24
+scene_file = ExtResource("25_j5lhq")
+density = 8.652064
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_vb3a5"]
+name = "Pebble_Round_1"
+id = 25
+scene_file = ExtResource("26_etu4i")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_0i2pv"]
+name = "Pebble_Round_2"
+id = 26
+scene_file = ExtResource("27_gx7kb")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_4sxc3"]
+name = "Pebble_Round_3"
+id = 27
+scene_file = ExtResource("28_uv4o8")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_iermo"]
+name = "Pebble_Round_4"
+id = 28
+scene_file = ExtResource("29_mayfe")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_ns4a5"]
+name = "Pebble_Round_5"
+id = 29
+scene_file = ExtResource("30_wrv47")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_ungxl"]
+name = "Pebble_Square_1"
+id = 30
+scene_file = ExtResource("31_ktfcd")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_xt6gq"]
+name = "Pebble_Square_2"
+id = 31
+scene_file = ExtResource("32_rdckt")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_4e3xf"]
+name = "Pebble_Square_3"
+id = 32
+scene_file = ExtResource("33_fg8ku")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_nursj"]
+name = "Pebble_Square_4"
+id = 33
+scene_file = ExtResource("34_035kk")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_punjq"]
+name = "Pebble_Square_5"
+id = 34
+scene_file = ExtResource("35_up6lo")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_5go47"]
+name = "Pebble_Square_6"
+id = 35
+scene_file = ExtResource("36_x8f2e")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_1wb0u"]
+name = "Petal_1"
+id = 36
+scene_file = ExtResource("37_27i0y")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_gxqeu"]
+name = "Petal_2"
+id = 37
+scene_file = ExtResource("38_xws2p")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_n14vl"]
+name = "Petal_3"
+id = 38
+scene_file = ExtResource("39_eh17a")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_w7lxc"]
+name = "Petal_4"
+id = 39
+scene_file = ExtResource("40_o7hp2")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_dt32m"]
+name = "Petal_5"
+id = 40
+scene_file = ExtResource("41_aoore")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_nau2y"]
+name = "Pine_1"
+id = 41
+scene_file = ExtResource("42_ofk4x")
+density = 0.06090163
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_yam08"]
+name = "Pine_2"
+id = 42
+scene_file = ExtResource("43_usbvh")
+density = 0.0453299
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_0bg7n"]
+name = "Pine_3"
+id = 43
+scene_file = ExtResource("44_kapcm")
+density = 0.09374482
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_wynr8"]
+name = "Pine_4"
+id = 44
+scene_file = ExtResource("45_pm1ou")
+density = 0.0313494
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_1bike"]
+name = "Pine_5"
+id = 45
+scene_file = ExtResource("46_wn4ad")
+density = 0.028695865
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_ngp0s"]
+name = "Plant_1"
+id = 46
+scene_file = ExtResource("47_37pip")
+density = 5.5900097
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_iut8v"]
+name = "Plant_1_Big"
+id = 47
+scene_file = ExtResource("48_m4lg1")
+density = 1.2066112
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_isxnj"]
+name = "Plant_7"
+id = 48
+scene_file = ExtResource("49_gdrmu")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_w1b1n"]
+name = "Plant_7_Big"
+id = 49
+scene_file = ExtResource("50_jpquy")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_ae34m"]
+name = "RockPath_Round_Small_1"
+id = 50
+scene_file = ExtResource("51_kjvlp")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_gmqgh"]
+name = "RockPath_Round_Small_2"
+id = 51
+scene_file = ExtResource("52_ddsvj")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_ta2e7"]
+name = "RockPath_Round_Small_3"
+id = 52
+scene_file = ExtResource("53_8rbuv")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_dem3j"]
+name = "RockPath_Round_Thin"
+id = 53
+scene_file = ExtResource("54_djk34")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_dlux7"]
+name = "RockPath_Round_Wide"
+id = 54
+scene_file = ExtResource("55_hrwu1")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_bcmmj"]
+name = "RockPath_Square_Small_1"
+id = 55
+scene_file = ExtResource("56_bt2ke")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_at7yi"]
+name = "RockPath_Square_Small_2"
+id = 56
+scene_file = ExtResource("57_hgy24")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_en5vr"]
+name = "RockPath_Square_Small_3"
+id = 57
+scene_file = ExtResource("58_o1k3j")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_brm52"]
+name = "RockPath_Square_Thin"
+id = 58
+scene_file = ExtResource("59_yp2g4")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_olt1h"]
+name = "RockPath_Square_Wide"
+id = 59
+scene_file = ExtResource("60_abjwj")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_ukyeq"]
+name = "Rock_Medium_1"
+id = 60
+scene_file = ExtResource("61_mbve4")
+density = 0.4590238
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_uhdyo"]
+name = "Rock_Medium_2"
+id = 61
+scene_file = ExtResource("62_8el0n")
+density = 0.6967363
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_4vq2t"]
+name = "Rock_Medium_3"
+id = 62
+scene_file = ExtResource("63_6ih1f")
+density = 0.36314332
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_5hu2j"]
+name = "TwistedTree_1"
+id = 63
+scene_file = ExtResource("64_lmov1")
+density = 0.01
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_4kol2"]
+name = "TwistedTree_2"
+id = 64
+scene_file = ExtResource("65_c5hfr")
+density = 0.01
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_m8rsn"]
+name = "TwistedTree_3"
+id = 65
+scene_file = ExtResource("66_tulg4")
+density = 0.01
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_3ld3x"]
+name = "TwistedTree_4"
+id = 66
+scene_file = ExtResource("67_2xxlh")
+density = 0.01
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_teve6"]
+name = "TwistedTree_5"
+id = 67
+scene_file = ExtResource("68_uv2je")
+density = 0.01
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DAssets" id="Terrain3DAssets_0i2pv"]
+mesh_list = Array[Terrain3DMeshAsset]([SubResource("Terrain3DMeshAsset_ew1kt"), SubResource("Terrain3DMeshAsset_80t3v"), SubResource("Terrain3DMeshAsset_veqla"), SubResource("Terrain3DMeshAsset_2s7pd"), SubResource("Terrain3DMeshAsset_taj3b"), SubResource("Terrain3DMeshAsset_uhjk5"), SubResource("Terrain3DMeshAsset_vp017"), SubResource("Terrain3DMeshAsset_rfy1a"), SubResource("Terrain3DMeshAsset_v64u6"), SubResource("Terrain3DMeshAsset_bcdsg"), SubResource("Terrain3DMeshAsset_c2anj"), SubResource("Terrain3DMeshAsset_mesxb"), SubResource("Terrain3DMeshAsset_xixce"), SubResource("Terrain3DMeshAsset_3fg0c"), SubResource("Terrain3DMeshAsset_5uudp"), SubResource("Terrain3DMeshAsset_c4lxm"), SubResource("Terrain3DMeshAsset_ealie"), SubResource("Terrain3DMeshAsset_8i6yw"), SubResource("Terrain3DMeshAsset_t0dyk"), SubResource("Terrain3DMeshAsset_j2epu"), SubResource("Terrain3DMeshAsset_iuebw"), SubResource("Terrain3DMeshAsset_0mb0i"), SubResource("Terrain3DMeshAsset_n2sld"), SubResource("Terrain3DMeshAsset_2oc3u"), SubResource("Terrain3DMeshAsset_kwkhw"), SubResource("Terrain3DMeshAsset_vb3a5"), SubResource("Terrain3DMeshAsset_0i2pv"), SubResource("Terrain3DMeshAsset_4sxc3"), SubResource("Terrain3DMeshAsset_iermo"), SubResource("Terrain3DMeshAsset_ns4a5"), SubResource("Terrain3DMeshAsset_ungxl"), SubResource("Terrain3DMeshAsset_xt6gq"), SubResource("Terrain3DMeshAsset_4e3xf"), SubResource("Terrain3DMeshAsset_nursj"), SubResource("Terrain3DMeshAsset_punjq"), SubResource("Terrain3DMeshAsset_5go47"), SubResource("Terrain3DMeshAsset_1wb0u"), SubResource("Terrain3DMeshAsset_gxqeu"), SubResource("Terrain3DMeshAsset_n14vl"), SubResource("Terrain3DMeshAsset_w7lxc"), SubResource("Terrain3DMeshAsset_dt32m"), SubResource("Terrain3DMeshAsset_nau2y"), SubResource("Terrain3DMeshAsset_yam08"), SubResource("Terrain3DMeshAsset_0bg7n"), SubResource("Terrain3DMeshAsset_wynr8"), SubResource("Terrain3DMeshAsset_1bike"), SubResource("Terrain3DMeshAsset_ngp0s"), SubResource("Terrain3DMeshAsset_iut8v"), SubResource("Terrain3DMeshAsset_isxnj"), SubResource("Terrain3DMeshAsset_w1b1n"), SubResource("Terrain3DMeshAsset_ae34m"), SubResource("Terrain3DMeshAsset_gmqgh"), SubResource("Terrain3DMeshAsset_ta2e7"), SubResource("Terrain3DMeshAsset_dem3j"), SubResource("Terrain3DMeshAsset_dlux7"), SubResource("Terrain3DMeshAsset_bcmmj"), SubResource("Terrain3DMeshAsset_at7yi"), SubResource("Terrain3DMeshAsset_en5vr"), SubResource("Terrain3DMeshAsset_brm52"), SubResource("Terrain3DMeshAsset_olt1h"), SubResource("Terrain3DMeshAsset_ukyeq"), SubResource("Terrain3DMeshAsset_uhdyo"), SubResource("Terrain3DMeshAsset_4vq2t"), SubResource("Terrain3DMeshAsset_5hu2j"), SubResource("Terrain3DMeshAsset_4kol2"), SubResource("Terrain3DMeshAsset_m8rsn"), SubResource("Terrain3DMeshAsset_3ld3x"), SubResource("Terrain3DMeshAsset_teve6")])
+
+[node name="Terrain3D" type="Terrain3D" unique_id=360853756]
+data_directory = "res://Assets/3D/Nature/World"
+material = SubResource("Terrain3DMaterial_vb3a5")
+assets = SubResource("Terrain3DAssets_0i2pv")
+show_checkered = true
+top_level = true
+metadata/_edit_lock_ = true

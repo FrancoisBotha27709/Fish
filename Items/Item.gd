@@ -8,6 +8,7 @@ class_name Item
 @export var rarity : Rarity
 @export var icon: Texture2D
 @export var world_scene: PackedScene
+@export var outside_mesh_scene : PackedScene
 
 func get_value() -> float:
 	return 0.0

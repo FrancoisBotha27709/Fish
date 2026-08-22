@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bhkhu71i5da8b" path="res://Items/Fish/Salmon/SalmonIcon.png" id="1_qcn3w"]
 [ext_resource type="Resource" uid="uid://eiexci1n8x7x" path="res://Items/Common.tres" id="2_ky3dc"]
+[ext_resource type="PackedScene" uid="uid://bvawdc8nodb7q" path="res://Items/Fish/Salmon/SalmonExternalMesh.tscn" id="2_pkrwe"]
 [ext_resource type="Script" uid="uid://c2hc32pqdutke" path="res://Items/Fish/Fish.gd" id="3_pkrwe"]
 [ext_resource type="Resource" uid="uid://det3bmij3t8il" path="res://Items/Fish/Salmon/SalmonSpecies.tres" id="4_xn8fp"]
 [ext_resource type="PackedScene" uid="uid://bqgnl8jwi8e3w" path="res://Items/Fish/Salmon/SalmonWorld.tscn" id="5_k2tdp"]
@@ -16,4 +17,5 @@ tags = Array[String](["Writhing"])
 rarity = ExtResource("2_ky3dc")
 icon = ExtResource("1_qcn3w")
 world_scene = ExtResource("5_k2tdp")
+outside_mesh_scene = ExtResource("2_pkrwe")
 metadata/_custom_type_script = "uid://c2hc32pqdutke"

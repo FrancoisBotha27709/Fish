@@ -2,7 +2,7 @@ extends MeshInstance3D
 
 class_name WaterManager
 
-const MAX_RIPPLES := 32
+const MAX_RIPPLES := 16
 
 # Keep these in sync with the shader's uniforms of the same name — they're
 # pushed to the material in _ready so the script is the single source of
@@ -43,10 +43,11 @@ const MAX_RIPPLES := 32
 # of whatever the sea state currently is.
 @export_group("Sea State (Temporal Variation)")
 @export var enable_sea_state_variation: bool = true
-@export var sea_state_min: float = 0.2
-@export var sea_state_max: float = 1.6
-@export var sea_state_change_speed: float = 0.015
-@export var sea_state_speed_influence: float = 0.4
+@export var sea_state_min: float = 0.3          # was 0.2 — 0.2 meant "almost flat", too extreme a swing
+@export var sea_state_max: float = 0.6           # was 1.6 — keep the swing gentle
+@export var sea_state_period: float = 120.0      # seconds for one full calm->rough->calm cycle
+@export var sea_state_jitter: float = 0.15       # 0 = pure sine, 1 = pure noise; small = mostly smooth with organic texture
+@export var sea_state_speed_influence: float = 0.15  # was 0.4 — speed swings were the most noticeable part of "wild"
 var _material: ShaderMaterial
 
 var _slot_pos: Array[Vector2] = []
@@ -126,11 +127,12 @@ func _process(delta: float) -> void:
 		_material.set_shader_parameter("chop_amplitude", _current_chop_amplitude)
 		_material.set_shader_parameter("wave_speed", _current_wave_speed)
 
-## Advances the sea state's slow noise phase and recomputes the current
-## amplitude/speed multiplier. Deliberately fbm-driven rather than a sine
-## wave — a sine gives a metronome-like calm/wild/calm/wild cycle; fbm
-## gives irregular stretches of calm, then building, then wild, with no
-## fixed period, which reads as much more natural.
+## Advances the sea state's phase and recomputes the current
+## amplitude/speed multiplier. Driven by a sine wave so it's GUARANTEED to
+## ramp up and back down within sea_state_period — no risk of a long,
+## unpredictable one-directional drift like pure fbm can produce. A touch
+## of fbm is blended in (via sea_state_jitter) purely so the motion doesn't
+## read as a metronome; it never dominates the direction of travel.
 func _update_sea_state(delta: float) -> void:
 	if not enable_sea_state_variation:
 		_current_swell_amplitude = swell_amplitude
@@ -138,9 +140,15 @@ func _update_sea_state(delta: float) -> void:
 		_current_wave_speed = wave_speed
 		return
 
-	_sea_state_phase += delta * sea_state_change_speed
-	var raw: float = _fbm(Vector2(_sea_state_phase, 91.7))
-	var state: float = clamp(raw / 0.9375, 0.0, 1.0) # fbm's theoretical max sum is 0.9375; renormalize to a full 0-1 range
+	var period: float = max(sea_state_period, 1.0)
+	_sea_state_phase += delta * TAU / period
+
+	var wave: float = 0.5 + 0.5 * sin(_sea_state_phase) # smooth 0..1, guaranteed full cycle every `period` seconds
+
+	var jitter_raw: float = _fbm(Vector2(_sea_state_phase * 0.15, 91.7))
+	var jitter: float = clamp(jitter_raw / 0.9375, 0.0, 1.0)
+
+	var state: float = clamp(lerp(wave, jitter, sea_state_jitter), 0.0, 1.0)
 	var mult: float = lerp(sea_state_min, sea_state_max, state)
 
 	_current_swell_amplitude = swell_amplitude * mult

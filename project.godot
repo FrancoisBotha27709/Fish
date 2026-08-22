@@ -31,6 +31,10 @@ window/stretch/aspect="keep_height"
 
 project/assembly_name="Fisher"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/terrain_3d/plugin.cfg")
+
 [global_group]
 
 floating="This is a group for objects that need to interact with the water"

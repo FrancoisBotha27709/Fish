@@ -12,7 +12,7 @@ seamless = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fy73t"]
 render_priority = 0
 shader = ExtResource("1_fy73t")
-shader_parameter/swell_amplitude = 1.2010000570475001
+shader_parameter/swell_amplitude = 1.2010000570475
 shader_parameter/swell_wavelength_scale = 2.53600011394023
 shader_parameter/chop_amplitude = 0.35
 shader_parameter/wave_speed = 0.5150000244625
@@ -81,9 +81,9 @@ shader_parameter/underwater_tint_strength = 0.85
 
 [sub_resource type="QuadMesh" id="QuadMesh_cjfj7"]
 material = SubResource("ShaderMaterial_fy73t")
-size = Vector2(500, 500)
-subdivide_width = 400
-subdivide_depth = 400
+size = Vector2(1000, 1000)
+subdivide_width = 800
+subdivide_depth = 800
 orientation = 1
 
 [node name="WoWs Water" type="MeshInstance3D" unique_id=2069854430]
