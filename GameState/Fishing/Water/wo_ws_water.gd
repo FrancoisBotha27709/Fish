@@ -28,6 +28,7 @@ const MAX_RIPPLES := 16
 @export var wind_direction_deg: float = 30.0
 @export var wave_direction_jitter: float = 20.0
 @export var chop_patchiness: float = 0.5
+@export var mesh_vertex_spacing: float = 1.25   # ← add this, keep in sync with the shader uniform
 
 @export_group("Large Scale Variation")
 @export var domain_warp_amount: float = 35.0
@@ -115,6 +116,7 @@ func _ready() -> void:
 		_material.set_shader_parameter("domain_warp_amount", domain_warp_amount)
 		_material.set_shader_parameter("domain_warp_scale", domain_warp_scale)
 		_material.set_shader_parameter("domain_warp_speed", domain_warp_speed)
+		_material.set_shader_parameter("mesh_vertex_spacing", mesh_vertex_spacing)
 
 func _process(delta: float) -> void:
 	_sim_time += delta
@@ -122,6 +124,7 @@ func _process(delta: float) -> void:
 	if _material == null:
 		return
 	_material.set_shader_parameter("sim_time", _sim_time)
+	_material.set_shader_parameter("wave_time", _sim_time)   # ← add this
 	if enable_sea_state_variation:
 		_material.set_shader_parameter("swell_amplitude", _current_swell_amplitude)
 		_material.set_shader_parameter("chop_amplitude", _current_chop_amplitude)
@@ -270,7 +273,6 @@ func _domain_warp(pos: Vector2, t: float) -> Vector2:
 ## since a height query doesn't need them.
 func _gerstner_height(pos: Vector2, t: float, wind_rad: float, chop_mult: Vector4) -> float:
 	var offset_y := 0.0
-
 	var chop_patch: float = _fbm(pos * 0.015 + Vector2(4.0, 9.0))
 	var chop_patch_mult: float = lerp(1.0 - chop_patchiness * 0.7, 1.0 + chop_patchiness * 0.7, chop_patch)
 
@@ -295,6 +297,11 @@ func _gerstner_height(pos: Vector2, t: float, wind_rad: float, chop_mult: Vector
 			speed_mult_biome = chop_mult.z
 		wavelength = max(wavelength, 0.5)
 
+		# NEW: match the shader's nyquist fade, or short waves keep their
+		# full CPU-side amplitude after the shader has visually damped them.
+		var nyquist_fade: float = smoothstep(mesh_vertex_spacing * 2.0, mesh_vertex_spacing * 3.5, wavelength)
+		category_amp *= nyquist_fade
+
 		var k: float = TAU / wavelength
 		var c: float = sqrt(9.8 / k) * WAVE_SPEED_MULT[i] * speed_mult_biome
 		var a: float = WAVE_AMP_SCALE[i] * category_amp
@@ -311,7 +318,12 @@ func _turbulence_height(warped_pos: Vector2, t: float, chop_mult: Vector4) -> fl
 	var turb_freq: Vector2 = Vector2(0.03, 0.03) * max(chop_mult.y, 0.01)
 	var uv_t: Vector2 = warped_pos * sc * turb_freq + Vector2(t * 0.6, t * 0.45)
 	var h_t: float = _fbm(uv_t) - 0.5
-	var turb_height: float = _current_chop_amplitude * 1.5 * chop_mult.w
+
+	# NEW: same fade the shader applies to turb_height
+	var turb_wavelength: float = 1.0 / max(turb_freq.x, 0.0001) / sc
+	var turb_nyquist_fade: float = smoothstep(mesh_vertex_spacing * 2.0, mesh_vertex_spacing * 3.5, turb_wavelength)
+
+	var turb_height: float = _current_chop_amplitude * 1.5 * chop_mult.w * turb_nyquist_fade
 	return h_t * turb_height
 
 ## Blends biome_chop across whichever biomes (from WaterBiomeSystem.gd)

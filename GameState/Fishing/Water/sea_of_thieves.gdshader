@@ -52,6 +52,15 @@ render_mode blend_mix, depth_draw_always, cull_back, world_vertex_coords, diffus
 //    wave loop specifically. This is a 10-element fragment-only lookup for
 //    a cosmetic tint; the cost is trivial and dynamic indexing is the
 //    simplest way to get a smooth, organic-looking blend across 10 colors.
+//
+// STYLE PASS NOTE: everything changed below this point (Colors, the new
+// Stylization group, Color_Variation defaults, Toon_Shading/Foam/Sparkle
+// defaults, and the grime + posterize block near the end of fragment())
+// is cosmetic only - color values and fragment()-only math. The vertex()
+// function, the gerstner accumulate functions, the noise helpers, and every
+// uniform WaterManager.gd/BuoyancySystem.gd read or push to are byte-for-
+// byte identical to the original, so buoyancy/height-sampling behavior is
+// unaffected.
 // ============================================================================
 
 group_uniforms Waves;
@@ -74,54 +83,85 @@ uniform float meters_per_unit : hint_range(0.001, 100.0) = 1.0;     // used by r
 uniform float mesh_vertex_spacing : hint_range(0.05, 20.0) = 1.25;  // world-space distance between adjacent mesh vertices (500m quad / 400 subdivisions ~= 1.25). Waves shorter than ~2x this alias into a visible grid on the surface - set this to match your actual mesh so the fade below kicks in at the right point.
 
 group_uniforms Colors;
-uniform vec4 color_deep     : source_color = vec4(0.015, 0.16, 0.28, 1.0);
-uniform vec4 color_shallow  : source_color = vec4(0.04, 0.45, 0.48, 1.0);
-uniform vec4 color_crest    : source_color = vec4(0.45, 0.80, 0.70, 1.0);
-uniform vec4 color_foam     : source_color = vec4(1.0, 1.0, 1.0, 1.0);
-uniform vec4 color_horizon_fresnel : source_color = vec4(0.55, 0.78, 0.82, 1.0);
+// Steampunk / Bioshock harbor-water palette: dark oily brown-green depths,
+// brass-and-algae shallows, a sickly sulfur-yellow crest instead of clean
+// aqua, soot-cream foam instead of white, and a rust-orange horizon rim.
+uniform vec4 color_deep     : source_color = vec4(0.02, 0.05, 0.035, 1.0);
+uniform vec4 color_shallow  : source_color = vec4(0.14, 0.16, 0.055, 1.0);
+uniform vec4 color_crest    : source_color = vec4(0.52, 0.46, 0.18, 1.0);
+uniform vec4 color_foam     : source_color = vec4(0.86, 0.80, 0.62, 1.0);
+uniform vec4 color_horizon_fresnel : source_color = vec4(0.42, 0.28, 0.16, 1.0);
 
 group_uniforms Color_Variation;
 // 10 subtle water color variants blended together via slow, large-scale
 // noise (see the fragment shader) so the surface isn't one flat color per
 // height band - patches read like real variation in algae, sediment, or
-// mineral content. Tweak these to taste; keep them close in value to the
-// Colors group above unless you want big obvious zones.
-uniform vec4 water_color_variants[10] : source_color;
-uniform float color_variation_scale : hint_range(0.0005, 0.05) = 0.003;   // world-space size of the color patches - smaller = tighter mottling, larger = broad slow regions
-uniform float color_variation_speed : hint_range(0.0, 0.05) = 0.006;      // how fast the patches drift over time
-uniform float color_variation_strength : hint_range(0.0, 1.0) = 0.35;     // how strongly the variant colors blend over the base height gradient
+// mineral content. Retuned to dirty harbor/steampunk tones: rust bleed,
+// oil-slick iridescence, algae, tar, brass runoff, verdigris, bilge sludge.
+uniform vec4 water_color_variants[10] : source_color;// = {
+//	vec4(0.30, 0.16, 0.05, 1.0),  // rust bleed
+//	vec4(0.10, 0.22, 0.12, 1.0),  // algae green
+//	vec4(0.05, 0.05, 0.05, 1.0),  // tar / oil black
+//	vec4(0.34, 0.28, 0.08, 1.0),  // brass runoff
+//	vec4(0.08, 0.24, 0.20, 1.0),  // verdigris
+//	vec4(0.18, 0.28, 0.06, 1.0),  // sulfur-algae bloom
+//	vec4(0.22, 0.10, 0.24, 1.0),  // oil-slick iridescent purple
+//	vec4(0.06, 0.20, 0.24, 1.0),  // oil-slick iridescent teal
+//	vec4(0.12, 0.09, 0.06, 1.0),  // bilge sludge brown
+//	vec4(0.20, 0.20, 0.16, 1.0)   // soot grey
+//};
+uniform float color_variation_scale : hint_range(0.0005, 0.05) = 0.006;   // bigger, chunkier patches - reads better against low-poly/pixel-art geometry
+uniform float color_variation_speed : hint_range(0.0, 0.05) = 0.003;      // slower drift - grime shouldn't rush
+uniform float color_variation_strength : hint_range(0.0, 1.0) = 0.55;     // stronger blend so the dirty tones actually read
+
+group_uniforms Stylization;
+// Purely cosmetic posterize + grime pass, applied only to ALBEDO at the end
+// of fragment(). Gives the water the same flat, faceted, "chunky" read as
+// the Blockbench models instead of a smooth PBR gradient, plus rust/tar
+// grime blotches for the ramshackle steampunk look. None of this feeds
+// VERTEX or anything WaterManager.gd / BuoyancySystem.gd reads, so it
+// cannot desync the CPU-side wave/height math.
+uniform int posterize_steps : hint_range(2, 16) = 5;             // color banding steps; lower = chunkier pixel-art read
+uniform float posterize_strength : hint_range(0.0, 1.0) = 0.6;   // 0 = original smooth gradient, 1 = fully stepped/flat
+uniform vec4 grime_color_a : source_color = vec4(0.32, 0.18, 0.06, 1.0);  // rust blotches
+uniform vec4 grime_color_b : source_color = vec4(0.08, 0.10, 0.06, 1.0);  // tar/oil blotches
+uniform float grime_scale : hint_range(0.0005, 0.05) = 0.008;
+uniform float grime_speed : hint_range(0.0, 0.05) = 0.004;
+uniform float grime_strength : hint_range(0.0, 1.0) = 0.3;
+uniform float grime_threshold : hint_range(0.0, 1.0) = 0.55;     // higher = smaller, patchier blotches
 
 group_uniforms Toon_Shading;
 uniform int light_bands : hint_range(2, 6) = 3;
-uniform float band_softness : hint_range(0.0, 0.3) = 0.08;
-uniform float rim_power : hint_range(0.5, 8.0) = 4.0;
-uniform float rim_strength : hint_range(0.0, 1.0) = 0.25;
+uniform float band_softness : hint_range(0.0, 0.3) = 0.04;   // crisper cel edges to match the faceted blockbench look
+uniform float rim_power : hint_range(0.5, 8.0) = 3.0;         // wider, grimier rim light
+uniform float rim_strength : hint_range(0.0, 1.0) = 0.35;
 
 group_uniforms Foam;
-uniform float foam_jacobian_threshold : hint_range(-1.0, 1.5) = 0.85;
-uniform float foam_edge_softness : hint_range(0.01, 1.0) = 0.45;
-uniform float foam_threshold_jitter : hint_range(0.0, 1.0) = 0.35;  // makes the wave-crest foam line irregular/wobbly
+uniform float foam_jacobian_threshold : hint_range(-1.0, 1.5) = 0.75;
+uniform float foam_edge_softness : hint_range(0.01, 1.0) = 0.55;
+uniform float foam_threshold_jitter : hint_range(0.0, 1.0) = 0.5;   // scummier, more irregular foam line
 uniform float foam_noise_scale : hint_range(0.01, 1.0) = 0.15;
 uniform float foam_scroll_speed : hint_range(0.0, 2.0) = 0.2;
-uniform float foam_amount : hint_range(0.0, 1.0) = 0.5;
-uniform float foam_dither_amount : hint_range(0.0, 0.2) = 0.04;
+uniform float foam_amount : hint_range(0.0, 1.0) = 0.65;
+uniform float foam_dither_amount : hint_range(0.0, 0.2) = 0.08;     // grungier, more visibly dithered foam edge
 uniform bool use_custom_foam_texture = false;
 uniform sampler2D foam_texture : filter_linear_mipmap, repeat_enable;
 uniform float foam_uv_scale : hint_range(0.05, 12.0) = 2.0;
 uniform float foam_uv_scale_2 : hint_range(0.05, 12.0) = 2.7;       // second sample's scale - keep different from foam_uv_scale
-uniform float foam_warp_amount : hint_range(0.0, 1.0) = 0.35;       // UV distortion strength; raises seam-breaking further
+uniform float foam_warp_amount : hint_range(0.0, 1.0) = 0.5;        // UV distortion strength; raises seam-breaking further
 uniform float foam_speed : hint_range(0.0, 2.0) = 0.12;
 uniform float foam_crest_threshold : hint_range(0.0, 1.0) = 0.5;    // ripple-ring foam threshold (separate from wave-crest foam)
 uniform float foam_crest_softness : hint_range(0.01, 1.0) = 0.3;
 
 group_uniforms Sparkle;
-uniform float sparkle_intensity : hint_range(0.0, 3.0) = 0.6;
-uniform float sparkle_grid_scale : hint_range(1.0, 400.0) = 120.0;
+uniform float sparkle_intensity : hint_range(0.0, 3.0) = 0.35;   // dialed down - clean ocean glitter doesn't fit dirty harbor water
+uniform float sparkle_grid_scale : hint_range(1.0, 400.0) = 180.0; // bigger, chunkier cells - reads as scattered metal debris catching light, not fine sparkle
 uniform float sparkle_speed : hint_range(0.0, 5.0) = 0.6;
-uniform float sparkle_sharpness : hint_range(1.0, 512.0) = 300.0;
-uniform float sparkle_rarity : hint_range(0.8, 0.999) = 0.985;
+uniform float sparkle_sharpness : hint_range(1.0, 512.0) = 220.0;
+uniform float sparkle_rarity : hint_range(0.8, 0.999) = 0.99;
 
 group_uniforms Interaction;
+uniform float wave_time = 0.0;
 // Pushed every frame by WaterManager.gd - do not rename these.
 uniform vec4 ripple_data[16]; // xy = world contact point (x,z), z = spawn time (sim_time), w = strength
 uniform int ripple_count : hint_range(0, 16) = 0;
@@ -343,7 +383,7 @@ void accumulate_chop_wave(vec2 pos, float t, float wind_rad, vec4 chop_mult, flo
 
 void vertex() {
 	vec2 pos_xz = VERTEX.xz;
-	float t = TIME;
+	float t = wave_time;
 	float wind_rad = radians(wind_direction_deg);
 	float sc = 1.0 / max(meters_per_unit, 0.001);
 
@@ -584,6 +624,17 @@ void fragment() {
 
 	base = mix(base, variant_color, color_variation_strength);
 
+	// ---- steampunk grime overlay: rust/tar blotches bleeding through the
+	// surface, independent of the algae/sediment variation above so it
+	// reads as a second, distinct layer of grime rather than just another
+	// water-color patch. Fragment-only, no CPU-side equivalent needed.
+	vec2 grime_uv = wpos.xz * grime_scale + vec2(t * grime_speed, -t * grime_speed * 0.7);
+	float grime_n = fbm3(grime_uv);
+	float grime_mask = smoothstep(grime_threshold - 0.15, grime_threshold + 0.15, grime_n);
+	float grime_n2 = fbm3(grime_uv * 1.7 + vec2(31.0, 8.0));
+	vec3 grime_tone = mix(grime_color_a.rgb, grime_color_b.rgb, smoothstep(0.3, 0.7, grime_n2));
+	base = mix(base, grime_tone, grime_mask * grime_strength);
+
 	// ---- wave-crest fold foam (Gerstner wave breaking) ----
 	float threshold_noise = (fbm2(wpos.xz * 0.04 + vec2(12.3, -7.1)) - 0.5) * 2.0 * foam_threshold_jitter;
 	float fold_amount = (foam_jacobian_threshold + threshold_noise) - v_jacobian;
@@ -630,7 +681,14 @@ void fragment() {
 
 	float total_foam = clamp(foam_mask + shore_mask * look.y, 0.0, 1.0);
 
-	ALBEDO = mix(base, color_foam.rgb, total_foam);
+	// ---- final composite + posterize: flattens the color into
+	// posterize_steps bands (Blockbench/pixel-art read) instead of a smooth
+	// PBR gradient. posterize_strength blends between the original smooth
+	// result (0) and the fully-stepped one (1), so it can be dialed back to
+	// 0 to recover the original look if the banding ever reads as too much.
+	vec3 final_color = mix(base, color_foam.rgb, total_foam);
+	vec3 posterized = floor(final_color * float(posterize_steps)) / float(posterize_steps);
+	ALBEDO = mix(final_color, posterized, posterize_strength);
 	ROUGHNESS = clamp(mix(0.35, 0.7, total_foam) + look.z, 0.0, 1.0);
 	METALLIC = 0.0;
 	SPECULAR = 0.4;

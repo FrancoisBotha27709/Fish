@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://c04b8im58d68s"]
+
+[ext_resource type="Script" uid="uid://dxd4shytrs1m4" path="res://Player/User Interface/radial_category_slot.gd" id="1_7373o"]
+
+[node name="RadialCategorySlot" type="Control" unique_id=2110834260 node_paths=PackedStringArray("icon", "label", "background")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7373o")
+icon = NodePath("Sprite2D")
+label = NodePath("Label")
+background = NodePath("ColorRect")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1813475198]
+
+[node name="Label" type="Label" parent="." unique_id=1554301389]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=353430058]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0

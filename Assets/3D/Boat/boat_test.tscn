@@ -14,20 +14,29 @@ lights_x = [NodePath("Boat/Side Light L Z/Side Light L X"), NodePath("Boat/Side 
 [node name="SpotLight3D" type="SpotLight3D" parent="Boat/Side Light L Z/Side Light L X/Side Light L Attach" parent_id_path=PackedInt32Array(1223743998) index="0" unique_id=543029205]
 light_color = Color(1, 0.83137256, 0.60784316, 1)
 light_energy = 3.15
-spot_range = 44.738
-spot_angle = 14.7
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 25.0
+spot_angle_attenuation = 3.9999993
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Boat/Side Light R Z/Side Light R X/Side Light R Attach" parent_id_path=PackedInt32Array(1384194368) index="0" unique_id=239256706]
 light_color = Color(1, 0.83137256, 0.60784316, 1)
 light_energy = 3.15
-spot_range = 44.738
-spot_angle = 14.7
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 25.0
+spot_angle_attenuation = 3.9999993
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Boat/Top Light Z/Top Light X/Top Light Attach" parent_id_path=PackedInt32Array(756774937) index="0" unique_id=2082456990]
 light_color = Color(1, 0.83137256, 0.60784316, 1)
 light_energy = 3.15
-spot_range = 44.738
-spot_angle = 14.7
+light_volumetric_fog_energy = 12.0
+shadow_enabled = true
+spot_range = 50.0
+spot_angle = 25.0
+spot_angle_attenuation = 3.9999993
 
 [node name="Camera3D" type="Camera3D" parent="." index="1" unique_id=1362342968]
 transform = Transform3D(0.8950122, 0, 0.4460416, 0, 1, 0, -0.4460416, 0, 0.8950122, 1.3560449, -0.6576962, 4.5488577)

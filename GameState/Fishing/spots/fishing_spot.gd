@@ -8,6 +8,19 @@ signal fish_removed()
 @export var collision: CollisionShape3D
 @export var popup_window: PopupPanel
 @export var minigame: FishingMinigame
+@export var lantern_light : MeshInstance3D
+
+@export_group("Lantern Flicker")
+@export var flicker_enabled := true
+@export var base_emission_energy := 2.0
+@export var flicker_amplitude := 0.6   ## how far it can swing above/below base
+@export var flicker_speed := 8.0       ## how fast it changes (higher = jittery)
+@export var flicker_smoothness := 10.0 ## higher = smoother interpolation
+
+var _lantern_material: StandardMaterial3D
+var _flicker_noise := FastNoiseLite.new()
+var _flicker_time := 0.0
+var _current_energy := 0.0
 
 @export_group("Data")
 @export var data_resource: FishingSpot
@@ -44,10 +57,46 @@ func _ready() -> void:
 
 	minigame.stop()
 	_setup_popup()
+	_setup_lantern_flicker()
 
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 
+
+func _setup_lantern_flicker() -> void:
+	if lantern_light == null:
+		return
+
+	var mat := lantern_light.get_surface_override_material(0)
+	if mat == null:
+		push_warning("Lantern has no surface material override on surface 0.")
+		return
+
+	if mat is StandardMaterial3D:
+		_lantern_material = mat
+	else:
+		push_warning("Lantern surface material override is not a StandardMaterial3D.")
+		return
+
+	_flicker_noise.seed = randi()
+	_flicker_noise.frequency = 1.0
+	_current_energy = base_emission_energy
+
+
+func _process(delta: float) -> void:
+	if not flicker_enabled or _lantern_material == null:
+		return
+
+	_flicker_time += delta * flicker_speed
+
+	# Sample smooth noise in range [-1, 1] and scale it into our flicker range.
+	var noise_value := _flicker_noise.get_noise_1d(_flicker_time)
+	var target_energy := base_emission_energy + noise_value * flicker_amplitude
+
+	# Smoothly interpolate toward the target so it doesn't feel like it's snapping.
+	_current_energy = lerp(_current_energy, target_energy, clamp(delta * flicker_smoothness, 0.0, 1.0))
+
+	_lantern_material.emission_energy_multiplier = _current_energy
 
 func _setup_popup() -> void:
 	_confirm_popup = ConfirmationDialog.new()

@@ -1,0 +1,123 @@
+[gd_scene format=3 uid="uid://bfaueoejdvfl2"]
+
+[ext_resource type="PackedScene" uid="uid://dhx7jxuhyuoi7" path="res://Assets/3D/Characters/Christina.glb" id="1_j20c4"]
+[ext_resource type="Script" uid="uid://dnf2veei5q6ko" path="res://GameState/Market/Customers/Christina/christina.gd" id="1_vua1n"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_j20c4"]
+animation = &"Idle Listening RT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vua1n"]
+animation = &"Idle_FoldArms RT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_7w5jq"]
+animation = &"Idle_Rail RT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_5jooh"]
+animation = &"Idle_Subtle RT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_t0e8w"]
+animation = &"Walk_Female RT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_73i16"]
+animation = &"Walk_Female RT"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_t0e8w"]
+advance_mode = 2
+advance_condition = &"Walk"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_6uwot"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"Idle_Subtle"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_b6y0f"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"Idle_Rail"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_g1inj"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"Idle_Fold"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_6myr2"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"Idle_Listening"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8747j"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"End"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_7p1t7"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"End"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4nokb"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"End"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_1tklh"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"End"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_12aof"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"Accept"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gwtya"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"Accept"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_20p70"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"Accept"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_80axb"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"Accept"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_12aof"]
+"states/Idle Listening RT/node" = SubResource("AnimationNodeAnimation_j20c4")
+"states/Idle Listening RT/position" = Vector2(422, 202)
+"states/Idle_FoldArms RT/node" = SubResource("AnimationNodeAnimation_vua1n")
+"states/Idle_FoldArms RT/position" = Vector2(422, 70)
+"states/Idle_Rail RT/node" = SubResource("AnimationNodeAnimation_7w5jq")
+"states/Idle_Rail RT/position" = Vector2(422, 135)
+"states/Idle_Subtle RT/node" = SubResource("AnimationNodeAnimation_5jooh")
+"states/Idle_Subtle RT/position" = Vector2(422, 3)
+states/Start/position = Vector2(44, 100)
+"states/Walk_Female RT/node" = SubResource("AnimationNodeAnimation_73i16")
+"states/Walk_Female RT/position" = Vector2(205, 100)
+"states/Walk_Female RT 2/node" = SubResource("AnimationNodeAnimation_t0e8w")
+"states/Walk_Female RT 2/position" = Vector2(674.03784, 250)
+transitions = ["Start", "Walk_Female RT", SubResource("AnimationNodeStateMachineTransition_t0e8w"), "Walk_Female RT", "Idle_Subtle RT", SubResource("AnimationNodeStateMachineTransition_6uwot"), "Walk_Female RT", "Idle_Rail RT", SubResource("AnimationNodeStateMachineTransition_b6y0f"), "Walk_Female RT", "Idle_FoldArms RT", SubResource("AnimationNodeStateMachineTransition_g1inj"), "Walk_Female RT", "Idle Listening RT", SubResource("AnimationNodeStateMachineTransition_6myr2"), "Idle_Subtle RT", "End", SubResource("AnimationNodeStateMachineTransition_8747j"), "Idle_FoldArms RT", "End", SubResource("AnimationNodeStateMachineTransition_7p1t7"), "Idle_Rail RT", "End", SubResource("AnimationNodeStateMachineTransition_4nokb"), "Idle Listening RT", "End", SubResource("AnimationNodeStateMachineTransition_1tklh"), "Idle Listening RT", "Walk_Female RT 2", SubResource("AnimationNodeStateMachineTransition_12aof"), "Idle_Rail RT", "Walk_Female RT 2", SubResource("AnimationNodeStateMachineTransition_gwtya"), "Idle_FoldArms RT", "Walk_Female RT 2", SubResource("AnimationNodeStateMachineTransition_20p70"), "Idle_Subtle RT", "Walk_Female RT 2", SubResource("AnimationNodeStateMachineTransition_80axb")]
+graph_offset = Vector2(-251.96216, -12)
+
+[node name="Christina" type="Node3D" unique_id=2052213252 node_paths=PackedStringArray("anim_tree")]
+script = ExtResource("1_vua1n")
+anim_tree = NodePath("AnimationTree")
+
+[node name="AuxScene" parent="." unique_id=759106314 instance=ExtResource("1_j20c4")]
+
+[node name="AnimationTree" type="AnimationTree" parent="." unique_id=517671496]
+root_node = NodePath("../AuxScene")
+tree_root = SubResource("AnimationNodeStateMachine_12aof")
+anim_player = NodePath("../AuxScene/AnimationPlayer")
+parameters/conditions/Accept = false
+parameters/conditions/End = false
+parameters/conditions/Idle_Fold = false
+parameters/conditions/Idle_Listening = false
+parameters/conditions/Idle_Rail = false
+parameters/conditions/Idle_Subtle = false
+parameters/conditions/Walk = false
+
+[editable path="AuxScene"]

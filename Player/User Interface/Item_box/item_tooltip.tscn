@@ -34,3 +34,4 @@ grow_vertical = 2
 layout_mode = 2
 bbcode_enabled = true
 text = "Item Name"
+fit_content = true

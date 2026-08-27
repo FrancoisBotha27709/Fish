@@ -16,7 +16,7 @@ script = ExtResource("1_5gt1b")
 ui_node = NodePath("CanvasLayer/UI")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1102374348]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.06438053, 0.662239, 0)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.20073229, 0.31424564, 0)
 current = true
 
 [node name="Stall" type="Node3D" parent="." unique_id=806966457]
@@ -34,7 +34,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45554614, -0.23862988, 0)
 mesh = SubResource("BoxMesh_l8h54")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="Stall/MeshInstance3D3" unique_id=1263479856]
-transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -0.2971661, 0.2000807, 0)
+transform = Transform3D(0.11341126, -0.99354815, 0, 0.99354815, 0.11341126, 0, 0, 0, 1, -0.2971661, 0.22159386, 0)
 mesh = SubResource("BoxMesh_l8h54")
 
 [node name="Camera3D" type="Camera3D" parent="Stall" unique_id=1336594579]
@@ -42,10 +42,8 @@ transform = Transform3D(1.9106855e-15, 1, 4.371139e-08, 4.371139e-08, -4.371139e
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=456327321]
 
-[node name="UI" parent="CanvasLayer" unique_id=2005672883 instance=ExtResource("2_gwnis")]
-anchors_preset = -1
-anchor_left = 0.725
-offset_left = 1.0
+[node name="UI" parent="CanvasLayer" unique_id=2005672883 node_paths=PackedStringArray("player_market") instance=ExtResource("2_gwnis")]
+player_market = NodePath("../..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1111661627]
 shape = SubResource("CapsuleShape3D_5gt1b")

@@ -5,11 +5,15 @@ signal item_removed(item : Item)
 signal inventory_changed()
 
 var items : Array[Item] = []
+var requests : Array[String] = []
+const SALMON_FISH = preload("uid://db5u6fhyhwtf2")
+
+func _ready() -> void:
+	add_item(SALMON_FISH)
+	add_item(SALMON_FISH)
 
 func add_item(item : Item) -> void:
-	print("add_item called with: ", item)
 	items.append(item)
-	print("items now: ", items.size())
 	item_added.emit(item)
 	inventory_changed.emit()
 

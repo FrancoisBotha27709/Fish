@@ -1,5 +1,5 @@
 extends Node
-
+class_name BuoyancySys
 ## Emitted the frame a floating body first touches the water (transitions
 ## from not-submerged to submerged). body = the object that entered,
 ## world_pos = the point used for the splash (shape-centered origin,

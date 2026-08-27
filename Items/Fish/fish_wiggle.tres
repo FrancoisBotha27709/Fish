@@ -1,0 +1,119 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://b5qj7nmmdlruf"]
+
+[ext_resource type="Texture2D" uid="uid://v4jwqdox2toh" path="res://Assets/3D/Fish/fish-texture.png" id="1_hsu1a"]
+
+[sub_resource type="Shader" id="Shader_7gs53"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.6.3.stable's StandardMaterial3D.
+shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_burley, specular_schlick_ggx;
+uniform vec4 albedo : source_color;
+uniform sampler2D texture_albedo : source_color, filter_nearest_mipmap, repeat_enable;
+uniform ivec2 albedo_texture_size;
+uniform float point_size : hint_range(0.1, 128.0, 0.1);
+uniform float roughness : hint_range(0.0, 1.0);
+uniform sampler2D texture_metallic : hint_default_white, filter_nearest_mipmap, repeat_enable;
+uniform vec4 metallic_texture_channel;
+uniform sampler2D texture_roughness : hint_roughness_r, filter_nearest_mipmap, repeat_enable;
+uniform float specular : hint_range(0.0, 1.0, 0.01);
+uniform float metallic : hint_range(0.0, 1.0, 0.01);
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+
+// ---- Wiggle controls ----
+// Which local axis runs along the fish's body, head-to-tail.
+// 0 = X, 1 = Y, 2 = Z (most imported fish models use Z, facing -Z).
+uniform int body_axis : hint_range(0, 2) = 2;
+// Flip if the wiggle mask is backwards (head wiggles instead of tail).
+uniform float axis_sign = 1.0;
+
+// How far along the body (local units, head=0) the wiggle starts fading in.
+uniform float wiggle_start = 0.0;
+// Local-space length over which the wiggle ramps up to full strength (roughly body length).
+uniform float wiggle_ramp = 1.0;
+
+uniform float wiggle_amplitude = 0.15;   // how far the body swings side to side
+uniform float wiggle_frequency = 3.0;    // how many waves fit along the body
+uniform float wiggle_speed = 6.0;        // how fast the wave travels (tie to swim speed)
+
+// Small extra bob so it doesn't look perfectly flat.
+uniform float vertical_bob_amplitude = 0.03;
+uniform float vertical_bob_speed = 4.0;
+
+void vertex() {
+	UV = UV * uv1_scale.xy + uv1_offset.xy;
+
+	float body_pos = 0.0;
+	if (body_axis == 0) {
+		body_pos = VERTEX.x * axis_sign;
+	} else if (body_axis == 1) {
+		body_pos = VERTEX.y * axis_sign;
+	} else {
+		body_pos = VERTEX.z * axis_sign;
+	}
+
+	// 0 near the head, 1 by the tail -> tail whips more than the head.
+	float mask = smoothstep(wiggle_start, wiggle_start + max(wiggle_ramp, 0.001), body_pos);
+	mask = mask * mask; // sharpen so the head stays nearly still
+
+	float phase = body_pos * wiggle_frequency - TIME * wiggle_speed;
+	float lateral = sin(phase) * wiggle_amplitude * mask;
+
+	// Displace sideways, perpendicular to the body axis.
+	if (body_axis == 0) {
+		VERTEX.z += lateral;
+	} else {
+		VERTEX.x += lateral;
+	}
+
+	// Gentle vertical bob, strongest toward the tail as well.
+	VERTEX.y += sin(TIME * vertical_bob_speed + body_pos * wiggle_frequency) * vertical_bob_amplitude * mask;
+
+	// Bend the normal to roughly follow the wiggle so shading doesn't look flat/wrong.
+	float d_lateral = cos(phase) * wiggle_amplitude * wiggle_frequency * mask;
+	if (body_axis == 0) {
+		NORMAL = normalize(NORMAL + vec3(0.0, 0.0, d_lateral));
+	} else {
+		NORMAL = normalize(NORMAL + vec3(d_lateral, 0.0, 0.0));
+	}
+}
+
+void fragment() {
+	vec2 base_uv = UV;
+	vec4 albedo_tex = texture(texture_albedo, base_uv);
+	ALBEDO = albedo.rgb * albedo_tex.rgb;
+	float metallic_tex = dot(texture(texture_metallic, base_uv), metallic_texture_channel);
+	METALLIC = metallic_tex * metallic;
+	SPECULAR = specular;
+	vec4 roughness_texture_channel = vec4(1.0, 0.0, 0.0, 0.0);
+	float roughness_tex = dot(texture(texture_roughness, base_uv), roughness_texture_channel);
+	ROUGHNESS = roughness_tex * roughness;
+}
+"
+
+[resource]
+resource_name = "Fish_Material"
+render_priority = 0
+shader = SubResource("Shader_7gs53")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/texture_albedo = ExtResource("1_hsu1a")
+shader_parameter/albedo_texture_size = Vector2i(256, 256)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 0.3
+shader_parameter/metallic_texture_channel = Vector4(1, 0, 0, 0)
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/body_axis = 2
+shader_parameter/axis_sign = 1.0
+shader_parameter/wiggle_start = 0.0
+shader_parameter/wiggle_ramp = 0.16
+shader_parameter/wiggle_amplitude = 0.15
+shader_parameter/wiggle_frequency = 3.0
+shader_parameter/wiggle_speed = 6.0
+shader_parameter/vertical_bob_amplitude = 0.03
+shader_parameter/vertical_bob_speed = 4.0

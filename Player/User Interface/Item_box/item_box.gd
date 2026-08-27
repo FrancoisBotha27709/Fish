@@ -21,5 +21,5 @@ func config(data : Item) -> void:
 
 func _make_custom_tooltip(for_text: String) -> Object:
 	var tooltip := preload("res://Player/User Interface/Item_box/item_tooltip.tscn").instantiate() as ItemTooltip
-	tooltip.config(held_item, for_text)
+	tooltip.config(held_item, held_item.get_description())
 	return tooltip
