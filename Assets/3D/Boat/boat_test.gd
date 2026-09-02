@@ -13,6 +13,9 @@ class_name BoatModel
 @export var light_pan_limit : float = 80.0
 @export var light_tilt_min : float = -30
 @export var light_tilt_max : float = 60
+@export_group("Exhaust")
+@export var exhaust_emitter : FireSmoke
+@export var exhaust_mesh : MeshInstance3D
 
 #region Material
 const BOAT_EMISSIVE_MATERIAL = preload("uid://6jva0rdtumww")
@@ -70,3 +73,6 @@ func power_light(is_on : bool) -> void:
 		instance.emission_energy_multiplier = base_emission_value
 	else:
 		instance.emission_energy_multiplier = off_emission_value
+
+func boost(value : int) -> void:
+	exhaust_emitter.set_smoke_amount(value)

@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://c04b8im58d68s"]
 
 [ext_resource type="Script" uid="uid://dxd4shytrs1m4" path="res://Player/User Interface/radial_category_slot.gd" id="1_7373o"]
+[ext_resource type="Texture2D" uid="uid://cc34poiav5fpr" path="res://Assets/2D/UI/Radial/out_background.png" id="2_244a2"]
 
 [node name="RadialCategorySlot" type="Control" unique_id=2110834260 node_paths=PackedStringArray("icon", "label", "background")]
 layout_mode = 3
@@ -12,16 +13,34 @@ grow_vertical = 2
 script = ExtResource("1_7373o")
 icon = NodePath("Sprite2D")
 label = NodePath("Label")
-background = NodePath("ColorRect")
+background = NodePath("Background")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1813475198]
 
-[node name="Label" type="Label" parent="." unique_id=1554301389]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
+[node name="Background" type="NinePatchRect" parent="." unique_id=1849020538]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_244a2")
+patch_margin_left = 120
+patch_margin_top = 48
+patch_margin_right = 64
+patch_margin_bottom = 32
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=353430058]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="Label" type="Label" parent="." unique_id=1554301389]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -18.0
+offset_top = -11.5
+offset_right = 18.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Item"

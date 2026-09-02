@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bqgnl8jwi8e3w"]
 
-[ext_resource type="Script" uid="uid://k2burymtyo35" path="res://Items/Fish/Salmon/salmon_world.gd" id="1_o5gks"]
-[ext_resource type="PackedScene" uid="uid://6tpbusfaai5d" path="res://Assets/3D/Fish/Salmon.gltf" id="3_47v4i"]
+[ext_resource type="Script" uid="uid://k2burymtyo35" path="res://Items/Fish/fish_world.gd" id="1_o5gks"]
+[ext_resource type="PackedScene" uid="uid://bvawdc8nodb7q" path="res://Items/Fish/Salmon/SalmonExternalMesh.tscn" id="2_o5gks"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_o5gks"]
 viewport_path = NodePath("SubViewport")
@@ -29,10 +29,10 @@ transparent_bg = true
 
 [node name="Node3D" type="Node3D" parent="SubViewport" unique_id=743223797]
 
-[node name="Salmon2" parent="SubViewport/Node3D" unique_id=1348139217 instance=ExtResource("3_47v4i")]
-transform = Transform3D(-4.3711385e-08, -1, 0, 0.99999994, -4.371139e-08, 0, 0, 0, 0.99999994, 0, 0, 0)
-
 [node name="Camera3D" type="Camera3D" parent="SubViewport/Node3D" unique_id=2040905736]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.023567796, 2.0115113, 0.09254664)
 projection = 1
 size = 1.2400379
+
+[node name="SalmonExternalMesh" parent="SubViewport/Node3D" unique_id=1177121655 instance=ExtResource("2_o5gks")]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)

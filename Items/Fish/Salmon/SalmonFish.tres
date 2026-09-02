@@ -1,21 +1,25 @@
 [gd_resource type="Resource" script_class="Fish" format=3 uid="uid://db5u6fhyhwtf2"]
 
-[ext_resource type="Texture2D" uid="uid://bhkhu71i5da8b" path="res://Items/Fish/Salmon/SalmonIcon.png" id="1_qcn3w"]
+[ext_resource type="Texture2D" uid="uid://dpcv4jgixem3m" path="res://Items/Fish/Salmon/Icons/SalmonBones-removebg-preview.png" id="1_xn8fp"]
+[ext_resource type="Texture2D" uid="uid://7muvd4di5t5c" path="res://Items/Fish/Salmon/Icons/SalmonFull-removebg-preview.png" id="2_k2tdp"]
 [ext_resource type="Resource" uid="uid://eiexci1n8x7x" path="res://Items/Common.tres" id="2_ky3dc"]
 [ext_resource type="PackedScene" uid="uid://bvawdc8nodb7q" path="res://Items/Fish/Salmon/SalmonExternalMesh.tscn" id="2_pkrwe"]
 [ext_resource type="Script" uid="uid://c2hc32pqdutke" path="res://Items/Fish/Fish.gd" id="3_pkrwe"]
 [ext_resource type="Resource" uid="uid://det3bmij3t8il" path="res://Items/Fish/Salmon/SalmonSpecies.tres" id="4_xn8fp"]
 [ext_resource type="PackedScene" uid="uid://bqgnl8jwi8e3w" path="res://Items/Fish/Salmon/SalmonWorld.tscn" id="5_k2tdp"]
+[ext_resource type="Texture2D" uid="uid://hgbvttq36s6x" path="res://Items/Fish/Salmon/Icons/SalmonSteak-removebg-preview.png" id="7_d60l5"]
 
 [resource]
 script = ExtResource("3_pkrwe")
 species = ExtResource("4_xn8fp")
+dead_scene = ExtResource("1_xn8fp")
+steak_scene = ExtResource("7_d60l5")
 id = "sal_sal"
 display_name = "Salmon"
 description = "This is a red fresh water salmon. It writhes in your hands trying to escape the greedy paws."
 tags = Array[String](["fish"])
 rarity = ExtResource("2_ky3dc")
-icon = ExtResource("1_qcn3w")
+icon = ExtResource("2_k2tdp")
 world_scene = ExtResource("5_k2tdp")
 outside_mesh_scene = ExtResource("2_pkrwe")
 metadata/_custom_type_script = "uid://c2hc32pqdutke"

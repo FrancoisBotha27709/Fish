@@ -40,11 +40,16 @@ points = PackedVector3Array(-0.27421337, 1.2967031, 1.968965, 1.4239926, 1.86264
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_aupj5"]
 points = PackedVector3Array(0.07221365, -1.4020917, -2.4813533, 0.07817332, -1.2596028, -2.8640366, 0.008571684, 0.5881474, 1.4023285, 1.5656067, -0.11888409, 1.2602985, 0.008571684, 2.004289, -3.976626, 1.7072763, 1.5792385, -2.277949, 0.857924, -0.6852714, -3.6931345, 0.29174453, -1.5346792, 1.4023285, 1.2826002, -1.1099752, -0.8627636, 1.5656067, 0.87116784, 1.4023285, 0.29174453, 0.022799343, -4.4015794, 1.7072763, 0.87116784, -2.4188426, 1.1407642, 1.5792385, -1.0042253, 1.4241035, 1.0131977, -3.5516727, 0.04875619, -1.4509615, 1.2650315, 1.2826002, -0.9682919, 1.4023285, 0.29174453, -1.5346792, -2.5608726, 0.04622502, -0.37367803, -4.1366544, 0.999261, 2.004289, -3.8351643, 0.71658695, 1.4375552, -4.4015794, 0.29174453, -1.1099752, -3.6931345, 0.15024126, 2.004289, -4.2589817, 1.4241035, -0.8266084, -0.013425112, 1.5656067, 1.720922, -2.135919, 0.999261, -1.2513123, 1.4023285, 0.857924, -0.5435879, -3.8351643, 1.1407642, 0.87116784, 1.4023285, 1.7072763, 1.0131977, -1.2877169, 0.71658695, 1.0131977, -4.4015794, 1.1407642, 1.5792385, -3.976626, 1.5656067, -0.26056752, -0.29691672, 0.999261, 2.004289, -3.5516727)
 
-[node name="PlayerFish" type="CharacterBody3D" unique_id=1016697865 node_paths=PackedStringArray("model", "camera_target") groups=["floating"]]
+[node name="PlayerFish" type="CharacterBody3D" unique_id=1016697865 node_paths=PackedStringArray("model", "collision_shapes", "camera_target") groups=["floating"]]
 collision_mask = 2
 script = ExtResource("1_e0vli")
+drift_factor = 0.65
 model = NodePath("Boat_Test")
+normal_fov = 75.0
+boost_fov = 85.0
+fov_change_speed = 10.0
 float_weight = 400.0
+collision_shapes = [NodePath("CollisionShape3D21"), NodePath("CollisionShape3D20"), NodePath("CollisionShape3D18"), NodePath("CollisionShape3D15"), NodePath("CollisionShape3D14"), NodePath("CollisionShape3D13"), NodePath("CollisionShape3D12"), NodePath("CollisionShape3D8"), NodePath("CollisionShape3D7"), NodePath("CollisionShape3D6"), NodePath("CollisionShape3D5"), NodePath("CollisionShape3D4")]
 camera_target = NodePath("CameraTarget")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1770705033]

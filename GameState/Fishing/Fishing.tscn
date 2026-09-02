@@ -1,14 +1,25 @@
 [gd_scene format=3 uid="uid://c24dav20t54oe"]
 
 [ext_resource type="Script" uid="uid://cnakfkctdb2cq" path="res://GameState/Fishing/fishing.gd" id="1_5woiu"]
-[ext_resource type="PackedScene" uid="uid://c2x5n3xa7tbvj" path="res://GameState/environment.tscn" id="4_cgxg8"]
+[ext_resource type="PackedScene" uid="uid://dvfb5h7e2l0jh" path="res://GameState/environment.tscn" id="4_cgxg8"]
 [ext_resource type="PackedScene" uid="uid://b2sp7qcrjg13i" path="res://GameState/Fishing/camera_rig.tscn" id="5_08esg"]
 [ext_resource type="PackedScene" uid="uid://63mku0k5ogqq" path="res://Player/Fishing/PlayerFish.tscn" id="5_ndv5f"]
 [ext_resource type="PackedScene" uid="uid://cmnu6yv52pp56" path="res://GameState/Fishing/spots/fishing_spot.tscn" id="6_45qf1"]
+[ext_resource type="Resource" uid="uid://bob04x8k5wx5y" path="res://Items/Fish/Cod/CodFish.tres" id="6_f01pc"]
 [ext_resource type="Script" uid="uid://chavq1q5fnwrr" path="res://GameState/Fishing/Water/Systems/BuoyancySystem.gd" id="7_08esg"]
-[ext_resource type="PackedScene" uid="uid://cyiehf5ppu4hq" path="res://GameState/Fishing/Water/wo_ws_water.tscn" id="7_ib3f6"]
+[ext_resource type="Resource" uid="uid://7wjtiu8ly50r" path="res://GameState/Fishing/Minigames/BasicFishing.tres" id="7_dcgj5"]
+[ext_resource type="PackedScene" uid="uid://b74k5xyan3dvv" path="res://GameState/Fishing/Water/wo_ws_water.tscn" id="7_ib3f6"]
+[ext_resource type="Script" uid="uid://cxhya6l2oceb1" path="res://GameState/Fishing/spots/spot.gd" id="8_55pe8"]
 [ext_resource type="Script" uid="uid://qb20sj6bngyb" path="res://GameState/Fishing/Water/Systems/WaterBiomeSystem.gd" id="8_ib3f6"]
 [ext_resource type="PackedScene" uid="uid://djypbw33m7rmv" path="res://Assets/3D/Nature/World/World.tscn" id="10_45qf1"]
+
+[sub_resource type="Resource" id="Resource_wvi11"]
+script = ExtResource("8_55pe8")
+display_name = "Basic"
+active_fish = ExtResource("6_f01pc")
+current_amount_available = 32
+minigame = ExtResource("7_dcgj5")
+metadata/_custom_type_script = "uid://cxhya6l2oceb1"
 
 [sub_resource type="FogMaterial" id="FogMaterial_os8xo"]
 density = 0.05
@@ -19,6 +30,7 @@ script = ExtResource("1_5woiu")
 player = NodePath("PlayerFish")
 
 [node name="Environment" parent="." unique_id=2110845524 instance=ExtResource("4_cgxg8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.311142, 56.4753, -140.08728)
 
 [node name="CameraRig" parent="." unique_id=2083488559 node_paths=PackedStringArray("target", "camera_target", "character_target") instance=ExtResource("5_08esg")]
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, -180.92844, 16.68062, 0)
@@ -40,12 +52,22 @@ turn_speed = 0.385
 drift_factor = 0.985
 cam_rig = NodePath("../CameraRig")
 
-[node name="fishingSpot" parent="." unique_id=73682153 node_paths=PackedStringArray("player") instance=ExtResource("6_45qf1")]
-transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 1, -169.90634, 16.68062, -91.787155)
-player = NodePath("../PlayerFish")
+[node name="FishingSpots" type="Node3D" parent="." unique_id=1010515394]
 
-[node name="Buoy" parent="fishingSpot" index="1" unique_id=570086992]
-water_path = NodePath("../../WoWs Water")
+[node name="fishingSpot" parent="FishingSpots" unique_id=73682153 node_paths=PackedStringArray("player") instance=ExtResource("6_45qf1")]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 1, -169.90634, 16.68062, -91.787155)
+player = NodePath("../../PlayerFish")
+
+[node name="Buoy" parent="FishingSpots/fishingSpot" index="1" unique_id=570086992]
+water_path = NodePath("../../../WoWs Water")
+
+[node name="fishingSpot2" parent="FishingSpots" unique_id=1605237646 node_paths=PackedStringArray("player") instance=ExtResource("6_45qf1")]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 1, -60.90634, 16.68062, -58.787155)
+data_resource = SubResource("Resource_wvi11")
+player = NodePath("../../PlayerFish")
+
+[node name="Buoy" parent="FishingSpots/fishingSpot2" index="1" unique_id=570086992]
+water_path = NodePath("../../../WoWs Water")
 
 [node name="WoWs Water" parent="." unique_id=2069854430 instance=ExtResource("7_ib3f6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -162.145, 16.53062, 0)
@@ -71,8 +93,10 @@ water_path = NodePath("../../WoWs Water")
 
 [node name="Biomes" type="Node3D" parent="." unique_id=1251242249]
 
+[editable path="Environment"]
 [editable path="CameraRig"]
 [editable path="PlayerFish"]
 [editable path="PlayerFish/Boat_Test"]
-[editable path="fishingSpot"]
+[editable path="FishingSpots/fishingSpot"]
+[editable path="FishingSpots/fishingSpot2"]
 [editable path="WoWs Water"]

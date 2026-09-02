@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="Fish" format=3 uid="uid://bob04x8k5wx5y"]
+
+[ext_resource type="PackedScene" uid="uid://cxquw2j2ix5ob" path="res://Items/Fish/Cod/CodeExternalMesh.tscn" id="1_cdupq"]
+[ext_resource type="Resource" uid="uid://eiexci1n8x7x" path="res://Items/Common.tres" id="2_x1co1"]
+[ext_resource type="Script" uid="uid://c2hc32pqdutke" path="res://Items/Fish/Fish.gd" id="3_cnvrm"]
+[ext_resource type="PackedScene" uid="uid://csjgyd88hg2ev" path="res://Items/Fish/Cod/CodWorld.tscn" id="4_ej25l"]
+
+[resource]
+script = ExtResource("3_cnvrm")
+id = "cole"
+display_name = "Cod"
+description = "This brown fish is thick with meat"
+tags = Array[String](["fish"])
+rarity = ExtResource("2_x1co1")
+world_scene = ExtResource("4_ej25l")
+outside_mesh_scene = ExtResource("1_cdupq")
+metadata/_custom_type_script = "uid://c2hc32pqdutke"

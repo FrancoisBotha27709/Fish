@@ -15,20 +15,25 @@ class_name RadialCategorySlot
 ## Label shown while this slot IS the hovered/selected one on the wheel.
 ## Assign in the editor (drag the child node into this slot in the Inspector).
 @export var label: Label = null
+@export var label_text: String = ""
 
 ## The popout's background panel, shown behind the row of item boxes once
-## this slot is hovered. This must be a direct child added ON TOP of this
-## slot's own instanced scene (i.e. a sibling you add after instancing the
-## category scene under the radial menu, NOT part of the category scene's
-## own Icon/Label). Assign it here in the editor. Any children added at
-## runtime after this (the actual inventory item boxes) are never treated as
-## background, regardless of order.
+## this slot is hovered. Must be a NinePatchRect (or other Control) — a
+## Sprite2D won't work here, since Sprite2D ignores its parent Control's
+## size entirely and just draws at native texture size, which is what caused
+## the oversized/misplaced background before. This must be a direct child
+## added ON TOP of this slot's own instanced scene (i.e. a sibling you add
+## after instancing the category scene under the radial menu, NOT part of
+## the category scene's own Icon/Label). Assign it here in the editor. Any
+## children added at runtime after this (the actual inventory item boxes)
+## are never treated as background, regardless of order.
 @export var background: Control = null
 
 var _hovered := false
 
 
 func _ready() -> void:
+	_apply_details()
 	_apply_hover_visuals()
 
 
@@ -98,3 +103,8 @@ func get_popout_candidates() -> Array[Control]:
 		if child is Control and not chrome.has(child) and child != background:
 			list.append(child)
 	return list
+
+
+func _apply_details() -> void:
+	if label:
+		label.text = label_text

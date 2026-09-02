@@ -75,7 +75,8 @@ func _catch_fish() -> void:
 	minigame.reset()
 	catch_progress_bar.value = 0
 
-	var caught := fish
+	var caught := fish.duplicate() as Fish
+	caught.randomize_data()
 	fish_caught_count += 1
 	_on_catch()
 	fish_caught.emit(caught)

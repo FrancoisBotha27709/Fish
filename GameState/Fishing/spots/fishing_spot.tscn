@@ -141,7 +141,6 @@ transparency = 2
 alpha_scissor_threshold = 0.59
 alpha_antialiasing_mode = 0
 blend_mode = 1
-depth_draw_mode = 1
 albedo_texture = SubResource("CompressedTexture2D_173ei")
 emission_enabled = true
 emission = Color(0.6827729, 0.3036524, 0.1814523, 1)
@@ -834,11 +833,13 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_bskgx")
 
-[node name="fishingSpot" type="Area3D" unique_id=73682153 node_paths=PackedStringArray("collision", "popup_window", "minigame", "catch_message_label")]
+[node name="fishingSpot" type="Area3D" unique_id=73682153 node_paths=PackedStringArray("collision", "popup_window", "minigame", "lantern_light", "lantern_light_rotater", "catch_message_label")]
 script = ExtResource("1_opw16")
 collision = NodePath("CollisionShape3D")
 popup_window = NodePath("PopupPanel")
 minigame = NodePath("PopupPanel/Minigame")
+lantern_light = NodePath("Buoy/blockbench_export/Base/Struct/lantern/glass")
+lantern_light_rotater = NodePath("Buoy/blockbench_export/Base/Struct/lantern/glass/LightContainer")
 data_resource = ExtResource("2_awlgp")
 catch_message_label = NodePath("CatchLbl")
 
@@ -878,11 +879,65 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.036041874, 0)
 mesh = SubResource("ArrayMesh_pf2wc")
 surface_material_override/0 = SubResource("StandardMaterial3D_iuttb")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Buoy/blockbench_export/Base/Struct/lantern/glass" unique_id=2135991112]
+[node name="LightContainer" type="Node3D" parent="Buoy/blockbench_export/Base/Struct/lantern/glass" unique_id=177618835]
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Buoy/blockbench_export/Base/Struct/lantern/glass/LightContainer" unique_id=2135991112]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1937995, 0)
 light_color = Color(1, 0.9583334, 0.75, 1)
 light_volumetric_fog_energy = 1.048
 omni_range = 13.371646
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Buoy/blockbench_export/Base/Struct/lantern/glass/LightContainer" unique_id=2034747833]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.100944325)
+light_color = Color(0.8, 0.4266667, 0, 1)
+light_energy = 0.68
+light_indirect_energy = 1.535
+light_volumetric_fog_energy = 5.265
+shadow_enabled = true
+distance_fade_enabled = true
+distance_fade_begin = 30.0
+spot_range = 30.0
+spot_attenuation = 0.85
+spot_angle_attenuation = 2.5661986e-05
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="Buoy/blockbench_export/Base/Struct/lantern/glass/LightContainer" unique_id=1674187651]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0.09316538)
+light_color = Color(0.8, 0.4266667, 0, 1)
+light_energy = 0.68
+light_indirect_energy = 1.535
+light_volumetric_fog_energy = 5.265
+shadow_enabled = true
+distance_fade_enabled = true
+distance_fade_begin = 30.0
+spot_range = 30.0
+spot_attenuation = 0.85
+spot_angle_attenuation = 2.5661986e-05
+
+[node name="SpotLight3D3" type="SpotLight3D" parent="Buoy/blockbench_export/Base/Struct/lantern/glass/LightContainer" unique_id=91852573]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.097054854, 0, -0.003889467)
+light_color = Color(0.8, 0.4266667, 0, 1)
+light_energy = 0.68
+light_indirect_energy = 1.535
+light_volumetric_fog_energy = 5.265
+shadow_enabled = true
+distance_fade_enabled = true
+distance_fade_begin = 30.0
+spot_range = 30.0
+spot_attenuation = 0.85
+spot_angle_attenuation = 2.5661986e-05
+
+[node name="SpotLight3D4" type="SpotLight3D" parent="Buoy/blockbench_export/Base/Struct/lantern/glass/LightContainer" unique_id=1653787906]
+transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, -0.097054854, 0, -0.0038894755)
+light_color = Color(0.8, 0.4266667, 0, 1)
+light_energy = 0.68
+light_indirect_energy = 1.535
+light_volumetric_fog_energy = 5.265
+shadow_enabled = true
+distance_fade_enabled = true
+distance_fade_begin = 30.0
+spot_range = 30.0
+spot_attenuation = 0.85
+spot_angle_attenuation = 2.5661986e-05
 
 [node name="tube3" type="MeshInstance3D" parent="Buoy/blockbench_export/Base/Struct/lantern" unique_id=1883343884]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.101458125, 0)

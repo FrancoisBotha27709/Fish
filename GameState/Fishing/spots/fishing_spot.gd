@@ -9,6 +9,7 @@ signal fish_removed()
 @export var popup_window: PopupPanel
 @export var minigame: FishingMinigame
 @export var lantern_light : MeshInstance3D
+@export var lantern_light_rotater : Node3D
 
 @export_group("Lantern Flicker")
 @export var flicker_enabled := true
@@ -82,13 +83,15 @@ func _setup_lantern_flicker() -> void:
 	_flicker_noise.frequency = 1.0
 	_current_energy = base_emission_energy
 
+func rotate_lantern_light(delta: float) -> void:
+	lantern_light_rotater.rotate_y(deg_to_rad(360.0 / 10.0) * delta)
 
 func _process(delta: float) -> void:
 	if not flicker_enabled or _lantern_material == null:
 		return
 
 	_flicker_time += delta * flicker_speed
-
+	rotate_lantern_light(delta)
 	# Sample smooth noise in range [-1, 1] and scale it into our flicker range.
 	var noise_value := _flicker_noise.get_noise_1d(_flicker_time)
 	var target_energy := base_emission_energy + noise_value * flicker_amplitude

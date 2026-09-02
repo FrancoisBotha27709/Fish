@@ -2,14 +2,19 @@
 
 [ext_resource type="PackedScene" uid="uid://1p82itlf0ktq" path="res://Assets/3D/Boat/Boat_Test.gltf" id="1_0n0nv"]
 [ext_resource type="Script" uid="uid://cwt2jnyk3k0q3" path="res://Assets/3D/Boat/boat_test.gd" id="2_t3r12"]
+[ext_resource type="PackedScene" uid="uid://b8gtchmmh4qee" path="res://Particles/bubbles.tscn" id="3_fllcu"]
+[ext_resource type="PackedScene" uid="uid://cllljnqfeca6o" path="res://Particles/fire/FireSmoke3D.tscn" id="4_bjqa6"]
 
-[node name="Boat_Test" unique_id=1673754650 node_paths=PackedStringArray("rudder", "anchor", "prop", "lights_z", "lights_x") instance=ExtResource("1_0n0nv")]
+[node name="Boat_Test" unique_id=1673754650 node_paths=PackedStringArray("rudder", "anchor", "prop", "lights_z", "lights_x", "exhaust_emitter") instance=ExtResource("1_0n0nv")]
 script = ExtResource("2_t3r12")
 rudder = NodePath("Boat/Rudder")
 anchor = NodePath("Boat/Anchor")
 prop = NodePath("Boat/Propeller")
 lights_z = [NodePath("Boat/Side Light L Z"), NodePath("Boat/Side Light R Z"), NodePath("Boat/Top Light Z")]
 lights_x = [NodePath("Boat/Side Light L Z/Side Light L X"), NodePath("Boat/Side Light R Z/Side Light R X"), NodePath("Boat/Top Light Z/Top Light X")]
+exhaust_emitter = NodePath("Boat/FireSmoke")
+
+[node name="GPUParticles3D" parent="Boat/Propeller" parent_id_path=PackedInt32Array(797896345) index="0" unique_id=15562552 instance=ExtResource("3_fllcu")]
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Boat/Side Light L Z/Side Light L X/Side Light L Attach" parent_id_path=PackedInt32Array(1223743998) index="0" unique_id=543029205]
 light_color = Color(1, 0.83137256, 0.60784316, 1)
@@ -37,6 +42,9 @@ shadow_enabled = true
 spot_range = 50.0
 spot_angle = 25.0
 spot_angle_attenuation = 3.9999993
+
+[node name="FireSmoke" parent="Boat" parent_id_path=PackedInt32Array(946414557) index="6" unique_id=1253771054 instance=ExtResource("4_bjqa6")]
+transform = Transform3D(1, 0, 0, 0, 0.78170556, -0.6236477, 0, 0.6236477, 0.78170556, 0.7721453, 3.6666887, 4.182863)
 
 [node name="Camera3D" type="Camera3D" parent="." index="1" unique_id=1362342968]
 transform = Transform3D(0.8950122, 0, 0.4460416, 0, 1, 0, -0.4460416, 0, 0.8950122, 1.3560449, -0.6576962, 4.5488577)

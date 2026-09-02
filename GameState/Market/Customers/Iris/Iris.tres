@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="Customer" format=3 uid="uid://crgtw78sywhp5"]
+
+[ext_resource type="Script" uid="uid://c7d2cthfrlurq" path="res://GameState/Market/Customers/Customer.gd" id="1_5wtey"]
+[ext_resource type="PackedScene" uid="uid://lxntytsrqq3w" path="res://GameState/Market/Customers/Iris/Iris.tscn" id="2_8j0w5"]
+
+[resource]
+script = ExtResource("1_5wtey")
+display_name = "Iris"
+dialog_text = "Yoyoyoyo"
+haggle_level = 2
+visual_scene = ExtResource("2_8j0w5")
+metadata/_custom_type_script = "uid://c7d2cthfrlurq"

@@ -1,68 +1,46 @@
-[gd_scene format=3 uid="uid://c2x5n3xa7tbvj"]
+[gd_scene format=3 uid="uid://dvfb5h7e2l0jh"]
 
-[ext_resource type="Shader" uid="uid://gqe0f2mpvw8s" path="res://GameState/Fishing/Clouds/clouds.gdshader" id="1_8bpc5"]
+[ext_resource type="Material" uid="uid://de55y8diaip3g" path="res://GameState/sky.tres" id="2_a6qg4"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_a6qg4"]
-seed = 22
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kphjr"]
-noise = SubResource("FastNoiseLite_a6qg4")
-seamless = true
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_7kxe7"]
-shader = ExtResource("1_8bpc5")
-shader_parameter/sky_texture = SubResource("NoiseTexture2D_kphjr")
-shader_parameter/power = -0.105
-shader_parameter/scale_a = 0.2
-shader_parameter/scale_b = 0.5
-shader_parameter/speed = 0.045
-shader_parameter/speed_a = Vector2(0.1, 0.1)
-shader_parameter/speed_b = Vector2(0.1, 0.1)
-shader_parameter/density = 0.1200000057
-shader_parameter/grayness = 0.870000041325
-shader_parameter/cloud_light = 0.2
-shader_parameter/cloud_distortion = 0.48
-shader_parameter/sky_colour_a0 = Color(0.5799262, 0.5759929, 0.21239597, 1)
-shader_parameter/sky_colour_b0 = Color(0.29951698, 0.4262314, 0.33183005, 1)
-shader_parameter/sky_colour_a1 = Color(0.12315822, 0.19966345, 0.106126174, 1)
-shader_parameter/sky_colour_b1 = Color(0.07846785, 0.13816993, 0, 1)
-shader_parameter/ground_colour_a0 = Color(1, 0.8, 0.5, 1)
-shader_parameter/ground_colour_b0 = Color(1, 0.5, 0.3, 1)
-shader_parameter/ground_colour_a1 = Color(0.25, 0.2, 0.125, 1)
-shader_parameter/ground_colour_b1 = Color(0.25, 0.125, 0.075, 1)
-shader_parameter/sun_colour_a = Color(1, 0.98, 0.025, 1)
-shader_parameter/sun_colour_b = Color(1, 0.5, 0, 1)
-shader_parameter/sun_size = 0.995
-shader_parameter/sun_softness = 0.002
-shader_parameter/sunset_range = Vector2(-0.1, 0.3)
-
-[sub_resource type="Sky" id="Sky_8bpc5"]
-sky_material = SubResource("ShaderMaterial_7kxe7")
+[sub_resource type="Sky" id="Sky_kphjr"]
+sky_material = ExtResource("2_a6qg4")
 
 [sub_resource type="Environment" id="Environment_a6qg4"]
 background_mode = 2
-background_energy_multiplier = 0.7
-sky = SubResource("Sky_8bpc5")
-ambient_light_color = Color(0.24384794, 0.41195837, 0.48351866, 1)
-ambient_light_sky_contribution = 0.75
-reflected_light_source = 2
+sky = SubResource("Sky_kphjr")
 tonemap_mode = 2
-tonemap_exposure = 0.65
 ssr_enabled = true
-ssao_intensity = 16.0
+ssao_enabled = true
+ssil_enabled = true
 glow_enabled = true
+fog_enabled = true
+fog_light_color = Color(0.47732437, 0.53038573, 0.43516797, 1)
+fog_light_energy = 0.1
+fog_sky_affect = 0.0
 volumetric_fog_enabled = true
-volumetric_fog_density = 0.03
-volumetric_fog_albedo = Color(0.5917481, 0.74966514, 0.70490134, 1)
+volumetric_fog_density = 0.02
+volumetric_fog_albedo = Color(0.6039216, 0.65882355, 0.56078434, 1)
+volumetric_fog_length = 1024.0
+volumetric_fog_sky_affect = 0.965
+volumetric_fog_temporal_reprojection_amount = 0.99
 adjustment_enabled = true
-adjustment_brightness = 1.2
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_8bpc5"]
+auto_exposure_speed = 0.2
+dof_blur_far_enabled = true
+dof_blur_far_distance = 15.0
+dof_blur_amount = 0.01
 
 [node name="Environment" type="Node3D" unique_id=2110845524]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1118425750]
 environment = SubResource("Environment_a6qg4")
+camera_attributes = SubResource("CameraAttributesPractical_8bpc5")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=250506300]
-transform = Transform3D(-0.03650227, 0.8144003, -0.5791543, -0.11663705, 0.57210773, 0.8118427, 0.99250364, 0.09718499, 0.07410599, 0, 0, 0)
-light_energy = 0.15
+transform = Transform3D(-0.114641406, 0.9504615, 0.28893027, -0.042355258, -0.2952597, 0.95447767, 0.9925037, 0.09718495, 0.074106015, 0, 0, 0)
+light_volumetric_fog_energy = 0.6
 shadow_enabled = true
+shadow_opacity = 0.8
+shadow_blur = 2.25
+sky_mode = 1

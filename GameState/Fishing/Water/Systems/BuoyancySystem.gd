@@ -278,9 +278,9 @@ func _process_rigid_body(body: RigidBody3D, delta: float) -> void:
 	var basis: Basis = body.global_transform.basis
 	var corners := _corner_offsets(half, basis)
 	var weight := get_weight(body)
-	var ease := _get_spawn_ease(body)
+	var ase := _get_spawn_ease(body)
 
-	var buoyant_force_full := _buoyant_force_full(half) * ease
+	var buoyant_force_full := _buoyant_force_full(half) * ase
 	var force_per_sample := buoyant_force_full / corners.size()
 
 	var any_submerged := false
@@ -341,8 +341,8 @@ func _process_character_body(body: CharacterBody3D, delta: float) -> void:
 	var corners := _corner_offsets(half, basis)
 
 	var weight := get_weight(body)
-	var ease := _get_spawn_ease(body)
-	var buoyant_force_full := _buoyant_force_full(half) * ease
+	var ase := _get_spawn_ease(body)
+	var buoyant_force_full := _buoyant_force_full(half) * ase
 
 	var total_submersion := 0.0
 	var corner_water_y: Array[float] = []
@@ -413,8 +413,8 @@ func _process_manual_body(body: Node3D, delta: float) -> void:
 	var corners := _corner_offsets(half, basis)
 
 	var weight := get_weight(body)
-	var ease := _get_spawn_ease(body)
-	var buoyant_force_full := _buoyant_force_full(half) * ease
+	var ase := _get_spawn_ease(body)
+	var buoyant_force_full := _buoyant_force_full(half) * ase
 
 	var total_submersion := 0.0
 	var corner_water_y: Array[float] = []

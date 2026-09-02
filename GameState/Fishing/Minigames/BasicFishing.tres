@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_m0via")
-difficulty = 1
-goal_progress = 50.0
+difficulty = 2
+goal_progress = 100.0
 scene = ExtResource("1_xin6q")
 metadata/_custom_type_script = "uid://d2eqlen4tof58"

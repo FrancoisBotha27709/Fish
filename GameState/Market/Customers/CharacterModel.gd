@@ -27,6 +27,9 @@ signal left_scene
 	6 : "Reject",
 	7 : "Accept",
 }
+@export_group("Face")
+@export var face_mesh: MeshInstance3D
+@export var face_surface_index: int = 0
 
 ## The idle animations that get randomly cycled through while a customer waits.
 const IDLE_IDS : Array[int] = [1, 2, 3] # Idle_Subtle, Idle_Fold, Idle_Rail
@@ -79,6 +82,7 @@ func _physics_process(delta: float) -> void:
 	var dir := to_target.normalized()
 	global_position += dir * move_speed * delta
 	look_at(global_position - dir, Vector3.UP)
+
 
 
 func _on_move_finished() -> void:
@@ -184,3 +188,34 @@ func change_animation(id : int) -> void:
 	for anim_id : int in anim_dict.keys():
 		var cond_name : String = anim_dict[anim_id]
 		anim_tree.set("parameters/conditions/%s" % cond_name, cond_name == target_name)
+
+func set_face(face_index: int) -> void:
+	if face_mesh == null:
+		push_warning("CharacterScene: face_mesh is not assigned")
+		return
+
+	if face_index < 0 or face_index > 11:
+		push_warning("CharacterScene: face index must be between 0 and 11")
+		return
+
+	var material := face_mesh.get_active_material(face_surface_index)
+
+	if material == null or not material is StandardMaterial3D:
+		push_warning("CharacterScene: face does not have a StandardMaterial3D")
+		return
+
+	# Duplicate it so we only modify this character's face material.
+	if face_mesh.get_surface_override_material(face_surface_index) == null:
+		material = material.duplicate()
+		face_mesh.set_surface_override_material(face_surface_index, material)
+
+	# 3 columns × 4 rows.
+	var column := face_index % 3
+	var row := face_index / 3.0
+
+	material.uv1_scale = Vector3(0.25, 0.25, 1.0)
+	material.uv1_offset = Vector3(
+		column * 0.25,
+		row * 0.25,
+		0.0
+	)

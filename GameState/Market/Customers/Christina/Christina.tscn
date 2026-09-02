@@ -1,7 +1,35 @@
 [gd_scene format=3 uid="uid://bfaueoejdvfl2"]
 
 [ext_resource type="PackedScene" uid="uid://dhx7jxuhyuoi7" path="res://Assets/3D/Characters/Christina.glb" id="1_j20c4"]
-[ext_resource type="Script" uid="uid://dnf2veei5q6ko" path="res://GameState/Market/Customers/Christina/christina.gd" id="1_vua1n"]
+[ext_resource type="Script" uid="uid://dnf2veei5q6ko" path="res://GameState/Market/Customers/CharacterModel.gd" id="1_vua1n"]
+[ext_resource type="Texture2D" uid="uid://dme2rlm4vmluv" path="res://Assets/3D/Characters/Christina_0.png" id="3_5jooh"]
+[ext_resource type="Texture2D" uid="uid://ckig6r4hupkgy" path="res://Assets/3D/Characters/Christina_1.png" id="4_73i16"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t0e8w"]
+resource_name = "Material45"
+albedo_color = Color(0, 0, 0, 1)
+metallic = 1.0
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 0.3
+emission_operator = 1
+emission_texture = ExtResource("3_5jooh")
+clearcoat_enabled = true
+clearcoat = 0.0
+clearcoat_roughness = 1.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6uwot"]
+resource_name = "Material46"
+albedo_color = Color(0, 0, 0, 1)
+metallic = 1.0
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 0.3
+emission_operator = 1
+emission_texture = ExtResource("4_73i16")
+uv1_triplanar_sharpness = 150.0
+texture_filter = 0
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_j20c4"]
 animation = &"Idle Listening RT"
@@ -102,11 +130,68 @@ states/Start/position = Vector2(44, 100)
 transitions = ["Start", "Walk_Female RT", SubResource("AnimationNodeStateMachineTransition_t0e8w"), "Walk_Female RT", "Idle_Subtle RT", SubResource("AnimationNodeStateMachineTransition_6uwot"), "Walk_Female RT", "Idle_Rail RT", SubResource("AnimationNodeStateMachineTransition_b6y0f"), "Walk_Female RT", "Idle_FoldArms RT", SubResource("AnimationNodeStateMachineTransition_g1inj"), "Walk_Female RT", "Idle Listening RT", SubResource("AnimationNodeStateMachineTransition_6myr2"), "Idle_Subtle RT", "End", SubResource("AnimationNodeStateMachineTransition_8747j"), "Idle_FoldArms RT", "End", SubResource("AnimationNodeStateMachineTransition_7p1t7"), "Idle_Rail RT", "End", SubResource("AnimationNodeStateMachineTransition_4nokb"), "Idle Listening RT", "End", SubResource("AnimationNodeStateMachineTransition_1tklh"), "Idle Listening RT", "Walk_Female RT 2", SubResource("AnimationNodeStateMachineTransition_12aof"), "Idle_Rail RT", "Walk_Female RT 2", SubResource("AnimationNodeStateMachineTransition_gwtya"), "Idle_FoldArms RT", "Walk_Female RT 2", SubResource("AnimationNodeStateMachineTransition_20p70"), "Idle_Subtle RT", "Walk_Female RT 2", SubResource("AnimationNodeStateMachineTransition_80axb")]
 graph_offset = Vector2(-251.96216, -12)
 
-[node name="Christina" type="Node3D" unique_id=2052213252 node_paths=PackedStringArray("anim_tree")]
+[node name="Christina" type="Node3D" unique_id=2052213252 node_paths=PackedStringArray("anim_tree", "face_mesh")]
 script = ExtResource("1_vua1n")
 anim_tree = NodePath("AnimationTree")
+face_mesh = NodePath("AuxScene/Scene/root/Skeleton3D/Cristina_2")
 
 [node name="AuxScene" parent="." unique_id=759106314 instance=ExtResource("1_j20c4")]
+
+[node name="Skeleton3D" parent="AuxScene/Scene/root" parent_id_path=PackedInt32Array(759106314, 1345832300) index="1" unique_id=100349460]
+bones/2/rotation = Quaternion(0.7810598, -0.073644474, -0.2352874, 0.5737265)
+bones/4/rotation = Quaternion(-0.005576991, -0.21129015, -0.050732665, 0.97609)
+bones/5/rotation = Quaternion(-0.098893, 0.005472859, 0.057172768, 0.99343926)
+bones/6/rotation = Quaternion(-0.042811062, -0.0059003346, 0.057146765, 0.99743)
+bones/8/rotation = Quaternion(0.1718221, 0.142795, -0.62639785, 0.7468015)
+bones/9/rotation = Quaternion(0.08736428, 0.11623736, -0.017914, 0.98920953)
+bones/10/rotation = Quaternion(-0.038363393, 0.9846467, 0.072031684, -0.15430677)
+bones/11/rotation = Quaternion(-0.013784125, 0.9746275, -0.22185177, -0.026327247)
+bones/12/rotation = Quaternion(0.1676407, 0.03911475, -0.0080467975, 0.98503906)
+bones/13/rotation = Quaternion(0.19679794, -0.08458578, -0.028079607, 0.9763849)
+bones/14/rotation = Quaternion(-0.0071576564, 0.97837895, -0.20323275, -0.037680186)
+bones/15/rotation = Quaternion(0.19665103, -0.05334581, -0.012653306, 0.97893953)
+bones/16/rotation = Quaternion(0.19018112, -0.023721013, -0.031944547, 0.9809425)
+bones/17/rotation = Quaternion(-0.010743754, 0.97810555, -0.20782346, 0.0018857308)
+bones/18/rotation = Quaternion(0.19914314, -0.051376674, -0.013307172, 0.9785323)
+bones/19/rotation = Quaternion(0.18291229, -0.098092586, -0.033925094, 0.9776349)
+bones/20/rotation = Quaternion(-0.012525176, 0.97737956, -0.2109884, 0.007496543)
+bones/21/rotation = Quaternion(0.19211133, -0.016745595, -0.012632484, 0.98114896)
+bones/22/rotation = Quaternion(0.1930993, -0.07418224, -0.028825019, 0.9779463)
+bones/23/rotation = Quaternion(0.0339499, 0.3199584, -0.38290498, 0.8659433)
+bones/24/rotation = Quaternion(-0.0054853633, 0.047403898, 0.035664372, 0.99822384)
+bones/25/rotation = Quaternion(-0.0020414568, 0.0018287231, 0.0031513744, 0.99999136)
+bones/27/rotation = Quaternion(0.2464717, -0.5316458, 0.060794268, 0.80802757)
+bones/28/rotation = Quaternion(0.7890743, -0.05862108, 0.18134737, 0.58398503)
+bones/29/rotation = Quaternion(0.21148288, 0.9522798, 0.18114467, -0.124999486)
+bones/30/rotation = Quaternion(0.07180624, 0.7126185, -0.6849982, 0.13340208)
+bones/31/rotation = Quaternion(0.6447272, -0.14780904, 0.023268275, 0.7496252)
+bones/32/rotation = Quaternion(0.65289295, -0.09508258, 0.06721229, 0.7484469)
+bones/33/rotation = Quaternion(0.050753605, 0.72423106, -0.6797773, 0.10400118)
+bones/34/rotation = Quaternion(0.6749794, -0.029277213, 0.036983557, 0.73632735)
+bones/35/rotation = Quaternion(0.655717, -0.108328715, 0.08428705, 0.7424256)
+bones/36/rotation = Quaternion(0.06280262, 0.7233231, -0.68748224, 0.015091492)
+bones/37/rotation = Quaternion(0.6812204, 0.042934533, 0.039861333, 0.7297304)
+bones/38/rotation = Quaternion(0.6625884, 0.034128673, 0.09729982, 0.7418522)
+bones/39/rotation = Quaternion(0.068523176, 0.72119045, -0.6891326, 0.016891781)
+bones/40/rotation = Quaternion(0.67479086, -0.02387115, 0.038282983, 0.7366288)
+bones/41/rotation = Quaternion(0.6689231, -0.017145006, 0.07483057, 0.7393567)
+bones/42/rotation = Quaternion(-0.093156666, -0.33273923, 0.39934132, 0.8491955)
+bones/43/rotation = Quaternion(-0.5960951, -0.09773041, -0.40918052, 0.6838792)
+bones/44/rotation = Quaternion(-0.23338349, -0.13183123, -0.5728358, 0.7746044)
+bones/45/rotation = Quaternion(0.14948042, 0.08701372, -0.00012356928, 0.9849286)
+bones/46/rotation = Quaternion(0.0034475094, 0.08609195, -0.012616304, 0.9962014)
+bones/54/rotation = Quaternion(0.9596077, 0.051731206, 0.15273672, 0.23053932)
+bones/55/rotation = Quaternion(0.31644237, -2.421439e-08, -3.7252907e-09, 0.94861186)
+bones/56/rotation = Quaternion(-0.010894164, 0.56329453, -0.8214961, 0.08789102)
+bones/58/rotation = Quaternion(0.97532296, -0.0232426, 0.18165864, 0.12330883)
+bones/59/rotation = Quaternion(0.12679265, 4.842878e-08, -1.8626454e-09, 0.9919293)
+bones/60/rotation = Quaternion(-0.049855247, -0.6401964, 0.76655793, -0.0072142035)
+
+[node name="Cristina_1" parent="AuxScene/Scene/root/Skeleton3D" index="0" unique_id=1777598480]
+surface_material_override/0 = SubResource("StandardMaterial3D_t0e8w")
+
+[node name="Cristina_2" parent="AuxScene/Scene/root/Skeleton3D" index="1" unique_id=612337918]
+surface_material_override/0 = SubResource("StandardMaterial3D_6uwot")
 
 [node name="AnimationTree" type="AnimationTree" parent="." unique_id=517671496]
 root_node = NodePath("../AuxScene")

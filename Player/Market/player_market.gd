@@ -53,7 +53,6 @@ func accept_deal() -> void:
 
 	var item := active_customer.want_item
 	var price := active_customer.get_current_offer()
-	var customer_name := active_customer.display_name
 
 	if UtilityStates.remove_item(item):
 		# UtilityStates.money += price

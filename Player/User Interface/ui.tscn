@@ -33,7 +33,7 @@ func _input(event: InputEvent) -> void:
 		radial_menu.set_temporary_selection(-2)
 "
 
-[node name="UI" type="Control" unique_id=2005672883 node_paths=PackedStringArray("end_day_btn", "end_night_btn", "view_radial_btn", "inventory_lbl", "inventory_grid", "inventory_radial", "dialog_lbl", "price_slider", "offer_btn")]
+[node name="UI" type="Control" unique_id=2005672883 node_paths=PackedStringArray("end_day_btn", "end_night_btn", "view_radial_btn", "inventory_lbl", "inventory_grid", "inventory_radial", "dialog_lbl", "price_slider", "money_label", "offer_btn", "preview_label", "preview_symbol_container", "preview_description", "preview_sprite")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -50,8 +50,13 @@ inventory_grid = NodePath("GridContainer")
 inventory_radial = NodePath("MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Radial/radial_menu")
 inventory_button = ExtResource("2_uxcms")
 dialog_lbl = NodePath("MarginContainer2/PanelContainer/MarginContainer/VBoxContainer/Label")
-price_slider = NodePath("MarginContainer2/PanelContainer/MarginContainer/VBoxContainer/HSlider")
-offer_btn = NodePath("MarginContainer2/PanelContainer/MarginContainer/VBoxContainer/Offerbtn")
+price_slider = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/HSlider")
+money_label = NodePath("MarginContainer2/PanelContainer/MarginContainer/VBoxContainer/RichTextLabel")
+offer_btn = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/Offerbtn")
+preview_label = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer/HBoxContainer/RichTextLabel")
+preview_symbol_container = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer/HBoxContainer/SymbolsContainer")
+preview_description = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer/RichTextLabel")
+preview_sprite = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer/Control/Sprite2D")
 
 [node name="GridContainer" type="GridContainer" parent="." unique_id=384191173]
 visible = false
@@ -60,6 +65,34 @@ offset_left = 710.0
 offset_top = 1080.0
 offset_right = 1210.0
 offset_bottom = 1080.0
+
+[node name="MarginContainer2" type="MarginContainer" parent="." unique_id=1324244525]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.75000006
+anchor_right = 0.75000006
+anchor_bottom = 1.0
+offset_top = -6.1035156e-05
+offset_right = -0.00012207031
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer2" unique_id=695575647]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer2/PanelContainer" unique_id=1325911220]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer2/PanelContainer/MarginContainer" unique_id=1597166435]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer2/PanelContainer/MarginContainer/VBoxContainer" unique_id=669989299]
+layout_mode = 2
+text = "This is text"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer2/PanelContainer/MarginContainer/VBoxContainer" unique_id=377648264]
+layout_mode = 2
+bbcode_enabled = true
+text = "Money: [color=light_green][b][i]$0[/i][/b][/color]"
+fit_content = true
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=35647498]
 custom_minimum_size = Vector2(500, 0)
@@ -97,59 +130,42 @@ size_flags_vertical = 3
 script = SubResource("GDScript_e3yml")
 
 [node name="radial_menu" type="Control" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Radial" unique_id=386053395]
+z_index = 2
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -196.0
-offset_top = -216.0
-offset_right = 196.0
-offset_bottom = 216.0
+anchor_left = 0.108
+anchor_top = 0.272
+anchor_right = 0.892
+anchor_bottom = 0.72800004
+offset_top = 0.14398193
+offset_bottom = -0.14404297
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(196, 216)
 script = ExtResource("3_5matg")
 select_action_name = &"ui_accept"
+color = Color(0.08, 0.08, 0.08, 0.7372549)
 arc_start_angle = 7.47281469282041
 arc_end_angle = 1.9996293856408
 children_auto_sizing = true
-children_auto_sizing_factor = 0.3
 children_rotate = true
-hover_confirm_delay = null
 popout_item_size = 198
 popout_spacing = 60.0
-popout_background_padding = 96
+popout_background_padding_top = 48
+popout_background_padding_bottom = 32
 metadata/_custom_type_script = "uid://c4x0np2q7ul41"
-
-[node name="RadialCategorySlot2" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Radial/radial_menu" unique_id=28857393 instance=ExtResource("4_e3yml")]
-layout_mode = 1
-offset_left = 275.1269
-offset_top = 139.4
-offset_right = -77.673096
-offset_bottom = -253.40001
-rotation = 1.0471976
-pivot_offset = Vector2(19.600006, 19.599998)
-tags = Array[String](["fish"])
-
-[node name="RadialCategorySlot3" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Radial/radial_menu" unique_id=1585719735 instance=ExtResource("4_e3yml")]
-layout_mode = 1
-offset_left = 176.4
-offset_top = 310.4
-offset_right = -176.40001
-offset_bottom = -82.399994
-rotation = 3.1415927
-pivot_offset = Vector2(19.599998, 19.600006)
 
 [node name="RadialCategorySlot" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Radial/radial_menu" unique_id=2110834260 instance=ExtResource("4_e3yml")]
 layout_mode = 1
-offset_left = 77.6731
-offset_top = 139.4
-offset_right = -275.1269
-offset_bottom = -253.40001
-rotation = 5.2359877
-pivot_offset = Vector2(19.600002, 19.599998)
+tags = Array[String](["fish"])
+label_text = "fish"
+
+[node name="RadialCategorySlot2" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Radial/radial_menu" unique_id=1455199738 instance=ExtResource("4_e3yml")]
+layout_mode = 1
+label_text = "Treasure"
+
+[node name="RadialCategorySlot3" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Radial/radial_menu" unique_id=1873536086 instance=ExtResource("4_e3yml")]
+layout_mode = 1
+label_text = "Items"
 
 [node name="EndDayBtn" type="Button" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=57272319]
 layout_mode = 2
@@ -159,31 +175,71 @@ text = "End the day..."
 layout_mode = 2
 text = "End the Night..."
 
-[node name="MarginContainer2" type="MarginContainer" parent="." unique_id=1324244525]
+[node name="MarginContainer3" type="MarginContainer" parent="." unique_id=1537911011]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.75000006
-anchor_right = 0.75000006
+anchor_left = 0.75000006
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -6.1035156e-05
-offset_right = -0.00012207031
+offset_left = -0.00012207031
+grow_horizontal = 0
+grow_vertical = 0
 
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer2" unique_id=695575647]
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer3" unique_id=1834375190]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer2/PanelContainer" unique_id=1325911220]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer3/PanelContainer" unique_id=1085557286]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer2/PanelContainer/MarginContainer" unique_id=1597166435]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer3/PanelContainer/MarginContainer" unique_id=197728198]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MarginContainer2/PanelContainer/MarginContainer/VBoxContainer" unique_id=669989299]
+[node name="ItemPreview" type="Control" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer" unique_id=220133102]
 layout_mode = 2
-text = "This is text"
+size_flags_vertical = 3
 
-[node name="Offerbtn" type="Button" parent="MarginContainer2/PanelContainer/MarginContainer/VBoxContainer" unique_id=1045365107]
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview" unique_id=1163971840]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer" unique_id=147801142]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer" unique_id=619150388]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer/HBoxContainer" unique_id=811320199]
+custom_minimum_size = Vector2(150, 20)
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="SymbolsContainer" type="HBoxContainer" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer/HBoxContainer" unique_id=776782042]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer" unique_id=935557277]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer" unique_id=192389405]
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="Control" type="Control" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer" unique_id=31915305]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+
+[node name="Sprite2D" type="Sprite2D" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer/Control" unique_id=914497783]
+
+[node name="HSlider" type="HSlider" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer" unique_id=381088020]
+layout_mode = 2
+
+[node name="Offerbtn" type="Button" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer" unique_id=1045365107]
 layout_mode = 2
 text = "Offer "
-
-[node name="HSlider" type="HSlider" parent="MarginContainer2/PanelContainer/MarginContainer/VBoxContainer" unique_id=381088020]
-layout_mode = 2

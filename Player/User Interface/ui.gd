@@ -14,9 +14,18 @@ class_name UserInterface
 @export var player_market : PlayerMarket   ## only assigned in the Market scene
 @export var dialog_lbl : Label             ## shows what the customer is saying
 @export var price_slider : Slider          ## draggable bar the player sets the price with
+@export var money_label : RichTextLabel
 @export var offer_btn : Button             ## confirms the current slider value
+@export_subgroup("Preview", "preview_")
+@export var preview_label : RichTextLabel
+@export var preview_symbol_container : HBoxContainer
+@export var preview_description : RichTextLabel
+@export var preview_sprite : Sprite2D
 
+
+var offer_value : float = 0.0
 var _viewing : bool = false
+
 func _ready() -> void:
 	inventory_radial.visible = false
 	inventory_radial.scale = Vector2.ZERO
@@ -27,6 +36,7 @@ func _ready() -> void:
 
 	if player_market:
 		player_market.negotiation_started.connect(_on_negotiation_started)
+		player_market.negotiation_started.connect(_preview_item)
 		player_market.dialog_updated.connect(_on_dialog_updated)
 		player_market.deal_finished.connect(_on_deal_finished)
 
@@ -213,6 +223,7 @@ func _on_dialog_updated(text : String) -> void:
 func _on_price_slider_value_changed(value : float) -> void:
 	player_market.set_requested_amount(value)
 	offer_btn.text = "Offer $%0.2d" % value
+	offer_value = value
 
 ## Player confirmed the price — let the customer evaluate it.
 func _on_offer_btn_pressed() -> void:
@@ -223,4 +234,26 @@ func _on_offer_btn_pressed() -> void:
 ## (the sold fish is gone from UtilityStates.items) and unlock every button.
 func _on_deal_finished() -> void:
 	set_items(UtilityStates.items)
+	UtilityStates.money += offer_value
 	_clear_inventory_highlight()
+	_clear_preview()
+	money_label.text = "Money: [color=light_green][b][i]$%0.2d[/i][/b][/color]" % UtilityStates.money
+
+func _preview_item(customer : Customer) -> void:
+	_clear_preview()
+	var item : Item = customer.want_item
+	preview_label.text = "[color=%s][b]%s[/b][/color] [i](%s)[/i]" % [item.rarity.color.to_html(), item.display_name, item.rarity.display_name]
+	# for symbol in customer.want_item.get_symbols():
+	# 	var sprite : Sprite2D = Sprite2D.new()
+	# 	sprite.texture = symbol
+	# 	preview_symbol_container.add_child(sprite)
+	preview_description.text = item.get_description()
+	preview_sprite.texture = item.icon
+
+func _clear_preview() -> void:
+	preview_description.text = "[color=red]Please[/color] wait for someone to show up"
+	preview_label.text = "Nothing of note..."
+	preview_sprite.texture = null
+	if preview_symbol_container.get_children() != []:
+		for child in preview_symbol_container:
+			child.queue_free()

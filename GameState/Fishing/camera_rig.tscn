@@ -5,6 +5,8 @@
 [ext_resource type="Texture2D" uid="uid://dukd563ixfcgt" path="res://Assets/3D/Buoy/Speed_lever_0.png" id="3_n3wae"]
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_n3wae"]
+dof_blur_far_distance = 50.0
+dof_blur_far_transition = 159.58
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dg644"]
 resource_name = "material_0"

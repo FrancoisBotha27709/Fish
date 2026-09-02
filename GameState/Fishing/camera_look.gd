@@ -150,3 +150,6 @@ func _apply_dof() -> void:
 
 func _apply_environment() -> void:
 	pass
+
+func change_fov(target_fov: float, delta: float) -> void:
+	fov = move_toward(fov, target_fov, 40.0 * delta)

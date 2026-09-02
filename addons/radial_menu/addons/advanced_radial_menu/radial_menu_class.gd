@@ -148,10 +148,18 @@ const MAX_POPOUT_ITEMS: int = 5
 ## single item instead. A slot's own `icon`/`label` are never popout-eligible
 ## regardless of this setting.
 @export var popout_first_is_background := true
-## Extra padding (px) added around a normal item's size when sizing the
-## background — it's just a slightly larger frame behind the middle of the
-## row, not stretched to span it.
-@export_range(0, 256, 1) var popout_background_padding: int = 16
+## Extra padding (px) added to the LEFT of the row when sizing the
+## background's width.
+@export_range(0, 256, 1) var popout_background_padding_left: int = 16
+## Extra padding (px) added to the RIGHT of the row when sizing the
+## background's width.
+@export_range(0, 256, 1) var popout_background_padding_right: int = 16
+## Extra padding (px) added ABOVE the item row when sizing the background's
+## height — e.g. room for a speech-bubble nub.
+@export_range(0, 256, 1) var popout_background_padding_top: int = 32
+## Extra padding (px) added BELOW the item row when sizing the background's
+## height.
+@export_range(0, 256, 1) var popout_background_padding_bottom: int = 0
 ## If true, popout children [member Control.scale] is changed instead of size.
 @export var popout_size_as_scale := false
 ## How fast the popout opens/closes, in the 0..1 progress units per second.
@@ -197,11 +205,17 @@ var _popout_visible_t: float = 0.0 # 0 = closed, 1 = fully open
 ## popout opens from the slot's own angle on the wheel, and held fixed for
 ## the duration it's open/closing so it can't flip mid-animation.
 var _popout_dir: float = 1.0
-## Runtime-only overlay layer. Popout items are reparented here (out of the
+## Runtime-only overlay layer. Popout ITEMS are reparented here (out of the
 ## slot) whenever their slot is open, so the slot's own transform/layout
 ## (rotation, scale, or it being a Container) can never affect them and the
-## row is guaranteed to render as a flat horizontal strip.
+## row is guaranteed to render as a flat horizontal strip. Drawn on top of
+## the wheel (added after this control's own children).
 var _popout_host: Control = null
+## Runtime-only overlay layer for the popout BACKGROUND only. Marked
+## `show_behind_parent = true` so it draws behind this Control's own _draw()
+## (i.e. behind the wheel itself), while items in _popout_host still draw
+## in front of it.
+var _popout_bg_host: Control = null
 
 
 
@@ -285,6 +299,17 @@ func _set_children_rotate(value: bool) -> void:
 		_reset_children_rotation()
 
 func _ready() -> void:
+	if not is_instance_valid(_popout_bg_host):
+		_popout_bg_host = Control.new()
+		_popout_bg_host.name = &'_PopoutBgHost'
+		_popout_bg_host.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_popout_bg_host.position = Vector2.ZERO
+		# Draws behind this Control's own _draw() (i.e. behind the wheel),
+		# while _popout_host (added below, no show_behind_parent) still
+		# draws in front of it.
+		_popout_bg_host.show_behind_parent = true
+		add_child(_popout_bg_host)
+
 	if not is_instance_valid(_popout_host):
 		_popout_host = Control.new()
 		_popout_host.name = &'_PopoutHost'
@@ -326,7 +351,7 @@ func _update_children() -> void:
 	_children_list.clear()
 	
 	for node: Node in get_children():
-		if node == _popout_host:
+		if node == _popout_host or node == _popout_bg_host:
 			continue
 		if (node is Control) and node.visible:
 			_children_list.append(node)
@@ -337,7 +362,7 @@ func _update_children() -> void:
 	
 	# Grandchildren (item boxes AND the explicit background, if any) are
 	# hidden by default; they only become visible when their slot is the
-	# active popout (at which point they're reparented into _popout_host, so
+	# active popout (at which point they're reparented into a popout host, so
 	# this loop never touches them while they're showing). A slot's own
 	# icon/label are chrome and left completely alone here — they're not
 	# popout items, they're the slot's permanent display.
@@ -554,7 +579,6 @@ func _arrange_children() -> void:
 			
 	if first_in_center and _children_list.size() > 0:
 		var center_child: Control = _children_list[0]
-		# var target_size := Vector2.ONE * children_size * (children_auto_sizing_factor if children_auto_sizing else 1.0)
 		if children_size_as_scale:
 			if center_child.scale != target_child_size:
 				center_child.scale = target_child_size
@@ -567,8 +591,6 @@ func _arrange_children() -> void:
 			center_child.position = center_target_pos
 		if center_child.pivot_offset != center_child.size / 2.0:
 			center_child.pivot_offset = center_child.size / 2.0
-		# if not children_rotate:
-		# 	center_child.rotation = 0.0
 
 
 # ---------------------------------------------------------------------------
@@ -590,15 +612,33 @@ func _get_popout_candidates(parent: Control) -> Array[Control]:
 	return list
 
 
+## Resets layout properties that could otherwise fight the manual size/
+## position writes in _arrange_popout() — anchors and a custom minimum size
+## make sense for a node living in its *original* authored layout, but once
+## a node is yanked out into a popout host and driven entirely by hand, any
+## leftover anchor stretch or minimum size would silently clamp/override
+## what we try to set here. Rotation/scale are reset too so a node doesn't
+## carry over a stale flip from a previous popout.
+func _prepare_for_popout(node: Control) -> void:
+	node.anchor_left = 0.0
+	node.anchor_top = 0.0
+	node.anchor_right = 0.0
+	node.anchor_bottom = 0.0
+	node.custom_minimum_size = Vector2.ZERO
+	node.rotation = 0.0
+	node.scale = Vector2.ONE
+
+
 ## Reparents the currently-open popout's items (and background, if any) back
 ## to their original slot (hiding them again) and clears popout state.
 func _close_popout() -> void:
 	if _popout_parent != null:
-		if is_instance_valid(_popout_background) and _popout_background.get_parent() == _popout_host:
+		if is_instance_valid(_popout_background) and _popout_background.get_parent() == _popout_bg_host:
 			_popout_background.reparent(_popout_parent, false)
 			_popout_background.visible = false
 			_popout_background.modulate.a = 1.0
 			_popout_background.position = Vector2.ZERO
+			_popout_background.scale = Vector2.ONE
 		for item: Control in _popout_children:
 			if is_instance_valid(item) and item.get_parent() == _popout_host:
 				item.reparent(_popout_parent, false)
@@ -672,15 +712,18 @@ func _sync_popout(delta: float) -> bool:
 				if _popout_children.size() > MAX_POPOUT_ITEMS:
 					_popout_children = _popout_children.slice(0, MAX_POPOUT_ITEMS)
 				
-				# Reparent background first so it stays behind the items when drawn.
+				# Background goes in its own host, marked show_behind_parent,
+				# so it always renders behind the wheel regardless of node order.
 				if _popout_background != null:
-					_popout_background.reparent(_popout_host, false)
+					_popout_background.reparent(_popout_bg_host, false)
+					_prepare_for_popout(_popout_background)
 					_popout_background.visible = true
 					_popout_background.modulate.a = 0.0
 				for item: Control in _popout_children:
 					# Pulled out of the slot entirely so the slot's own rotation,
 					# scale, or Container behavior can't reposition these items.
 					item.reparent(_popout_host, false)
+					_prepare_for_popout(item)
 					item.visible = true
 					item.modulate.a = 0.0
 	
@@ -759,19 +802,40 @@ func _arrange_popout() -> void:
 		item.modulate.a = _popout_visible_t
 	
 	if _popout_background != null:
-		# Fixed size (a bit larger than a normal item), NOT stretched to span
-		# the row — just centered on the row's midpoint, behind everything.
-		var bg_size: Vector2 = item_size + Vector2.ONE * popout_background_padding * 2.0
-		var row_center_x: float = row_left + total_width / 2.0
-		var target_bg_pos: Vector2 = Vector2(row_center_x - bg_size.x / 2.0, slot_center.y - bg_size.y / 2.0)
+		# Stretches to span the whole row horizontally (grows/shrinks with
+		# item count, like a magazine sliding out); vertical size is driven
+		# entirely by the top/bottom padding, independent of the left/right
+		# padding, so widening the row for more items can never change the
+		# height (and vice versa).
+		# NinePatchRect is ALWAYS resized via .size here, never via .scale
+		# (regardless of popout_size_as_scale, which is meant for plain
+		# items): scaling a nine-patch stretches every patch — including the
+		# unstretchable corner/nub margins — uniformly, which distorts the art.
+		var row_right: float = row_left + total_width
+		var item_top: float = slot_center.y - item_size.y / 2.0
+		var item_bottom: float = slot_center.y + item_size.y / 2.0
+		
+		var bg_left: float = row_left - popout_background_padding_left
+		var bg_right: float = row_right + popout_background_padding_right
+		var bg_top: float = item_top - popout_background_padding_top
+		var bg_bottom: float = item_bottom + popout_background_padding_bottom
+		
+		var bg_size: Vector2 = Vector2(bg_right - bg_left, bg_bottom - bg_top)
+		var target_bg_pos: Vector2 = Vector2(bg_left, bg_top)
 		var closed_bg_pos: Vector2 = slot_center - bg_size / 2.0
 		
-		if popout_size_as_scale:
-			if _popout_background.scale != bg_size:
-				_popout_background.scale = bg_size
-		else:
-			if _popout_background.size != bg_size:
-				_popout_background.size = bg_size
+		# Mirror horizontally when the popout is on the left side of the
+		# wheel, so a right-facing background graphic still "points" the
+		# correct way. Flipping via scale.x (around the center pivot, since
+		# pivot_offset is kept at size/2 below) keeps position/size math
+		# untouched — right side stays unflipped (scale.x = 1).
+		var flip_sign: float = -1.0 if _popout_dir < 0.0 else 1.0
+		
+		if _popout_background.size != bg_size:
+			_popout_background.size = bg_size
+		if _popout_background.scale.x != flip_sign or _popout_background.scale.y != 1.0:
+			_popout_background.scale = Vector2(flip_sign, 1.0)
+		
 		if _popout_background.pivot_offset != _popout_background.size / 2.0:
 			_popout_background.pivot_offset = _popout_background.size / 2.0
 		if _popout_background.rotation != 0.0:
@@ -810,9 +874,6 @@ func _update_popout_hover() -> bool:
 
 
 func _draw() -> void:
-	# if _local_children_count == 0 and not first_in_center:
-	# 	return
-	
 	draw_circle(_current_menu_offset, _current_menu_radius, color)
 	
 	if _current_selection_idx == -1 and first_in_center:

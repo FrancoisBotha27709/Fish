@@ -32,4 +32,5 @@ size_flags_horizontal = 4
 size_flags_vertical = 6
 
 [node name="Sprite2D" type="Sprite2D" parent="VBoxContainer/Control" unique_id=1232431893]
-scale = Vector2(0.515, 0.515)
+rotation = 0.7853982
+scale = Vector2(0.4, 0.4)

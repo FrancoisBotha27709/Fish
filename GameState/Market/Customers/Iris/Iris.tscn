@@ -1,0 +1,217 @@
+[gd_scene format=3 uid="uid://lxntytsrqq3w"]
+
+[ext_resource type="Script" uid="uid://dnf2veei5q6ko" path="res://GameState/Market/Customers/CharacterModel.gd" id="1_yww2s"]
+[ext_resource type="PackedScene" uid="uid://bdbgya7lvyma" path="res://Assets/3D/Characters/Iris.glb" id="2_2puen"]
+[ext_resource type="Texture2D" uid="uid://dfnhkfpmqox3b" path="res://Assets/3D/Characters/Iris_0.png" id="3_b7p1j"]
+[ext_resource type="Texture2D" uid="uid://doxhmfsajssj6" path="res://Assets/3D/Characters/Iris_1.png" id="4_ty1rr"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2amr7"]
+resource_name = "Material47"
+albedo_color = Color(0, 0, 0, 1)
+metallic = 1.0
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 0.3
+emission_operator = 1
+emission_texture = ExtResource("3_b7p1j")
+clearcoat_enabled = true
+clearcoat = 0.0
+clearcoat_roughness = 1.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ondnb"]
+resource_name = "Material48"
+cull_mode = 2
+albedo_color = Color(0, 0, 0, 1)
+metallic = 1.0
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 0.3
+emission_operator = 1
+emission_texture = ExtResource("4_ty1rr")
+texture_filter = 0
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_j20c4"]
+animation = &"Idle Listening RT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vua1n"]
+animation = &"Idle_FoldArms RT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_7w5jq"]
+animation = &"Idle_Rail RT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_5jooh"]
+animation = &"Idle_Subtle RT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_t0e8w"]
+animation = &"Walk_Female RT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_73i16"]
+animation = &"Walk_Female RT"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_t0e8w"]
+advance_mode = 2
+advance_condition = &"Walk"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_6uwot"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"Idle_Subtle"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_b6y0f"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"Idle_Rail"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_g1inj"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"Idle_Fold"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_6myr2"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"Idle_Listening"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8747j"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"End"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_7p1t7"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"End"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4nokb"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"End"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_1tklh"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"End"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_12aof"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"Accept"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gwtya"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"Accept"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_20p70"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"Accept"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_80axb"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"Accept"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_gkgja"]
+"states/Idle Listening RT/node" = SubResource("AnimationNodeAnimation_j20c4")
+"states/Idle Listening RT/position" = Vector2(422, 202)
+"states/Idle_FoldArms RT/node" = SubResource("AnimationNodeAnimation_vua1n")
+"states/Idle_FoldArms RT/position" = Vector2(422, 70)
+"states/Idle_Rail RT/node" = SubResource("AnimationNodeAnimation_7w5jq")
+"states/Idle_Rail RT/position" = Vector2(422, 135)
+"states/Idle_Subtle RT/node" = SubResource("AnimationNodeAnimation_5jooh")
+"states/Idle_Subtle RT/position" = Vector2(422, 3)
+states/Start/position = Vector2(44, 100)
+"states/Walk_Female RT/node" = SubResource("AnimationNodeAnimation_73i16")
+"states/Walk_Female RT/position" = Vector2(205, 100)
+"states/Walk_Female RT 2/node" = SubResource("AnimationNodeAnimation_t0e8w")
+"states/Walk_Female RT 2/position" = Vector2(674.03784, 250)
+transitions = ["Start", "Walk_Female RT", SubResource("AnimationNodeStateMachineTransition_t0e8w"), "Walk_Female RT", "Idle_Subtle RT", SubResource("AnimationNodeStateMachineTransition_6uwot"), "Walk_Female RT", "Idle_Rail RT", SubResource("AnimationNodeStateMachineTransition_b6y0f"), "Walk_Female RT", "Idle_FoldArms RT", SubResource("AnimationNodeStateMachineTransition_g1inj"), "Walk_Female RT", "Idle Listening RT", SubResource("AnimationNodeStateMachineTransition_6myr2"), "Idle_Subtle RT", "End", SubResource("AnimationNodeStateMachineTransition_8747j"), "Idle_FoldArms RT", "End", SubResource("AnimationNodeStateMachineTransition_7p1t7"), "Idle_Rail RT", "End", SubResource("AnimationNodeStateMachineTransition_4nokb"), "Idle Listening RT", "End", SubResource("AnimationNodeStateMachineTransition_1tklh"), "Idle Listening RT", "Walk_Female RT 2", SubResource("AnimationNodeStateMachineTransition_12aof"), "Idle_Rail RT", "Walk_Female RT 2", SubResource("AnimationNodeStateMachineTransition_gwtya"), "Idle_FoldArms RT", "Walk_Female RT 2", SubResource("AnimationNodeStateMachineTransition_20p70"), "Idle_Subtle RT", "Walk_Female RT 2", SubResource("AnimationNodeStateMachineTransition_80axb")]
+graph_offset = Vector2(-213.96216, -59)
+
+[node name="Iris" type="Node3D" unique_id=1165107650 node_paths=PackedStringArray("anim_tree", "face_mesh")]
+script = ExtResource("1_yww2s")
+anim_tree = NodePath("AnimationTree")
+anim_dict = Dictionary[int, String]({
+0: "Walk",
+2: "Idle_Fold",
+3: "Idle_Rail",
+4: "Idle_Listening",
+5: "End",
+6: "Reject",
+7: "Accept"
+})
+face_mesh = NodePath("AuxScene/Scene/root001/Skeleton3D/Iris_2")
+
+[node name="AuxScene" parent="." unique_id=229332934 instance=ExtResource("2_2puen")]
+
+[node name="Skeleton3D" parent="AuxScene/Scene/root001" parent_id_path=PackedInt32Array(229332934, 2113879196) index="1" unique_id=1369960844]
+bones/2/rotation = Quaternion(0.7692722, 0.026467316, -0.0051939595, 0.6383517)
+bones/4/rotation = Quaternion(-0.06724977, 0.014452026, -0.022773597, 0.99737155)
+bones/5/rotation = Quaternion(-0.04138541, 0.019364342, -0.009334023, 0.998912)
+bones/6/rotation = Quaternion(0.013631398, 0.021300385, -0.0029387963, 0.9996759)
+bones/8/rotation = Quaternion(-0.07133103, -0.06448092, -0.60924596, 0.7871299)
+bones/9/rotation = Quaternion(0.25942206, 0.14220007, -0.03395915, 0.954634)
+bones/10/rotation = Quaternion(0.05534722, -0.77373916, -0.07488172, 0.6266236)
+bones/11/rotation = Quaternion(-0.031234179, 0.75909793, -0.640471, -0.1122137)
+bones/12/rotation = Quaternion(0.58835864, 0.13807869, -0.008814613, 0.79667485)
+bones/13/rotation = Quaternion(0.60804653, 0.032817032, -0.08805457, 0.7883203)
+bones/14/rotation = Quaternion(-0.01862356, 0.77130944, -0.6341096, -0.051380303)
+bones/15/rotation = Quaternion(0.6214934, 0.012179866, 0.0016179724, 0.78332305)
+bones/16/rotation = Quaternion(0.6084892, 0.0104143545, -0.11883754, 0.78454447)
+bones/17/rotation = Quaternion(0.06953898, 0.7338749, -0.6752859, 0.024103586)
+bones/18/rotation = Quaternion(0.61843276, -0.12103203, -0.027404139, 0.7759776)
+bones/19/rotation = Quaternion(0.6032304, -0.12252315, -0.107500866, 0.7807335)
+bones/20/rotation = Quaternion(-0.027439116, 0.767274, -0.6404707, 0.018305987)
+bones/21/rotation = Quaternion(0.61903876, -0.011855125, -0.035511225, 0.78446764)
+bones/22/rotation = Quaternion(0.6171863, -0.046922337, -0.07795035, 0.7815389)
+bones/23/rotation = Quaternion(-0.07514355, 0.38780504, -0.3072209, 0.8657806)
+bones/24/rotation = Quaternion(-0.12023268, 0.11788588, 0.12621933, 0.9776072)
+bones/25/rotation = Quaternion(-0.55037826, 0.22378382, 0.31566426, 0.73983824)
+bones/27/rotation = Quaternion(0.22822034, 0.041064862, 0.5257758, 0.81840634)
+bones/28/rotation = Quaternion(0.3284434, 0.09640261, -0.0011101422, 0.9395906)
+bones/29/rotation = Quaternion(0.11377237, 0.7688211, 0.12413139, 0.6168965)
+bones/30/rotation = Quaternion(0.031234587, 0.7590978, -0.640471, 0.11221381)
+bones/31/rotation = Quaternion(0.5883583, -0.13807921, 0.00881499, 0.79667497)
+bones/32/rotation = Quaternion(0.608047, -0.032817896, 0.08805461, 0.78832)
+bones/33/rotation = Quaternion(0.018623747, 0.77130955, -0.6341095, 0.05138055)
+bones/34/rotation = Quaternion(0.62149364, -0.012180073, -0.0016181046, 0.7833229)
+bones/35/rotation = Quaternion(0.60848904, -0.010414489, 0.11883766, 0.78454465)
+bones/36/rotation = Quaternion(-0.06953856, 0.7338749, -0.67528594, -0.024103675)
+bones/37/rotation = Quaternion(0.6184326, 0.12103181, 0.027404033, 0.7759778)
+bones/38/rotation = Quaternion(0.6032306, 0.12252295, 0.10750144, 0.7807332)
+bones/39/rotation = Quaternion(0.027439691, 0.7672742, -0.6404703, -0.018305818)
+bones/40/rotation = Quaternion(0.6190393, 0.011854512, 0.035511393, 0.78446716)
+bones/41/rotation = Quaternion(0.61718607, 0.046922002, 0.07795048, 0.78153914)
+bones/42/rotation = Quaternion(-0.0751392, -0.3878089, 0.30722007, 0.8657796)
+bones/43/rotation = Quaternion(-0.12023546, -0.1178811, -0.1262171, 0.97760767)
+bones/44/rotation = Quaternion(-0.55037767, -0.22378385, -0.31566423, 0.7398387)
+bones/45/rotation = Quaternion(0.05705239, -0.025194088, 0.0061246553, 0.99803454)
+bones/46/rotation = Quaternion(0.03466442, -0.0191127, 0.017257484, 0.9990672)
+bones/54/rotation = Quaternion(0.9546606, 0.0028654058, -0.02234774, 0.2968426)
+bones/55/rotation = Quaternion(0.13723107, 0.0024545689, -0.00021314394, 0.99053603)
+bones/56/rotation = Quaternion(0.018668009, -0.6274657, 0.7783806, 0.007875469)
+bones/58/rotation = Quaternion(0.9942541, 0.0052612466, -0.01449332, -0.105930224)
+bones/59/rotation = Quaternion(0.07899634, 0.002398812, -0.00020830239, 0.99687207)
+bones/60/rotation = Quaternion(-0.013005501, -0.6449749, 0.76383185, 0.019981192)
+
+[node name="Iris_1" parent="AuxScene/Scene/root001/Skeleton3D" index="0" unique_id=533191401]
+surface_material_override/0 = SubResource("StandardMaterial3D_2amr7")
+
+[node name="Iris_2" parent="AuxScene/Scene/root001/Skeleton3D" index="1" unique_id=1228037974]
+surface_material_override/0 = SubResource("StandardMaterial3D_ondnb")
+
+[node name="AnimationTree" type="AnimationTree" parent="." unique_id=1672674481]
+root_node = NodePath("../AuxScene")
+tree_root = SubResource("AnimationNodeStateMachine_gkgja")
+anim_player = NodePath("../AuxScene/AnimationPlayer")
+parameters/conditions/Accept = false
+parameters/conditions/End = false
+parameters/conditions/Idle_Fold = false
+parameters/conditions/Idle_Listening = false
+parameters/conditions/Idle_Rail = false
+parameters/conditions/Idle_Subtle = false
+parameters/conditions/Walk = false
+
+[editable path="AuxScene"]
