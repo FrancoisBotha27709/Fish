@@ -2,9 +2,6 @@ extends Camera3D
 class_name CameraLook
 
 #region Exports
-
-
-
 #region Look
 @export_group("Photo Look")
 @export_subgroup("Lens")
@@ -152,4 +149,4 @@ func _apply_environment() -> void:
 	pass
 
 func change_fov(target_fov: float, delta: float) -> void:
-	fov = move_toward(fov, target_fov, 40.0 * delta)
+	fov = move_toward(fov, target_fov, 20.0 * delta)

@@ -1,5 +1,4 @@
 extends Node3D
-
 class_name FireSmoke
 
 @export_group("Particles")

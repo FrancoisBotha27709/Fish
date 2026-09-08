@@ -39,12 +39,9 @@ var _smoothed_pitch := 35.0
 var _look_point : Vector3
 var _has_look_point := false
 
-@onready var switch_anim: AnimationPlayer = $Camera3D/blockbench_export/AnimationPlayer
-
 var _rotating := false
 var _time_since_input := 0.0
 var forward = false
-
 
 func _ready() -> void:
 	_smoothed_pitch = pitch
@@ -71,18 +68,9 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	if event.is_action_pressed("boat_forward"):
 		if not forward:
 			forward = true
-			switch(forward)
 	elif event.is_action_pressed("boat_reverse"):
 		if forward:
 			forward = false
-			switch(forward)
-
-func switch(value : bool) -> void:
-	if value == false:
-		switch_anim.play_backwards("pull_animation")
-	elif value == true:
-		switch_anim.play("pull_animation")
-
 
 func _get_look_target_position() -> Vector3:
 	if camera_target:

@@ -1,0 +1,211 @@
+[gd_scene format=3 uid="uid://ds4ejd2iyxjmk"]
+
+[ext_resource type="Script" uid="uid://c5qaylgvgfjxi" path="res://Shaders/emil/Human/emil_node_3d.gd" id="1_yq4ke"]
+[ext_resource type="Shader" uid="uid://ow3egw8wrgc1" path="res://Shaders/emil/AI/emil_water.gdshader" id="2_h8p8l"]
+[ext_resource type="Shader" uid="uid://yli6x8m4pdpg" path="res://Shaders/emil/AI/emil_displacement_calc.gdshader" id="3_fmq0r"]
+[ext_resource type="Shader" uid="uid://cs0elj1l3j6qc" path="res://Shaders/emil/AI/emil_foam_calc.gdshader" id="4_03l3s"]
+[ext_resource type="Texture2D" uid="uid://batp2ropfmfb4" path="res://Shaders/emil/Human/sea_foam_seamless_texture.png" id="4_817v3"]
+[ext_resource type="Shader" uid="uid://bg06q6sc1mij7" path="res://Shaders/emil/AI/history.gdshader" id="6_ngxe2"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jq2w6"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_lx06q"]
+sky_material = SubResource("ProceduralSkyMaterial_jq2w6")
+
+[sub_resource type="Environment" id="Environment_8m76j"]
+background_mode = 2
+sky = SubResource("Sky_lx06q")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_ho7wc"]
+size = Vector2(10, 10)
+subdivide_width = 32
+subdivide_depth = 32
+orientation = 1
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_nlctf"]
+viewport_path = NodePath("DisplacementSubviewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_817v3"]
+viewport_path = NodePath("FoamSubviewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mm4df"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_h8p8l")
+shader_parameter/shallow_color = Color(0.03, 0.28, 0.34, 1)
+shader_parameter/deep_color = Color(0, 0.03, 0.07, 1)
+shader_parameter/foam_color = Color(0.88, 0.93, 0.93, 1)
+shader_parameter/depth_blend_min = -0.7
+shader_parameter/depth_blend_max = 1.0
+shader_parameter/sampling_distance = 0.070000003325
+shader_parameter/world_scale = 10.0000004275
+shader_parameter/displacement_map = SubResource("ViewportTexture_nlctf")
+shader_parameter/foam_map = SubResource("ViewportTexture_817v3")
+shader_parameter/water_roughness = 0.04
+shader_parameter/foam_roughness = 0.7
+shader_parameter/water_specular = 0.090000004275
+shader_parameter/rim_strength = 0.0800000038
+shader_parameter/fresnel_strength = 0.0850000040375
+shader_parameter/fresnel_power = 4.0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_atlai"]
+noise_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_w2q3v"]
+width = 1024
+height = 1024
+noise = SubResource("FastNoiseLite_atlai")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rm4cr"]
+shader = ExtResource("3_fmq0r")
+shader_parameter/noise = SubResource("NoiseTexture2D_w2q3v")
+shader_parameter/noise_intensity = 0.050000002375
+shader_parameter/noise_intensity_x = 0.06000000517907
+shader_parameter/noise_intensity_z = -0.06000000052093002
+shader_parameter/noise_pan_speed = 0.05
+shader_parameter/world_scale = 10.0
+shader_parameter/wave1_direction = Vector2(0, 1)
+shader_parameter/wave1_amplitude = 0.4
+shader_parameter/wave1_frequency = 1.0
+shader_parameter/wave1_speed = 1.3
+shader_parameter/wave1_steepness = 0.2
+shader_parameter/wave2_direction = Vector2(1, 1)
+shader_parameter/wave2_amplitude = 0.15
+shader_parameter/wave2_frequency = 1.3
+shader_parameter/wave2_speed = 1.6
+shader_parameter/wave2_steepness = 0.12
+shader_parameter/wave3_direction = Vector2(0.5, 1)
+shader_parameter/wave3_amplitude = 0.12
+shader_parameter/wave3_frequency = 2.0
+shader_parameter/wave3_speed = 2.0
+shader_parameter/wave3_steepness = 0.17
+shader_parameter/wave4_direction = Vector2(-0.4, 1)
+shader_parameter/wave4_amplitude = 0.01
+shader_parameter/wave4_frequency = 3.0
+shader_parameter/wave4_speed = 3.0
+shader_parameter/wave4_steepness = 0.1
+shader_parameter/wave5_direction = Vector2(-0.2, 0.7)
+shader_parameter/wave5_amplitude = 0.025
+shader_parameter/wave5_frequency = 4.0
+shader_parameter/wave5_speed = 4.0
+shader_parameter/wave5_steepness = 0.08
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_hqoye"]
+viewport_path = NodePath("DisplacementSubviewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jq2w6"]
+resource_local_to_scene = true
+shader = ExtResource("4_03l3s")
+shader_parameter/displacement_map = SubResource("ViewportTexture_hqoye")
+shader_parameter/sea_foam = ExtResource("4_817v3")
+shader_parameter/noise = SubResource("NoiseTexture2D_w2q3v")
+shader_parameter/world_scale = 10.0
+shader_parameter/sampling_distance_scale = 10.0
+shader_parameter/compression_start = 0.0
+shader_parameter/compression_end = 0.7
+shader_parameter/foam_tiling_low = 8.0
+shader_parameter/foam_tiling_high = 24.0
+shader_parameter/foam_contrast_low = 0.5
+shader_parameter/foam_contrast_high = 0.85
+shader_parameter/noise_threshold_low = 0.2
+shader_parameter/noise_threshold_high = 0.7
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_atlai"]
+viewport_path = NodePath("FoamSubviewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_w2q3v"]
+viewport_path = NodePath("HistoryB")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yq4ke"]
+resource_local_to_scene = true
+shader = ExtResource("6_ngxe2")
+shader_parameter/current_foam = SubResource("ViewportTexture_atlai")
+shader_parameter/history_foam = SubResource("ViewportTexture_w2q3v")
+shader_parameter/delta = 0.0
+shader_parameter/foam_decay_rate = 3.5
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ethmb"]
+viewport_path = NodePath("HistoryA")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ilehl"]
+viewport_path = NodePath("FoamSubviewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_atlai"]
+resource_local_to_scene = true
+shader = ExtResource("6_ngxe2")
+shader_parameter/current_foam = SubResource("ViewportTexture_ethmb")
+shader_parameter/history_foam = SubResource("ViewportTexture_ilehl")
+shader_parameter/delta = 0.0
+shader_parameter/foam_decay_rate = 3.5
+
+[node name="Node3D" type="Node3D" unique_id=1077862468 node_paths=PackedStringArray("ocean", "current", "history_a", "history_b")]
+script = ExtResource("1_yq4ke")
+ocean = NodePath("MeshInstance3D")
+current = NodePath("FoamSubviewport")
+history_a = NodePath("HistoryA")
+history_b = NodePath("HistoryB")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1750716603]
+environment = SubResource("Environment_8m76j")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1328117296]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1211101176]
+mesh = SubResource("QuadMesh_ho7wc")
+surface_material_override/0 = SubResource("ShaderMaterial_mm4df")
+
+[node name="DisplacementSubviewport" type="SubViewport" parent="." unique_id=1084172367]
+use_hdr_2d = true
+size = Vector2i(1024, 1024)
+
+[node name="ColorRect" type="ColorRect" parent="DisplacementSubviewport" unique_id=1649175278]
+material = SubResource("ShaderMaterial_rm4cr")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="FoamSubviewport" type="SubViewport" parent="." unique_id=871881457]
+size = Vector2i(1024, 1024)
+
+[node name="ColorRect" type="ColorRect" parent="FoamSubviewport" unique_id=2123287169]
+material = SubResource("ShaderMaterial_jq2w6")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HistoryA" type="SubViewport" parent="." unique_id=1629192002]
+use_hdr_2d = true
+size = Vector2i(1024, 1024)
+render_target_update_mode = 0
+
+[node name="ColorRect" type="ColorRect" parent="HistoryA" unique_id=1643888351]
+material = SubResource("ShaderMaterial_yq4ke")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HistoryB" type="SubViewport" parent="." unique_id=566456793]
+use_hdr_2d = true
+size = Vector2i(1024, 1024)
+render_target_update_mode = 0
+
+[node name="ColorRect" type="ColorRect" parent="HistoryB" unique_id=23172398]
+material = SubResource("ShaderMaterial_atlai")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

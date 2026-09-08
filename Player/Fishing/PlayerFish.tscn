@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://lxycyrd3rjyd" path="res://Player/Fishing/player_fish.gd" id="1_e0vli"]
 [ext_resource type="Script" uid="uid://b1wcav8boyxj5" path="res://Player/Fishing/UI_fish.gd" id="2_0flux"]
 [ext_resource type="PackedScene" uid="uid://c11ng80capk1b" path="res://Assets/3D/Boat/boat_test.tscn" id="3_0flux"]
+[ext_resource type="PackedScene" uid="uid://bj4k6ykut7now" path="res://Player/User Interface/analog_motion_sensor.tscn" id="3_wra0f"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_0flux"]
 points = PackedVector3Array(1.4241035, 3.2783175, 3.384109, 0.8809107, 2.4633687, 2.9824634, 0.8339956, 2.3929822, 3.5496953, 1.4241035, 2.428965, 3.5257092, 0.9995243, 3.136648, 3.5257092, 1.4241035, 3.2783175, 3.10113, 0.9995243, 3.2783175, 3.10113, 1.1410137, 2.428965, 2.9595299, 1.4241035, 2.428965, 3.2426195, 1.4241035, 3.136648, 3.5257092, 0.8579794, 2.5706346, 2.9595299, 0.9995243, 3.2783175, 3.384109, 1.4241035, 2.8536413, 3.10113)
@@ -40,7 +41,7 @@ points = PackedVector3Array(-0.27421337, 1.2967031, 1.968965, 1.4239926, 1.86264
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_aupj5"]
 points = PackedVector3Array(0.07221365, -1.4020917, -2.4813533, 0.07817332, -1.2596028, -2.8640366, 0.008571684, 0.5881474, 1.4023285, 1.5656067, -0.11888409, 1.2602985, 0.008571684, 2.004289, -3.976626, 1.7072763, 1.5792385, -2.277949, 0.857924, -0.6852714, -3.6931345, 0.29174453, -1.5346792, 1.4023285, 1.2826002, -1.1099752, -0.8627636, 1.5656067, 0.87116784, 1.4023285, 0.29174453, 0.022799343, -4.4015794, 1.7072763, 0.87116784, -2.4188426, 1.1407642, 1.5792385, -1.0042253, 1.4241035, 1.0131977, -3.5516727, 0.04875619, -1.4509615, 1.2650315, 1.2826002, -0.9682919, 1.4023285, 0.29174453, -1.5346792, -2.5608726, 0.04622502, -0.37367803, -4.1366544, 0.999261, 2.004289, -3.8351643, 0.71658695, 1.4375552, -4.4015794, 0.29174453, -1.1099752, -3.6931345, 0.15024126, 2.004289, -4.2589817, 1.4241035, -0.8266084, -0.013425112, 1.5656067, 1.720922, -2.135919, 0.999261, -1.2513123, 1.4023285, 0.857924, -0.5435879, -3.8351643, 1.1407642, 0.87116784, 1.4023285, 1.7072763, 1.0131977, -1.2877169, 0.71658695, 1.0131977, -4.4015794, 1.1407642, 1.5792385, -3.976626, 1.5656067, -0.26056752, -0.29691672, 0.999261, 2.004289, -3.5516727)
 
-[node name="PlayerFish" type="CharacterBody3D" unique_id=1016697865 node_paths=PackedStringArray("model", "collision_shapes", "camera_target") groups=["floating"]]
+[node name="PlayerFish" type="CharacterBody3D" unique_id=1016697865 node_paths=PackedStringArray("model", "collision_shapes", "camera_target", "analog_motion_sensor") groups=["floating"]]
 collision_mask = 2
 script = ExtResource("1_e0vli")
 drift_factor = 0.65
@@ -51,6 +52,7 @@ fov_change_speed = 10.0
 float_weight = 400.0
 collision_shapes = [NodePath("CollisionShape3D21"), NodePath("CollisionShape3D20"), NodePath("CollisionShape3D18"), NodePath("CollisionShape3D15"), NodePath("CollisionShape3D14"), NodePath("CollisionShape3D13"), NodePath("CollisionShape3D12"), NodePath("CollisionShape3D8"), NodePath("CollisionShape3D7"), NodePath("CollisionShape3D6"), NodePath("CollisionShape3D5"), NodePath("CollisionShape3D4")]
 camera_target = NodePath("CameraTarget")
+analog_motion_sensor = NodePath("CanvasLayer/Control/Control/AnalogMotionSensor")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1770705033]
 layer = 0
@@ -71,6 +73,22 @@ layout_mode = 1
 offset_right = 53.0
 offset_bottom = 31.0
 text = "Leave"
+
+[node name="Control" type="PanelContainer" parent="CanvasLayer/Control" unique_id=1248795299]
+clip_contents = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.90000004
+anchor_top = 0.67800003
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -0.00012207031
+offset_top = -0.24005127
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="AnalogMotionSensor" parent="CanvasLayer/Control/Control" unique_id=1554540581 instance=ExtResource("3_wra0f")]
+position = Vector2(96, 174)
 
 [node name="CameraTarget" type="Node3D" parent="." unique_id=280868501]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2758617, 1.6723526)

@@ -15,7 +15,6 @@ class_name BoatModel
 @export var light_tilt_max : float = 60
 @export_group("Exhaust")
 @export var exhaust_emitter : FireSmoke
-@export var exhaust_mesh : MeshInstance3D
 
 #region Material
 const BOAT_EMISSIVE_MATERIAL = preload("uid://6jva0rdtumww")

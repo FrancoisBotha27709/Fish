@@ -10,6 +10,7 @@ class_name PlayerFish
 @export var turn_deceleration: float = 0.5
 @export var drift_factor: float = 0.85
 @export var model : BoatModel
+
 @export_group("Boost")
 @export var rotation_angle : float = 5.0
 @export var rotation_speed : float = 12.0
@@ -17,23 +18,17 @@ class_name PlayerFish
 @export var max_boost_speed: float = 6.0
 @export var boost_acceleration: float = 5.0
 @export var boost_deceleration: float = 8.0
+
 @export_subgroup("Boost FOV")
 @export var normal_fov: float = 60.0
 @export var boost_fov: float = 78.0
 @export var fov_change_speed: float = 25.0
+
 @export_subgroup("Wobble")
 @export var wobble_amount: float = 0.4
 @export var wobble_speed: float = 7.0
 @export var wobble_randomness: float = 0.35
 @export var wobble_random_speed: float = 0.8
-
-var _wobble_time: float = 0.0
-var _wobble_offset: float = 0.0
-
-var _boost_speed: float = 0.0
-var _current_speed: float = 0.0
-var _current_turn_rate: float = 0.0
-var _boost_rotation_velocity: float = 0.0
 
 @export_group("Physics")
 @export var gravity: float = 20.0
@@ -45,7 +40,19 @@ var _boost_rotation_velocity: float = 0.0
 @export var camera_target: Node3D
 @export var cam_rig : CameraRig
 
+@export_group("UI Objects")
+@export var analog_motion_sensor : AnalogMotionSensor
+
+var _wobble_time: float = 0.0
+var _wobble_offset: float = 0.0
+
+var _boost_speed: float = 0.0
+var _current_speed: float = 0.0
+var _current_turn_rate: float = 0.0
+var _boost_rotation_velocity: float = 0.0
+
 var playing_minigame: bool = false
+var _minigame_position: Vector3 = Vector3.ZERO
 
 func _ready() -> void:
 	_wobble_offset = randf_range(0.0, TAU)
@@ -62,35 +69,14 @@ func _handle_movement(delta: float) -> void:
 		var throttle := Input.get_axis("boat_reverse", "boat_forward")
 		var steer := Input.get_axis("boat_turn_left", "boat_turn_right")
 
-		# --- Boost ---
-		var boosting := Input.is_action_pressed("boost")
-
-		var boost_rotation := 0.0
-
-		if boosting:
-			model.boost(30)
-
-			boost_rotation = deg_to_rad(rotation_angle)
-
-			cam_rig.camera.change_fov(boost_fov, delta)
-			_boost_speed = move_toward(_boost_speed, max_boost_speed, boost_acceleration * delta)
+		if throttle > 0.0:
+			analog_motion_sensor.forward(delta)
+		elif throttle < 0.0:
+			analog_motion_sensor.reverse(delta)
 		else:
-			model.boost(4)
+			analog_motion_sensor.neutral(delta)
 
-			cam_rig.camera.change_fov(normal_fov, delta)
-			_boost_speed = move_toward(_boost_speed, 0.0, boost_deceleration * delta)
-
-		var rotation_difference := boost_rotation - model.rotation.x
-
-		_boost_rotation_velocity += rotation_difference * rotation_speed * delta
-		_boost_rotation_velocity *= exp(-rotation_damping * delta)
-
-		model.rotation.x += _boost_rotation_velocity * delta
-
-		for collision in collision_shapes:
-			collision.rotation.x += _boost_rotation_velocity * delta
-
-		# --- Wobble ---
+		# Wobble
 		_wobble_time += delta
 
 		var wobble_main = sin((_wobble_time * wobble_speed) + _wobble_offset)
@@ -99,11 +85,7 @@ func _handle_movement(delta: float) -> void:
 
 		var wobble_noise = sin((_wobble_time * wobble_random_speed) + _wobble_offset * 3.1)
 
-		var wobble = (
-			wobble_main * 0.6 +
-			wobble_secondary * 0.25 +
-			wobble_slow * 0.15
-		)
+		var wobble = (wobble_main * 0.6 + wobble_secondary * 0.25 + wobble_slow * 0.15)
 
 		wobble *= 1.0 + (wobble_noise * wobble_randomness)
 		wobble *= deg_to_rad(wobble_amount)
@@ -114,33 +96,53 @@ func _handle_movement(delta: float) -> void:
 		model.rotation = base_rotation
 		model.rotate_z(wobble)
 
-		# --- Speed ---
+		# Speed
 		var current_max_speed := max_speed + _boost_speed
 		var target_speed := throttle * current_max_speed
 
 		if throttle != 0.0:
+			# Boost
+			var boosting := Input.is_action_pressed("boost")
+
+			var boost_rotation := 0.0
+
+			if boosting:
+				model.boost(30)
+
+				boost_rotation = deg_to_rad(rotation_angle)
+
+				cam_rig.camera.change_fov(boost_fov, delta)
+				_boost_speed = move_toward(_boost_speed, max_boost_speed, boost_acceleration * delta)
+			else:
+				model.boost(4)
+
+				cam_rig.camera.change_fov(normal_fov, delta)
+				_boost_speed = move_toward(_boost_speed, 0.0, boost_deceleration * delta)
+
+			var rotation_difference := boost_rotation - model.rotation.x
+
+			_boost_rotation_velocity += rotation_difference * rotation_speed * delta
+			_boost_rotation_velocity *= exp(-rotation_damping * delta)
+
+			model.rotation.x += _boost_rotation_velocity * delta
+
+			for collision in collision_shapes:
+				collision.rotation.x += _boost_rotation_velocity * delta
+
 			_current_speed = lerp(_current_speed, target_speed, 1.0 - exp(-acceleration * delta))
 		else:
 			_current_speed = lerp(_current_speed, 0.0, 1.0 - exp(-deceleration * delta))
 
 		model.rotate_prop(_current_speed, delta, throttle >= 0.0)
 
-		# --- Turning: heavy hull takes time to respond ---
+		# Turning
 		var turn_effectiveness = clamp(abs(_current_speed) / max_speed, 0.0, 1.0)
 		var target_turn_rate = steer * turn_speed * turn_effectiveness
 
 		if steer != 0.0:
-			_current_turn_rate = move_toward(
-				_current_turn_rate,
-				target_turn_rate,
-				turn_acceleration * delta
-			)
+			_current_turn_rate = move_toward(_current_turn_rate, target_turn_rate, turn_acceleration * delta)
 		else:
-			_current_turn_rate = move_toward(
-				_current_turn_rate,
-				0.0,
-				turn_deceleration * delta
-			)
+			_current_turn_rate = move_toward(_current_turn_rate, 0.0, turn_deceleration * delta)
 
 		rotate_y(-_current_turn_rate * delta)
 		model.turn_rudder(steer, turn_speed, delta)
@@ -154,6 +156,18 @@ func _handle_movement(delta: float) -> void:
 		model.aim_lights(cam_rig.get_ray_target(), delta)
 	else:
 		_current_speed = 0.0
+		velocity = Vector3.ZERO
+		global_position = _minigame_position
+
+		analog_motion_sensor.neutral(delta)
+
+func start_minigame() -> void:
+	playing_minigame = true
+	_minigame_position = global_position
+	velocity = Vector3.ZERO
+
+func end_minigame() -> void:
+	playing_minigame = false
 
 func catch_fish(fish: Fish) -> void:
 	UtilityStates.add_item(fish)

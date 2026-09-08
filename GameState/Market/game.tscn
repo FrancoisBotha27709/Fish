@@ -3,12 +3,18 @@
 [ext_resource type="Script" uid="uid://be05bs45xs7rt" path="res://GameState/Market/game.gd" id="1_feb5d"]
 [ext_resource type="Script" uid="uid://c7d2cthfrlurq" path="res://GameState/Market/Customers/Customer.gd" id="2_dgrck"]
 [ext_resource type="PackedScene" uid="uid://cmgeix184m3bt" path="res://Player/Market/PlayerMarket.tscn" id="2_fc0e3"]
-[ext_resource type="PackedScene" uid="uid://c2x5n3xa7tbvj" path="res://GameState/environment.tscn" id="3_8mqhf"]
+[ext_resource type="PackedScene" uid="uid://dvfb5h7e2l0jh" path="res://GameState/environment.tscn" id="3_8mqhf"]
 [ext_resource type="Resource" uid="uid://cpomm6qfa348h" path="res://GameState/Market/Customers/Christina/Christina.tres" id="3_mcvvr"]
 [ext_resource type="Resource" uid="uid://crgtw78sywhp5" path="res://GameState/Market/Customers/Iris/Iris.tres" id="4_mcvvr"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ryrav"]
-size = Vector2(10, 10)
+size = Vector2(50, 50)
+
+[sub_resource type="BoxMesh" id="BoxMesh_mcvvr"]
+size = Vector3(20, 30, 10)
+
+[sub_resource type="BoxMesh" id="BoxMesh_bs0pb"]
+size = Vector3(15, 10, 10)
 
 [node name="Game" type="Node3D" unique_id=1574762249 node_paths=PackedStringArray("player", "spawn_point", "clerk_position", "exit_position")]
 script = ExtResource("1_feb5d")
@@ -27,6 +33,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.0319426, 0)
 market = NodePath("..")
 
 [node name="Environment" parent="." unique_id=2110845524 instance=ExtResource("3_8mqhf")]
+transform = Transform3D(0.4956254, 0, 0.86853635, 0, 1, 0, -0.86853635, 0, 0.4956254, 0, 0, 0)
 
 [node name="SpawnPos" type="Marker3D" parent="." unique_id=661072943]
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
@@ -36,3 +43,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.920414, 0, 0)
 
 [node name="ExitPos" type="Marker3D" parent="." unique_id=1975769224]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.909522, 0, -3)
+
+[node name="Buildings" type="Node3D" parent="." unique_id=186654128]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Buildings" unique_id=31512740]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.971547, 12.082358, 9.4849205)
+mesh = SubResource("BoxMesh_mcvvr")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Buildings" unique_id=1006268003]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.189396, 2.7058153, 6.583643)
+mesh = SubResource("BoxMesh_bs0pb")

@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://uhh2dw8abi5d"]
 
+[ext_resource type="Theme" uid="uid://bxi4lg4xa8uq4" path="res://Assets/2D/UI/pastel/pastel/pastel.tres" id="1_6p4ki"]
 [ext_resource type="Script" uid="uid://cjjh1snbt38w3" path="res://Player/User Interface/ui.gd" id="1_lfgwr"]
 [ext_resource type="PackedScene" uid="uid://d2vbvhw4dahng" path="res://Player/User Interface/Item_box/Item_box.tscn" id="2_uxcms"]
 [ext_resource type="Script" uid="uid://c4x0np2q7ul41" path="res://addons/radial_menu/addons/advanced_radial_menu/radial_menu_class.gd" id="3_5matg"]
@@ -41,6 +42,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
+theme = ExtResource("1_6p4ki")
 script = ExtResource("1_lfgwr")
 end_day_btn = NodePath("MarginContainer/PanelContainer/MarginContainer/VBoxContainer/EndDayBtn")
 end_night_btn = NodePath("MarginContainer/PanelContainer/MarginContainer/VBoxContainer/EndNightBtn")
@@ -53,10 +55,10 @@ dialog_lbl = NodePath("MarginContainer2/PanelContainer/MarginContainer/VBoxConta
 price_slider = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/HSlider")
 money_label = NodePath("MarginContainer2/PanelContainer/MarginContainer/VBoxContainer/RichTextLabel")
 offer_btn = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/Offerbtn")
-preview_label = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer/HBoxContainer/RichTextLabel")
-preview_symbol_container = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer/HBoxContainer/SymbolsContainer")
-preview_description = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer/RichTextLabel")
-preview_sprite = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer/Control/Sprite2D")
+preview_label = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/RichTextLabel")
+preview_symbol_container = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/SymbolsContainer")
+preview_description = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/RichTextLabel")
+preview_sprite = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/Control/Sprite2D")
 
 [node name="GridContainer" type="GridContainer" parent="." unique_id=384191173]
 visible = false
@@ -171,6 +173,9 @@ label_text = "Items"
 layout_mode = 2
 text = "End the day..."
 
+[node name="Control" type="Control" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=174892392]
+layout_mode = 2
+
 [node name="EndNightBtn" type="Button" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=244906313]
 layout_mode = 2
 text = "End the Night..."
@@ -206,36 +211,43 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer" unique_id=147801142]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer" unique_id=15037816]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer" unique_id=619150388]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer" unique_id=147801142]
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer/HBoxContainer" unique_id=811320199]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer" unique_id=619150388]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=811320199]
 custom_minimum_size = Vector2(150, 20)
 layout_mode = 2
 bbcode_enabled = true
+text = "[color=cyan][b]Salmon[/b][/color][i] (common)[/i]"
 fit_content = true
 
-[node name="SymbolsContainer" type="HBoxContainer" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer/HBoxContainer" unique_id=776782042]
+[node name="SymbolsContainer" type="HBoxContainer" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=776782042]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 49
 
-[node name="HSeparator" type="HSeparator" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer" unique_id=935557277]
+[node name="HSeparator" type="HSeparator" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer" unique_id=935557277]
+visible = false
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer" unique_id=192389405]
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer" unique_id=192389405]
 layout_mode = 2
 bbcode_enabled = true
 fit_content = true
 
-[node name="Control" type="Control" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer" unique_id=31915305]
+[node name="Control" type="Control" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer" unique_id=31915305]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
 
-[node name="Sprite2D" type="Sprite2D" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/VBoxContainer/Control" unique_id=914497783]
+[node name="Sprite2D" type="Sprite2D" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/Control" unique_id=914497783]
 
 [node name="HSlider" type="HSlider" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer" unique_id=381088020]
 layout_mode = 2

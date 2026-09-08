@@ -145,8 +145,7 @@ func _on_body_exited(body: Node3D) -> void:
 
 
 func _on_fish_confirmed() -> void:
-	if popup_window:
-		popup_window.show()
+	popup_window.show()
 
 	_start_fishing()
 
@@ -161,11 +160,10 @@ func _start_fishing() -> void:
 
 	_fishing_active = true
 
-	if popup_window:
-		popup_window.show()
+	popup_window.show()
 
 	if player:
-		player.playing_minigame = true
+		player.start_minigame()
 
 	minigame.start(data_resource.minigame)
 
@@ -174,12 +172,12 @@ func _stop_fishing() -> void:
 	_fishing_active = false
 
 	if player:
-		player.playing_minigame = false
+		player.end_minigame()
 
 	minigame.stop()
+	popup_window.hide()
 
-	if catch_message_label:
-		catch_message_label.hide()
+	catch_message_label.hide()
 
 
 func _on_fish_caught(fish: Fish) -> void:

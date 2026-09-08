@@ -49,7 +49,7 @@ max_speed = 5.0
 acceleration = 0.9
 deceleration = 1.2
 turn_speed = 0.385
-drift_factor = 0.985
+drift_factor = 0.66
 cam_rig = NodePath("../CameraRig")
 
 [node name="FishingSpots" type="Node3D" parent="." unique_id=1010515394]
@@ -72,6 +72,9 @@ water_path = NodePath("../../../WoWs Water")
 [node name="WoWs Water" parent="." unique_id=2069854430 instance=ExtResource("7_ib3f6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -162.145, 16.53062, 0)
 ripple_wavelength = 6.045
+swell_wavelength_scale = 3.426
+chop_amplitude = 0.225
+wave_speed = 0.64
 
 [node name="FogVolume" type="FogVolume" parent="WoWs Water" unique_id=1425771653]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -80.8546, 0)

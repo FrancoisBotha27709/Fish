@@ -34,16 +34,14 @@ func _ready() -> void:
 	end_night_btn.pressed.connect(_on_end_night_btn_pressed)
 	view_radial_btn.pressed.connect(_on_radial_btn_pressed)
 
-	if player_market:
-		player_market.negotiation_started.connect(_on_negotiation_started)
-		player_market.negotiation_started.connect(_preview_item)
-		player_market.dialog_updated.connect(_on_dialog_updated)
-		player_market.deal_finished.connect(_on_deal_finished)
+	player_market.negotiation_started.connect(_on_negotiation_started)
+	player_market.negotiation_started.connect(_preview_item)
+	player_market.dialog_updated.connect(_on_dialog_updated)
+	player_market.deal_finished.connect(_on_deal_finished)
 
-	if price_slider:
-		price_slider.value_changed.connect(_on_price_slider_value_changed)
-	if offer_btn:
-		offer_btn.pressed.connect(_on_offer_btn_pressed)
+	price_slider.value_changed.connect(_on_price_slider_value_changed)
+	offer_btn.pressed.connect(_on_offer_btn_pressed)
+	money_label.text = "Money: [color=light_green][b][i]$%0.2d[/i][/b][/color]" % UtilityStates.money
 
 
 func _on_end_day_btn_pressed() -> void:
