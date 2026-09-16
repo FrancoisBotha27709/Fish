@@ -12,16 +12,17 @@ noise = SubResource("FastNoiseLite_fy73t")
 seamless = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fy73t"]
+resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_fy73t")
-shader_parameter/swell_amplitude = 0.9310000442225
-shader_parameter/swell_wavelength_scale = 0.27100000635272997
-shader_parameter/chop_amplitude = 1.0550000501125
-shader_parameter/wave_speed = 1.030000048925
-shader_parameter/wave_choppiness = 0.7350000349125
+shader_parameter/swell_amplitude = 3.2
+shader_parameter/swell_wavelength_scale = 1.0
+shader_parameter/chop_amplitude = 0.35
+shader_parameter/wave_speed = 1.0
+shader_parameter/wave_choppiness = 0.9
 shader_parameter/wind_direction_deg = 30.0
-shader_parameter/wave_direction_jitter = 23.14000109915
-shader_parameter/chop_patchiness = 0.0
+shader_parameter/wave_direction_jitter = 20.0
+shader_parameter/chop_patchiness = 0.5
 shader_parameter/domain_warp_amount = 35.0
 shader_parameter/domain_warp_scale = 0.004
 shader_parameter/domain_warp_speed = 0.02
@@ -97,7 +98,7 @@ subdivide_width = 800
 subdivide_depth = 800
 orientation = 1
 
-[node name="WoWs Water" type="MeshInstance3D" unique_id=2069854430]
+[node name="WoWs Water2" type="MeshInstance3D" unique_id=2069854430]
 mesh = SubResource("QuadMesh_cjfj7")
 script = ExtResource("2_fy73t")
 ripple_lifetime = 8.725
@@ -106,5 +107,4 @@ ripple_width = 2.77
 ripple_amplitude = 0.34
 swell_amplitude = 1.181
 swell_wavelength_scale = 2.536
-wave_speed = 0.585
 sea_state_min = 0.1

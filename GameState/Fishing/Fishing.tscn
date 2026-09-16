@@ -44,7 +44,7 @@ pitch = 8.0
 orbit_smoothing = 4.505
 
 [node name="PlayerFish" parent="." unique_id=1016697865 node_paths=PackedStringArray("cam_rig") instance=ExtResource("5_ndv5f")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -180.92844, 16.68062, -21.227451)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -180.92844, 17.543598, -21.227451)
 max_speed = 5.0
 acceleration = 0.9
 deceleration = 1.2

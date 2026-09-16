@@ -45,6 +45,3 @@ spot_angle_attenuation = 3.9999993
 
 [node name="FireSmoke" parent="Boat" parent_id_path=PackedInt32Array(946414557) index="6" unique_id=1253771054 instance=ExtResource("4_bjqa6")]
 transform = Transform3D(1, 0, 0, 0, 0.78170556, -0.6236477, 0, 0.6236477, 0.78170556, 0.7721453, 3.6666887, 4.182863)
-
-[node name="Camera3D" type="Camera3D" parent="." index="1" unique_id=1362342968]
-transform = Transform3D(0.8950122, 0, 0.4460416, 0, 1, 0, -0.4460416, 0, 0.8950122, 1.3560449, -0.6576962, 4.5488577)

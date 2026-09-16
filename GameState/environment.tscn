@@ -39,8 +39,12 @@ camera_attributes = SubResource("CameraAttributesPractical_8bpc5")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=250506300]
 transform = Transform3D(-0.114641406, 0.9504615, 0.28893027, -0.042355258, -0.2952597, 0.95447767, 0.9925037, 0.09718495, 0.074106015, 0, 0, 0)
+light_color = Color(0.19754031, 0.20846024, 0.15782726, 1)
+light_energy = 16.0
 light_volumetric_fog_energy = 0.6
 shadow_enabled = true
-shadow_opacity = 0.8
+shadow_bias = 2.615
+shadow_normal_bias = 6.235
+shadow_transmittance_bias = 1.345
+shadow_opacity = 0.25
 shadow_blur = 2.25
-sky_mode = 1
