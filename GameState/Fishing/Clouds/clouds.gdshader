@@ -1,191 +1,115 @@
-shader_type sky;
+shader_type spatial;
+render_mode blend_mix, depth_prepass_alpha, cull_disabled, unshaded, shadows_disabled, ambient_light_disabled;
 
-group_uniforms cloud_data;
-uniform sampler2D sky_texture;
-uniform float power = 0.2;
-uniform float scale_a = 0.5;
-uniform float scale_b = 0.3;
+#include "res://GameState/Fishing/Clouds/hatch_shadow.gdshaderinc"   // also brings in smog_fbm/smog_billow/smog_hash
 
-group_uniforms speed;
-uniform float speed = 0.2;
-uniform vec2 speed_a = vec2(0.1);
-uniform vec2 speed_b = vec2(0.1);
+group_uniforms Clouds;
+uniform float cloud_coverage : hint_range(0.0, 1.0) = 0.55;
+uniform float cloud_density : hint_range(0.0, 2.0) = 1.0;
+uniform float cloud_scale : hint_range(0.0005, 0.05) = 0.006;     // frequency directly on world XZ - small numbers, world units are big
+uniform float cloud_speed : hint_range(0.0, 20.0) = 2.5;          // world units/second of drift
+uniform float cloud_softness : hint_range(0.01, 0.5) = 0.12;
+uniform vec3 cloud_top_color : source_color = vec3(0.46, 0.44, 0.36);
+uniform vec3 cloud_under_color : source_color = vec3(0.09, 0.10, 0.09);
+uniform float wind_direction_deg : hint_range(0.0, 360.0) = 30.0; // match your water's wind for the clouds to drift the same way
 
-group_uniforms toxic_clouds;
-uniform float density : hint_range(0.0, 2.0) = 0.9;
-uniform float grayness : hint_range(0.0, 1.0) = 0.2;
-uniform float cloud_light = 1.0;
-uniform float cloud_distortion = 0.2;
-uniform float cloud_edge_softness : hint_range(0.001, 0.2, 0.001) = 0.02;
-uniform int cloud_shade_steps : hint_range(2, 3, 1) = 2;
-uniform vec3 cloud_color_light : source_color = vec3(0.55, 0.58, 0.42);
-uniform vec3 cloud_color_dark : source_color = vec3(0.18, 0.2, 0.14);
+group_uniforms Fade;
+uniform float fade_start : hint_range(0.0, 4000.0) = 500.0;   // camera-distance (world units) where the plane starts fading out
+uniform float fade_end : hint_range(0.0, 8000.0) = 1100.0;    // fully invisible by here - hides the plane's edge in the haze
 
-group_uniforms cloud_depth;
-// fake-3D "bump" shading built from the noise gradient — this is what breaks up
-// dense/flat areas into lumps, ridges, and pockets of shadow.
-uniform float bump_sample_offset : hint_range(0.0005, 0.02, 0.0005) = 0.004; // distance between gradient samples, smaller = finer bumps
-uniform float bump_strength : hint_range(0.0, 10.0, 0.1) = 3.0; // how tall the fake bumps read, higher = more relief
-uniform int bump_light_steps : hint_range(1, 4, 1) = 2; // 1 = smooth lighting, 2-4 = toon-banded lighting on the bumps
-uniform vec3 bump_shadow_tint : source_color = vec3(0.35, 0.35, 0.4); // multiplies onto color where the fake normal faces away from the light
-uniform vec3 bump_highlight_tint : source_color = vec3(1.3, 1.25, 1.1); // multiplies onto color where the fake normal faces the light (can exceed 1.0 to punch highlights)
-uniform float bump_ao_strength : hint_range(0.0, 1.0, 0.01) = 0.4; // darkens the thickest/densest parts of the field, like ambient occlusion in the folds
+group_uniforms Sun;
+// Pushed every frame by CloudLayer.gd from PollutedAtmosphere's own sun -
+// do not rename these.
+uniform vec3 sun_direction = vec3(0.3, -0.6, 0.3);   // direction the light TRAVELS in
+uniform vec3 sun_color : source_color = vec3(0.92, 0.86, 0.64);
+uniform float sun_energy : hint_range(0.0, 4.0) = 1.0;
 
-group_uniforms cloud_underside;
-uniform vec3 cloud_underside_color : source_color = vec3(0.06, 0.07, 0.05);
-uniform float cloud_loom : hint_range(0.0, 1.0, 0.01) = 0.35;
-uniform float cloud_underside_strength : hint_range(0.0, 1.0, 0.01) = 0.85;
+// Same self-shadow -> hatch pipeline as new_sky.gdshader, applied to the
+// cloud tops/undersides. Independent style/scale from the sky's smog so you
+// can, say, keep the smog as soft relief but make the clouds cross-hatched.
+group_uniforms Hatching;
+uniform int hatch_style : hint_enum("Soft Relief", "Cross-Hatch", "Parallel Streaks", "Stipple") = 0;
+uniform float hatch_scale : hint_range(0.5, 400.0) = 25.0;
+uniform float hatch_strength : hint_range(0.0, 2.0) = 1.0;
+uniform float hatch_angle_deg : hint_range(0.0, 180.0) = 45.0;
+uniform float hatch_sharpness : hint_range(0.5, 8.0) = 3.0;
 
-group_uniforms cloud_grime;
-uniform float cloud_grime_scale : hint_range(1.0, 20.0, 0.5) = 6.0;
-uniform vec2 cloud_grime_speed = vec2(0.02, -0.015);
-uniform float cloud_grime_cutoff : hint_range(0.0, 1.0, 0.01) = 0.5;
-uniform float cloud_grime_strength : hint_range(0.0, 1.0, 0.01) = 0.4;
+group_uniforms Biomes;
+// Pushed by WaterBiomeSystem.gd, same world-space biome_data your water
+// shader uses - do not rename these.
+uniform vec4 biome_data[8];    // xy = world center (x,z), z = radius (meters), w = edge blend distance (meters)
+uniform int biome_count : hint_range(0, 8) = 0;
+uniform vec4 biome_cloud[8];   // x = density mult, y = darken (0..1), z = extra turbulence (0..1), w = unused
+uniform vec4 biome_look[8];    // x = tint strength (reused from the water biome's own tint_strength)
+uniform vec4 biome_tint[8];    // rgb = tint color (reused from the water biome's own tint_color)
 
-group_uniforms smog;
-uniform vec3 smog_color : source_color = vec3(0.35, 0.4, 0.22);
-uniform float smog_height : hint_range(0.0, 0.5, 0.01) = 0.15;
-uniform float smog_density : hint_range(0.0, 2.0, 0.05) = 1.0;
+varying vec3 v_world_pos;
 
-group_uniforms sky_color;
-uniform vec3 sky_color_a0 : source_color = vec3(0.35, 0.4, 0.28);
-uniform vec3 sky_color_b0 : source_color = vec3(0.15, 0.2, 0.15);
-uniform vec3 sky_color_a1 : source_color = vec3(0.1, 0.12, 0.09);
-uniform vec3 sky_color_b1 : source_color = vec3(0.03, 0.04, 0.03);
-
-group_uniforms ground_colors;
-uniform vec3 ground_color_a0 : source_color = vec3(0.2, 0.18, 0.1);
-uniform vec3 ground_color_b0 : source_color = vec3(0.08, 0.08, 0.05);
-uniform vec3 ground_color_a1 : source_color = vec3(0.05, 0.05, 0.04);
-uniform vec3 ground_color_b1 : source_color = vec3(0.02, 0.02, 0.02);
-
-group_uniforms sun_data;
-uniform vec3 sun_color_a : source_color = vec3(0.9, 0.75, 0.3);
-uniform vec3 sun_color_b : source_color = vec3(0.8, 0.35, 0.15);
-uniform float sun_size = 0.995;
-uniform float sun_softness = 0.002;
-uniform vec2 sunset_range = vec2(-0.1, 0.3);
-
-float to_grayscale(vec3 color) {
-	return dot(color, vec3(0.299, 0.587, 0.114));
+void vertex() {
+	v_world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 }
 
-vec3 do_ceil(vec3 eye, vec3 sun) {
-	vec3 mix_0 = mix(sky_color_a0, sky_color_b0, eye.y);
-	vec3 mix_1 = mix(sky_color_a1, sky_color_b1, eye.y);
-	return mix(mix_1, mix_0, smoothstep(sunset_range.x, sunset_range.y, sun.y));
-}
+void fragment() {
+	vec2 wxz = v_world_pos.xz;
 
-vec3 do_floor(vec3 eye, vec3 sun) {
-	vec3 mix_0 = mix(ground_color_a0, ground_color_b0, -eye.y);
-	vec3 mix_1 = mix(ground_color_a1, ground_color_b1, -eye.y);
-	return mix(mix_1, mix_0, smoothstep(sunset_range.x, sunset_range.y, sun.y));
-}
-
-// Cheap "height" read of the cloud noise at a given uv, used both for the main
-// mask and for building a fake normal via finite differences.
-float sample_cloud_height(vec2 uv_a) {
-	vec2 uv_b = (uv_a - TIME * speed_a * speed) * (scale_b / max(scale_a, 0.0001)) + TIME * speed_b * speed;
-	uv_b += texture(sky_texture, uv_a).rg * cloud_distortion;
-	float a = texture(sky_texture, uv_a).r;
-	float b = texture(sky_texture, uv_b).r;
-	return a + b;
-}
-
-void sky() {
-	// LIGHT0_DIRECTION should already be unit length, but if the light (or
-	// any parent node above it) ever picks up a non-1 scale, Godot can pass
-	// a longer vector through. dot(EYEDIR, LIGHT0_DIRECTION) then stops being
-	// a clean cosine of the angle between them — it becomes
-	// magnitude * cos(angle) — which can stay above the sun_size threshold
-	// across a huge range of angles instead of just near the light itself,
-	// showing up as a hard-edged wedge across a big chunk of the sky rather
-	// than a small disc. Force it to unit length so the sun math is always
-	// a true angular comparison regardless of upstream transform scale.
-	vec3 light_dir = normalize(LIGHT0_DIRECTION);
-
-	float fade = pow(abs(EYEDIR.y), power);
-
-	// EYEDIR.xz / EYEDIR.y is a horizon-plane projection: as EYEDIR.y -> 0
-	// (i.e. the view direction gets close to the horizon, which happens
-	// constantly during normal play) this divide blows up toward +/-inf and
-	// can hand texture() a NaN/inf uv. NaN then survives the "* fade" below
-	// (NaN * 0 is still NaN, not 0) and poisons cloud_field, cloud_mask and
-	// eventually COLOR -- which is what shows up as a solid, wrong-colored
-	// blob smeared across a big chunk of the sky. Clamping the denominator's
-	// magnitude keeps the projection finite without changing it anywhere
-	// away from the horizon.
-	float eye_y_sign = EYEDIR.y >= 0.0 ? 1.0 : -1.0;
-	float eye_y_safe = eye_y_sign * max(abs(EYEDIR.y), 0.05);
-	vec2 uv_a = (EYEDIR.xz / eye_y_safe) * scale_a + TIME * speed_a * speed;
-
-	float cloud_field = sample_cloud_height(uv_a) * fade;
-	float cloud_mask = smoothstep(density - cloud_edge_softness, density + cloud_edge_softness, cloud_field);
-
-	// flat, hard-stepped base tone
-	float steps = float(cloud_shade_steps);
-	float banded = floor(cloud_field * steps) / steps;
-	vec3 flat_color = mix(cloud_color_dark, cloud_color_light, step(1.0 / steps, banded));
-
-	// --- fake 3D bump shading ---
-	// Sample the height field slightly offset in x and y. The difference tells us
-	// which way the "surface" is tilting at this point, same idea as a normal map,
-	// but derived on the fly from the same noise instead of needing real geometry.
-	float h_r = sample_cloud_height(uv_a + vec2(bump_sample_offset, 0.0)) * fade;
-	float h_u = sample_cloud_height(uv_a + vec2(0.0, bump_sample_offset)) * fade;
-	vec3 fake_normal = normalize(vec3((cloud_field - h_r) * bump_strength, (cloud_field - h_u) * bump_strength, 1.0));
-
-	// light the fake surface with the same directional light used for the sun/sky
-	float bump_light = dot(fake_normal, normalize(vec3(LIGHT0_DIRECTION.x, LIGHT0_DIRECTION.z, LIGHT0_DIRECTION.y))) * 0.5 + 0.5;
-	if (bump_light_steps > 1) {
-		float bsteps = float(bump_light_steps);
-		bump_light = floor(bump_light * bsteps) / max(bsteps - 1.0, 1.0);
-		bump_light = clamp(bump_light, 0.0, 1.0);
+	// --- distance fade: hides the plane's finite edges in the haze instead
+	// of showing a hard rectangle against the sky ---
+	float cam_dist = length(wxz - CAMERA_POSITION_WORLD.xz);
+	float edge_fade = 1.0 - smoothstep(fade_start, max(fade_end, fade_start + 1.0), cam_dist);
+	if (edge_fade <= 0.001) {
+		discard;
 	}
-	vec3 bump_tint = mix(bump_shadow_tint, bump_highlight_tint, bump_light);
-	flat_color *= bump_tint;
 
-	// ambient occlusion: the densest/thickest parts of the field (deep in the folds)
-	// read darker, regardless of light direction — sells weight/thickness
-	float ao = smoothstep(density, density + 0.6, cloud_field) * bump_ao_strength;
-	flat_color = mix(flat_color, flat_color * 0.35, ao);
-
-	// --- dirty underside ---
-	float underside_amount = (1.0 - smoothstep(0.0, cloud_loom, clamp(EYEDIR.y, 0.0, 1.0))) * cloud_underside_strength;
-	flat_color = mix(flat_color, cloud_underside_color, underside_amount * cloud_mask);
-
-	// --- grime/stain overlay ---
-	vec2 grime_uv = uv_a * (cloud_grime_scale / max(scale_a, 0.001)) + TIME * cloud_grime_speed;
-	float grime = texture(sky_texture, grime_uv).g;
-	float grime_mask = smoothstep(cloud_grime_cutoff - 0.05, cloud_grime_cutoff + 0.05, grime) * cloud_mask;
-	flat_color = mix(flat_color, cloud_underside_color, grime_mask * cloud_grime_strength);
-
-	vec3 sky_back = EYEDIR.y > 0.0 ? do_ceil(EYEDIR, light_dir) : vec3(0.0);
-	vec3 sky_with_clouds = mix(sky_back, flat_color, cloud_mask * clamp(cloud_light, 0.0, 1.0));
-
-	float smog_factor = EYEDIR.y > 0.0
-		? clamp(1.0 - (EYEDIR.y / max(smog_height, 0.001)), 0.0, 1.0) * smog_density
-		: 0.0;
-	sky_with_clouds = mix(sky_with_clouds, smog_color, smog_factor);
-
-	// sun_size/sun_softness define a smoothstep(edge0, edge1, x); if edge1 ever
-	// equals edge0 (softness pushed to 0 from the inspector) that's undefined
-	// behavior in GLSL and can rasterize as a huge solid disc instead of a
-	// tiny point. max(..., 0.0005) keeps the two edges from ever colliding.
-	float sun_dot = max(0.0, dot(EYEDIR, light_dir));
-	float sun = smoothstep(sun_size, sun_size + max(sun_softness, 0.0005), sun_dot);
-
-	COLOR = vec3(0.0);
-	COLOR = EYEDIR.y > 0.0 ? mix(sky_with_clouds, vec3(to_grayscale(sky_with_clouds)), grayness) : COLOR;
-	COLOR += sun * mix(sun_color_b, sun_color_a, smoothstep(sunset_range.x, sunset_range.y, light_dir.y));
-
-	COLOR = EYEDIR.y < 0.0 ? do_floor(EYEDIR, light_dir) : COLOR;
-
-	// Last-resort safety net: if anything upstream still produced NaN/inf
-	// (bad texture import, extreme uniform values, etc.) don't let it paint
-	// a giant blown-out patch — fall back to black rather than garbage.
-	if (isnan(COLOR.x) || isnan(COLOR.y) || isnan(COLOR.z)) {
-		COLOR = vec3(0.0);
+	// --- blend biome influence at this world position, same soft-edged-circle
+	// blend the water vertex shader uses ---
+	vec4 bcloud = vec4(1.0, 0.0, 0.0, 0.0);   // density mult, darken, turbulence, unused
+	float tint_strength = 0.0;
+	vec3 tint_color = vec3(0.0);
+	for (int i = 0; i < 8; i++) {
+		if (i >= biome_count) {
+			break;
+		}
+		vec2 center = biome_data[i].xy;
+		float radius = biome_data[i].z;
+		float blend = max(biome_data[i].w, 0.001);
+		float dist = length(wxz - center);
+		float w = 1.0 - smoothstep(radius, radius + blend, dist);
+		bcloud = mix(bcloud, biome_cloud[i], w);
+		tint_strength = mix(tint_strength, biome_look[i].x, w);
+		tint_color = mix(tint_color, biome_tint[i].rgb, w);
 	}
-	COLOR = clamp(COLOR, vec3(0.0), vec3(4.0));
+
+	// --- cloud shape: billowed fbm, wind-drifted, extra roiling noise added
+	// under stormy biomes via bcloud.z (turbulence) ---
+	float wind_rad = radians(wind_direction_deg);
+	vec2 wind_dir = vec2(cos(wind_rad), sin(wind_rad));
+	float t = TIME * cloud_speed;
+	vec2 uv = wxz * cloud_scale + wind_dir * t * cloud_scale * 40.0;
+
+	float n = smog_billow(uv);
+	if (bcloud.z > 0.001) {
+		vec2 turb_uv = wxz * cloud_scale * 2.6 + vec2(-t * 1.4, t * 0.9) * cloud_scale * 40.0;
+		float turb_n = smog_billow(turb_uv);
+		n = mix(n, max(n, turb_n), clamp(bcloud.z, 0.0, 1.0));
+	}
+	float n_lit = smog_billow(uv + sun_direction.xz * 0.12);
+
+	float coverage = clamp(cloud_coverage * bcloud.x, 0.0, 1.0);
+	float thr = 1.0 - coverage;
+	float mask = smoothstep(thr - cloud_softness, thr + cloud_softness, n);
+	float alpha = clamp(mask * cloud_density, 0.0, 1.0);
+
+	// --- shading: lit tops vs sooty undersides, using the hand-fed sun,
+	// rendered through the same hatch pipeline as the sky's smog ---
+	float relief = hatch_relief_from_samples(n, n_lit, hatch_sharpness);
+	float shaded = apply_hatch(uv, relief, hatch_style, hatch_scale, hatch_strength, hatch_angle_deg);
+	vec3 col = mix(cloud_under_color, cloud_top_color, shaded);
+	col *= mix(vec3(1.0), sun_color, 0.5) * mix(0.6, 1.0, sun_energy * 0.4 + 0.3);
+
+	// darken toward storm-biome soot, and tint toward the biome's water colour
+	col = mix(col, col * 0.35, clamp(bcloud.y, 0.0, 1.0));
+	col = mix(col, tint_color, clamp(tint_strength, 0.0, 1.0) * 0.5);
+
+	ALBEDO = col;
+	ALPHA = alpha * edge_fade;
 }

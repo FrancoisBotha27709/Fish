@@ -1,22 +1,6 @@
 shader_type spatial;
 render_mode blend_mix, unshaded, depth_draw_opaque, cull_back;
 
-// ============================================================
-// FIRE -- stylized "flame lick" draw shader, real 3D teardrop geometry.
-// Assign as the GPUParticles3D "Material Override".
-// Set draw_pass_1 to a low-poly SphereMesh (e.g. radial_segments=8,
-// rings=6) -- the vertex shader sculpts it into a teardrop lick and spins
-// it on its own axis, so it reads correctly as a solid shape from every
-// camera angle -- no billboard trick needed.
-// Pairs with fire_process_3d.gdshader -- reads INSTANCE_CUSTOM:
-//   .x = per-particle random 0..TAU (spin/orientation seed)
-//   .y = size_factor 0..1 via abs() (ember .. full lick). Sign is only
-//        meaningful to the process shader (gating); draw always uses
-//        abs() since gated particles are scaled to zero and never visible.
-//   .z = wobble/flicker phase 0..TAU
-//   .w = life progress 0..1
-// ============================================================
-
 // ---- Shape ----
 uniform float segment_facets : hint_range(2.0, 20.0) = 8.0; // angular color-band count around the lick
 uniform float twist_speed : hint_range(0.0, 20.0) = 3.5;

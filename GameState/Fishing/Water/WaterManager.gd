@@ -172,16 +172,28 @@ func spawn_ripple(world_pos: Vector3, strength: float = 1.0) -> void:
 	_slot_strength[slot] = strength
 	_push_to_shader()
 
-## Ripple-only vertical displacement at a world-space XZ point, in the same
-## units as ripple_amplitude. Mirrors the shader's vertex-stage ripple loop
-## (NOT the swell/chop waves, domain warp, or turbulence — see
-## get_water_height_at() for the full surface height, which is what
-## BuoyancySystem.gd actually samples). Kept as its own method for anything
-## that only cares about interaction ripples specifically.
+# ---------------------------------------------------------------------------
+# PATCH for WaterManager.gd - replace get_ripple_height_at() with these two
+# functions. They mirror the shader's ripple block exactly (ripple_env(), the
+# mesh-safe wavelength/width clamp, the widening ring and the 1/sqrt(r) falloff),
+# so BuoyancySystem.gd keeps sampling the same surface the mesh draws.
+# Nothing else in WaterManager.gd needs to change.
+# ---------------------------------------------------------------------------
+
+## Mirrors ripple_env() in the shader: short fade-in, smoothstep ease-out.
+func _ripple_env(age: float) -> float:
+	var u: float = clamp(age / max(ripple_lifetime, 0.001), 0.0, 1.0)
+	var fade_out: float = 1.0 - u * u * (3.0 - 2.0 * u)
+	return smoothstep(0.0, 0.15, age) * fade_out
+
 func get_ripple_height_at(world_xz: Vector2) -> float:
 	var total := 0.0
 	var sc: float = 1.0 / max(meters_per_unit, 0.001)
-	var k: float = TAU / max(ripple_wavelength, 0.001)
+	# The shader clamps the DISPLACEMENT ring to what the mesh can represent
+	# (fine detail is drawn per-pixel and has no height), so clamp identically here.
+	var wl: float = max(ripple_wavelength, mesh_vertex_spacing * 3.5)
+	var width0: float = max(ripple_width, mesh_vertex_spacing * 2.0)
+	var k: float = TAU / wl
 	for i in MAX_RIPPLES:
 		var strength: float = _slot_strength[i]
 		if strength <= 0.0001:
@@ -192,10 +204,11 @@ func get_ripple_height_at(world_xz: Vector2) -> float:
 		var to_point: Vector2 = (world_xz - _slot_pos[i]) * sc
 		var dist: float = to_point.length()
 		var wavefront: float = age * ripple_speed
-		var band: float = exp(-pow((dist - wavefront) / max(ripple_width, 0.001), 2.0))
+		var bx: float = (dist - wavefront) / (width0 * (1.0 + age * 0.25))
+		var band: float = exp(-bx * bx)
 		if band < 0.001:
 			continue
-		var decay: float = strength * (1.0 - age / ripple_lifetime)
+		var decay: float = strength * _ripple_env(age) / sqrt(1.0 + wavefront * 0.5)
 		var phase: float = (dist - wavefront) * k
 		total += sin(phase) * ripple_amplitude * decay * band
 	return total

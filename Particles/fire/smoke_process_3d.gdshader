@@ -1,43 +1,4 @@
 shader_type particles;
-// Drives smoke particle motion in 3D. Assign as the GPUParticles3D
-// "Process Material". Pairs with smoke_draw_3d.gdshader.
-//
-// WORLD-SPACE SIMULATION: written for local_coords = false on the
-// GPUParticles3D node, so already-emitted puffs are NOT dragged along when
-// the node moves (that's what lets the plume trail behind as the emitter
-// moves). Because of that, TRANSFORM here is a WORLD-space transform -- the
-// engine does not multiply it by the node's transform for us. So start()
-// manually converts the local emission offset into world space using
-// EMISSION_TRANSFORM (the node's global transform at the instant this
-// particle spawns), and explicitly pulls in EMITTER_VELOCITY to inherit the
-// emitter's motion. Also set inherit_velocity_ratio = 1.0 on the
-// GPUParticles3D node itself -- that's what tells the engine to actually
-// track and populate EMITTER_VELOCITY; velocity_inherit_ratio below then
-// controls how much of it each new puff actually keeps.
-//
-// EMISSION-INTENSITY GATING (replaces changing `amount` / amount_ratio):
-// `amount` is a fixed pool sized for the maximum smoke density and must
-// never change at runtime -- changing it forces GPUParticles3D to
-// reallocate its buffers, causing the exact pop/jitter this architecture
-// avoids. Instead, FireSmoke.gd smoothly drives `emission_intensity` (0..1)
-// every frame. Each particle slot gets a fixed, INDEX-derived
-// `activation_threshold` computed ONCE in start(). If that threshold is
-// above the current emission_intensity, the slot still lives out a
-// completely normal lifetime cycle (so its natural respawn cadence is
-// unaffected) but is parked invisibly (zero scale, zero velocity) instead
-// of behaving like a real puff. As emission_intensity rises, more slots
-// pass their threshold on their next natural respawn -- staggered across
-// the whole pool since slots aren't synchronized -- giving a gradual
-// density increase with no pop-in.
-//
-// This is deliberately decoupled from the ACTIVE = progress < 1.0 lifecycle
-// below: gating only ever touches visibility/motion, never the death timer,
-// so the two systems can never fight each other. The gate decision is also
-// frozen at spawn time (sign-encoded into CUSTOM.y) rather than re-checked
-// every frame in process() -- re-checking live would let a particle "pop in"
-// mid-life already aged, at a stale spawn position, since EMISSION_TRANSFORM
-// is only valid inside start().
-
 // ==================== Emission control ====================
 uniform float emission_intensity : hint_range(0.0, 1.0) = 1.0;
 uniform float spawn_hash_seed = 17.0; // vary per-emitter to desync multiple smoke nodes

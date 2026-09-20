@@ -1,33 +1,4 @@
 shader_type particles;
-// Drives fire particle motion in 3D. Assign as the GPUParticles3D
-// "Process Material". Pairs with fire_draw_3d.gdshader.
-//
-// WORLD-SPACE SIMULATION: written for local_coords = false on the
-// GPUParticles3D node, so already-emitted licks are NOT dragged along when
-// the node moves (gives the flame trailing inertia as the emitter moves).
-// Because of that, TRANSFORM here is a WORLD-space transform -- the engine
-// does not multiply it by the node's transform for us. So start() manually
-// converts the local emission offset into world space using
-// EMISSION_TRANSFORM (the node's global transform at spawn), and pulls in
-// EMITTER_VELOCITY to inherit the emitter's motion. Also set
-// inherit_velocity_ratio = 1.0 on the GPUParticles3D node itself -- that's
-// what makes the engine populate EMITTER_VELOCITY; velocity_inherit_ratio
-// below then controls how much of it each new lick actually keeps.
-//
-// EMISSION-INTENSITY GATING (replaces changing `amount` / amount_ratio):
-// `amount` is a fixed pool sized for the maximum flame intensity and must
-// never change at runtime. Instead, FireSmoke.gd smoothly drives
-// `emission_intensity` (0..1) every frame. Each particle slot gets a fixed,
-// INDEX-derived `activation_threshold` computed ONCE in start(). If that
-// threshold is above the current emission_intensity, the slot still lives
-// out a normal lifetime cycle (so its natural respawn cadence is
-// unaffected) but is parked invisibly (zero scale, zero velocity) instead
-// of behaving like a real flame lick. As emission_intensity rises, more
-// slots pass their threshold on their next natural respawn -- staggered
-// across the whole pool -- giving a gradual intensity increase with no
-// pop-in. This is decoupled from ACTIVE = progress < 1.0 below: gating only
-// ever touches visibility/motion, never the death timer.
-
 // ==================== Emission control ====================
 uniform float emission_intensity : hint_range(0.0, 1.0) = 1.0;
 uniform float spawn_hash_seed = 11.0; // vary per-emitter to desync multiple fire nodes
