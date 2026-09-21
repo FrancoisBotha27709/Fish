@@ -43,6 +43,9 @@ class_name PlayerFish
 @export_group("UI Objects")
 @export var analog_motion_sensor : AnalogMotionSensor
 
+@export_group("Border")
+@export var border_steer_gain: float = 2.0
+
 var _wobble_time: float = 0.0
 var _wobble_offset: float = 0.0
 
@@ -53,6 +56,10 @@ var _boost_rotation_velocity: float = 0.0
 
 var playing_minigame: bool = false
 var _minigame_position: Vector3 = Vector3.ZERO
+
+var _border_active: bool = false
+var _border_push_direction: Vector3 = Vector3.ZERO
+var _border_intensity: float = 0.0
 
 func _ready() -> void:
 	_wobble_offset = randf_range(0.0, TAU)
@@ -66,8 +73,26 @@ func _physics_process(delta: float) -> void:
 
 func _handle_movement(delta: float) -> void:
 	if not playing_minigame:
-		var throttle := Input.get_axis("boat_reverse", "boat_forward")
-		var steer := Input.get_axis("boat_turn_left", "boat_turn_right")
+		var throttle: float
+		var steer: float
+
+		if _border_active:
+			# Simulated input: drive forward and steer toward the return point,
+			# same as if the player were holding those inputs themselves.
+			throttle = 1.0
+
+			var to_target := _border_push_direction
+			to_target.y = 0.0
+
+			if to_target.length() > 0.001:
+				var forward_dir := -global_transform.basis.z
+				var angle_to_target := forward_dir.signed_angle_to(to_target.normalized(), Vector3.UP)
+				steer = clamp(-angle_to_target * border_steer_gain, -1.0, 1.0)
+			else:
+				steer = 0.0
+		else:
+			throttle = Input.get_axis("boat_reverse", "boat_forward")
+			steer = Input.get_axis("boat_turn_left", "boat_turn_right")
 
 		if throttle > 0.0:
 			analog_motion_sensor.forward(delta)
@@ -172,3 +197,16 @@ func end_minigame() -> void:
 func catch_fish(fish: Fish) -> void:
 	UtilityStates.add_item(fish)
 	print("Caught fish")
+
+func darken_vision(intensity: float, push_direction: Vector3) -> void:
+	_border_active = true
+	_border_intensity = intensity
+	_border_push_direction = push_direction
+
+	cam_rig.camera.darken_vision(intensity)
+
+func clear_border() -> void:
+	_border_active = false
+	_border_intensity = 0.0
+
+	cam_rig.camera.darken_vision(0.0)

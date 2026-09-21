@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 UtilityStates="*uid://dtn5odlocoif4"
 TimeStates="*uid://din6y807q5aqc"
+SignalBus="*uid://cdb86hp8kwtov"
 
 [display]
 
