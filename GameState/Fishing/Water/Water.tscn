@@ -1,0 +1,132 @@
+[gd_scene format=4 uid="uid://b74k5xyan3dvv"]
+
+[ext_resource type="Shader" uid="uid://nu355s8hg2ii" path="res://GameState/Fishing/Water/sea_of_thieves.gdshader" id="1_fy73t"]
+[ext_resource type="Script" uid="uid://cnpby6s4prbu4" path="res://GameState/Fishing/Water/WaterManager.gd" id="2_fy73t"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_fy73t"]
+seed = 40
+frequency = 0.05
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cjfj7"]
+noise = SubResource("FastNoiseLite_fy73t")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fy73t"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("1_fy73t")
+shader_parameter/swell_amplitude = 0.1750000083125
+shader_parameter/swell_wavelength_scale = 0.23000000440523
+shader_parameter/chop_amplitude = 0.2150000102125
+shader_parameter/wave_speed = 1.0
+shader_parameter/wave_choppiness = 0.0
+shader_parameter/wind_direction_deg = 0.0
+shader_parameter/wave_direction_jitter = 0.0
+shader_parameter/chop_patchiness = 0.0
+shader_parameter/domain_warp_amount = 35.0
+shader_parameter/domain_warp_scale = 0.004
+shader_parameter/domain_warp_speed = 0.02
+shader_parameter/meters_per_unit = 0.1250000059375
+shader_parameter/mesh_vertex_spacing = 0.50000002212006
+shader_parameter/absorption_color = Color(0.3, 0.6, 0.48, 1)
+shader_parameter/absorption_distance = 5.0
+shader_parameter/color_scatter = Color(0.035, 0.18, 0.16, 1)
+shader_parameter/color_crest_scatter = Color(0.14, 0.4, 0.32, 1)
+shader_parameter/crest_scatter_amount = 0.4
+shader_parameter/color_variation_tint = Color(0.1, 0.2, 0.05, 1)
+shader_parameter/color_variation_scale = 0.005
+shader_parameter/color_variation_speed = 0.003
+shader_parameter/color_variation_strength = 0.35
+shader_parameter/water_roughness = 0.06
+shader_parameter/specular_amount = 0.5
+shader_parameter/far_roughen_start = 80.0
+shader_parameter/far_roughen_end = 500.0
+shader_parameter/enable_reflections = true
+shader_parameter/reflection_strength = 1.430000067925
+shader_parameter/reflection_min = 0.0
+shader_parameter/reflection_blur = 0.30000001192093
+shader_parameter/reflection_step = 0.5
+shader_parameter/detail_height = 0.2650000125875
+shader_parameter/detail_scale = 1.16500005370756
+shader_parameter/detail_speed = 0.6150000292125
+shader_parameter/detail_fade_start = 60.0000026125
+shader_parameter/detail_fade_end = 110.00000475
+shader_parameter/enable_refraction = true
+shader_parameter/refraction_strength = 0.06
+shader_parameter/underwater_blur = 0.25
+shader_parameter/caustics_strength = 1.2
+shader_parameter/caustics_scale = 0.6
+shader_parameter/caustics_depth = 4.0
+shader_parameter/pollution_amount = 0.282000013395
+shader_parameter/pollution_murk = 3.0
+shader_parameter/slick_scale = 0.09950000472625
+shader_parameter/slick_sheen = 0.478000022705
+shader_parameter/scum_color = Color(0.22, 0.24, 0.07, 1)
+shader_parameter/scum_scale = 0.09950000472625
+shader_parameter/scum_strength = 0.3010000142975
+shader_parameter/color_foam = Color(0.76221997, 0.9180413, 0.8757051, 1)
+shader_parameter/foam_jacobian_threshold = 0.75
+shader_parameter/foam_edge_softness = 0.55
+shader_parameter/foam_threshold_jitter = 0.5
+shader_parameter/foam_noise_scale = 0.15
+shader_parameter/foam_scroll_speed = 0.2
+shader_parameter/foam_amount = 0.65
+shader_parameter/foam_crispness = 0.6
+shader_parameter/foam_dither_amount = 0.010000000475
+shader_parameter/use_custom_foam_texture = true
+shader_parameter/foam_texture = SubResource("NoiseTexture2D_cjfj7")
+shader_parameter/foam_uv_scale = 2.0
+shader_parameter/foam_uv_scale_2 = 2.70000012662006
+shader_parameter/foam_warp_amount = 0.5
+shader_parameter/foam_speed = 0.12
+shader_parameter/foam_crest_threshold = 0.5
+shader_parameter/foam_crest_softness = 0.3
+shader_parameter/enable_shore_foam = true
+shader_parameter/shore_foam_distance = 0.8
+shader_parameter/shore_band_speed = 1.2
+shader_parameter/wave_time = 0.0
+shader_parameter/ripple_data = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/ripple_count = 0
+shader_parameter/sim_time = 0.0
+shader_parameter/ripple_lifetime = 6.0
+shader_parameter/ripple_speed = 2.2
+shader_parameter/ripple_wavelength = 0.7
+shader_parameter/ripple_width = 1.2
+shader_parameter/ripple_amplitude = 0.4
+shader_parameter/ripple_detail_height = 0.035
+shader_parameter/biome_data = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/biome_count = 0
+shader_parameter/biome_chop = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/biome_ripple = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/biome_look = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/biome_tint = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+[sub_resource type="QuadMesh" id="QuadMesh_cjfj7"]
+material = SubResource("ShaderMaterial_fy73t")
+size = Vector2(1000, 1000)
+subdivide_width = 800
+subdivide_depth = 800
+orientation = 1
+
+[node name="Water" type="MeshInstance3D" unique_id=2069854430]
+mesh = SubResource("QuadMesh_cjfj7")
+script = ExtResource("2_fy73t")
+ripple_lifetime = 8.725
+ripple_wavelength = 2.79
+ripple_width = 2.77
+ripple_amplitude = 0.34
+swell_amplitude = 0.175
+swell_wavelength_scale = 0.23
+chop_amplitude = 0.215
+wave_choppiness = 0.0
+wind_direction_deg = 0.0
+wave_direction_jitter = 0.0
+chop_patchiness = 0.0
+mesh_vertex_spacing = 0.0
+domain_warp_amount = 0.0
+domain_warp_scale = 0.0
+domain_warp_speed = 0.0
+sea_state_max = 0.3
+sea_state_period = 0.0
+sea_state_jitter = 0.0
+sea_state_speed_influence = 0.0
