@@ -14,15 +14,16 @@ enum OfferResult { ACCEPT, REJECT, WALKAWAY, NONE }
 @export var visual_scene : PackedScene
 
 var want_item : Item = null
-var current_offer : float = 0.0   # what the customer currently expects to pay
+## what the customer currently expects to pay
+var current_offer : float = 0.0
 var rejections : int = 0
 var max_rejections : int = 3
 
-const HAGGLE_DATA := {
-	HaggleState.NONE   : {"max_bonus_pct": 0.00, "concede_pct": 0.00},
-	HaggleState.LOW    : {"max_bonus_pct": 0.10, "concede_pct": 0.02},
+const HAGGLE_DATA : Dictionary[HaggleState, Dictionary] = {
+	HaggleState.NONE : {"max_bonus_pct": 0.00, "concede_pct": 0.00},
+	HaggleState.LOW : {"max_bonus_pct": 0.10, "concede_pct": 0.02},
 	HaggleState.MEDIUM : {"max_bonus_pct": 0.25, "concede_pct": 0.05},
-	HaggleState.HIGH   : {"max_bonus_pct": 0.50, "concede_pct": 0.10},
+	HaggleState.HIGH : {"max_bonus_pct": 0.50, "concede_pct": 0.10},
 }
 
 ## Pick a random item inside [UtilityStates] inventory
@@ -76,16 +77,10 @@ func evaluate_offer(requested_amount : float) -> float:
 	return current_offer
 
 func read_file(is_haggle : bool = true) -> void:
-	if dialog_file.is_empty():
+	var data := _load_dialog_json()
+	if data.is_empty():
 		return
 
-	var text := FileAccess.get_file_as_string(dialog_file)
-	var json := JSON.new()
-	if json.parse(text) != OK:
-		push_error("Customer %s: Failed to read dialog file - %s" % [display_name, dialog_file])
-		return
-
-	var data : Dictionary = json.data
 	if is_haggle:
 		match haggle_level:
 			HaggleState.LOW:
@@ -104,3 +99,26 @@ func read_file(is_haggle : bool = true) -> void:
 				dialog_text = data.get("walkaway_%d" % randi_range(0, 9), "")
 			OfferResult.NONE:
 				pass
+
+
+## Builds a line for when the player doesn't have anything to offer this
+## customer at all, pulled from the customer's dialog file's "request_N" keys.
+func generate_request_text() -> String:
+	var data := _load_dialog_json()
+	if data.is_empty():
+		return ""
+	dialog_text = data.get("request_%d" % randi_range(0, 9), "")
+	return dialog_text
+
+
+func _load_dialog_json() -> Dictionary:
+	if dialog_file.is_empty():
+		return {}
+
+	var text := FileAccess.get_file_as_string(dialog_file)
+	var json := JSON.new()
+	if json.parse(text) != OK:
+		push_error("Customer %s: Failed to read dialog file - %s" % [display_name, dialog_file])
+		return {}
+
+	return json.data

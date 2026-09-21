@@ -1,0 +1,135 @@
+{
+  "name": "bubble_trail",
+  "draw": {
+    "segment_facets": 6.0,
+    "twist_speed": 0.8,
+    "spin_axis": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "bump_amount": 0.0,
+    "bump_freq": 0.0,
+    "bump_vertical_freq": 0.0,
+    "bump_phase_mult": 0.0,
+    "shape_scale": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "anim_fps": 60.0,
+    "light_dir": [
+      -0.4,
+      0.6,
+      0.7
+    ],
+    "shade_dark": 0.95,
+    "shade_mid": 1.0,
+    "shade_bright": 1.1,
+    "light_threshold_bright": 0.5,
+    "light_threshold_mid": 0.0,
+    "facet_shade_min": 1.0,
+    "facet_shade_max": 1.0,
+    "facet_shade_period": 2.0,
+    "rim_color": [
+      0.8,
+      0.85,
+      0.5
+    ],
+    "rim_power": 1.5,
+    "rim_strength": 0.9,
+    "emission_color": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "emission_strength": 0.0,
+    "emission_fade_in_end": 0.1,
+    "emission_fade_out_start": 0.5,
+    "emission_curve_power": 1.0,
+    "color_stop_0": [
+      0.75,
+      0.8,
+      0.55
+    ],
+    "color_stop_1": [
+      0.6,
+      0.7,
+      0.4
+    ],
+    "color_stop_2": [
+      0.45,
+      0.55,
+      0.3
+    ],
+    "color_stop_3": [
+      0.3,
+      0.4,
+      0.2
+    ],
+    "color_stop_1_pos": 0.4,
+    "color_stop_2_pos": 0.75,
+    "color_life_weight": 0.3,
+    "color_local_up_weight": 0.1,
+    "size_split_threshold": 0.55,
+    "small_tint_shift": 0.0,
+    "small_alpha_mult": 0.9,
+    "fade_in_end": 0.1,
+    "fade_out_start": 0.5,
+    "fade_curve_power": 1.0,
+    "max_alpha": 0.3
+  },
+  "process": {
+    "emission_intensity": 1.0,
+    "spawn_hash_seed": 163.0,
+    "gating_curve_power": 1.0,
+    "size_split_threshold": 0.55,
+    "small_particle_ratio": 0.4,
+    "small_scale_mult": 0.5,
+    "small_lifetime_mult": 0.8,
+    "small_speed_mult": 1.2,
+    "emission_shape": 0,
+    "emission_radius": 0.05,
+    "emission_box_extents": [
+      0.1,
+      0.1,
+      0.1
+    ],
+    "spin_direction_bias": 0.5,
+    "motion_direction": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "motion_speed": 1.0,
+    "motion_speed_variance": 0.3,
+    "motion_speed_curve_power": 1.0,
+    "outward_speed": 0.1,
+    "outward_speed_variance": 0.3,
+    "side_drift": 0.1,
+    "wobble_freq_a": 2.0,
+    "wobble_freq_b": 1.8,
+    "wobble_amount_a": 0.3,
+    "wobble_amount_b": 0.3,
+    "wobble_phase_offset": 1.5708,
+    "wobble_fps": 60.0,
+    "turbulence_strength": 0.0,
+    "turbulence_freq": 1.0,
+    "accel": 0.5,
+    "forward_drag": 0.0,
+    "horizontal_drag": 0.5,
+    "velocity_inherit_ratio": 0.6,
+    "lifetime_min": 0.6,
+    "lifetime_max": 1.2,
+    "lifetime_curve_power": 1.0,
+    "start_scale_min": 0.02,
+    "start_scale_max": 0.05,
+    "start_scale_curve_power": 1.0,
+    "end_scale_mult": [
+      1.3,
+      1.3,
+      1.3
+    ],
+    "scale_curve_power": 1.0
+  }
+}

@@ -1,0 +1,92 @@
+[gd_scene format=3 uid="uid://b0dccmok6ov03"]
+
+[ext_resource type="Script" uid="uid://c4x0np2q7ul41" path="res://addons/radial_menu/addons/advanced_radial_menu/radial_menu_class.gd" id="1_2jas5"]
+
+[sub_resource type="GDScript" id="GDScript_n51mc"]
+resource_name = "radial_menu_example_script"
+script/source = "extends Control
+
+
+@onready var radial_menu: RadialMenuAdvanced = $radial_menu
+
+
+var _prev_slot: Control = null
+
+func _ready() -> void:
+	#Press \"Enter\" to select current hovered slot
+	#(because select action is \"ui_accept\")
+	radial_menu.slot_selected.connect(func(slot: Control, index: int) -> void:
+		if _prev_slot != null:
+			_prev_slot.modulate = Color.WHITE
+		slot.modulate = Color.GREEN
+		_prev_slot = slot
+	)
+
+func _input(event: InputEvent) -> void:
+	#Hold tab to temporarily select
+	if event.is_action_pressed(&'ui_text_completion_replace'):
+		radial_menu.set_temporary_selection(2)
+	elif event.is_action_released(&'ui_text_completion_replace'):
+		radial_menu.set_temporary_selection(-2)
+"
+
+[node name="example" type="Control" unique_id=49925776]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_n51mc")
+
+[node name="radial_menu" type="Control" parent="." unique_id=1924705347]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -196.0
+offset_top = -216.0
+offset_right = 196.0
+offset_bottom = 216.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_2jas5")
+select_action_name = &"ui_accept"
+arc_start_angle = 7.47281469282041
+arc_end_angle = 1.9996293856408
+children_auto_sizing = true
+children_auto_sizing_factor = 0.3
+children_rotate = true
+metadata/_custom_type_script = "uid://c4x0np2q7ul41"
+
+[node name="ColorRect" type="ColorRect" parent="radial_menu" unique_id=1506838191]
+layout_mode = 0
+offset_left = 275.1269
+offset_top = 139.4
+offset_right = 314.3269
+offset_bottom = 178.59999
+rotation = 1.0471976
+pivot_offset = Vector2(19.600006, 19.599998)
+color = Color(0.775391, 0.775391, 0.775391, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="radial_menu" unique_id=1971579228]
+layout_mode = 0
+offset_left = 176.4
+offset_top = 310.4
+offset_right = 215.59999
+offset_bottom = 349.6
+rotation = 3.1415927
+pivot_offset = Vector2(19.599998, 19.600006)
+color = Color(0.775391, 0.775391, 0.775391, 1)
+
+[node name="ColorRect3" type="ColorRect" parent="radial_menu" unique_id=1531944920]
+layout_mode = 0
+offset_left = 77.6731
+offset_top = 139.4
+offset_right = 116.87311
+offset_bottom = 178.59999
+rotation = 5.2359877
+pivot_offset = Vector2(19.600002, 19.599998)
+color = Color(0.775391, 0.775391, 0.775391, 1)

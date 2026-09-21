@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://bj4k6ykut7now"]
+
+[ext_resource type="Script" uid="uid://bvtubd6rdrv14" path="res://Player/User Interface/analog_motion_sensor.gd" id="1_2r2ma"]
+[ext_resource type="Texture2D" uid="uid://b8a1mxegkr17f" path="res://Assets/2D/UI/analog_motion/analog_panel.png" id="1_7rugx"]
+[ext_resource type="Texture2D" uid="uid://d12xeo8au7gg" path="res://Assets/2D/UI/analog_motion/analog_frame.png" id="2_2r2ma"]
+[ext_resource type="Texture2D" uid="uid://b7sinvft760fe" path="res://Assets/2D/UI/analog_motion/arrows.png" id="3_40hhr"]
+[ext_resource type="Texture2D" uid="uid://b1pi6kbtctm1h" path="res://Assets/2D/UI/analog_motion/analog_glass.png" id="4_sp11h"]
+
+[sub_resource type="Curve" id="Curve_2r2ma"]
+_limits = [-1.0, 1.5, 0.0, 1.0]
+_data = [Vector2(0.1, 0.01), 0.0, 0.0, 0, 0, Vector2(0.25, -0.05), 0.0, 0.0, 0, 0, Vector2(0.9, 1.05), 1.6923076, -2.650135, 0, 0, Vector2(0.947, 0.95), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.365971, 0.0, 0, 0]
+point_count = 5
+
+[node name="AnalogMotionSensor" type="Node2D" unique_id=1554540581 node_paths=PackedStringArray("arrow", "forward_marker", "neutral_marker", "reverse_marker")]
+script = ExtResource("1_2r2ma")
+arrow = NodePath("AnalogMotion/Arrow")
+forward_marker = NodePath("Markers/ForwardMarker")
+neutral_marker = NodePath("Markers/NeutralMarker")
+reverse_marker = NodePath("Markers/ReverseMarker")
+motion_curve = SubResource("Curve_2r2ma")
+motion_duration = 1.0
+
+[node name="AnalogMotion" type="Node2D" parent="." unique_id=1474846986]
+scale = Vector2(3, 3)
+
+[node name="Panel" type="Sprite2D" parent="AnalogMotion" unique_id=76312312]
+texture = ExtResource("1_7rugx")
+
+[node name="Arrow" type="Sprite2D" parent="AnalogMotion" unique_id=1162334266]
+position = Vector2(16, -10)
+texture = ExtResource("3_40hhr")
+
+[node name="Frame" type="Sprite2D" parent="AnalogMotion" unique_id=1239912168]
+texture = ExtResource("2_2r2ma")
+
+[node name="Glass" type="Sprite2D" parent="AnalogMotion" unique_id=33446089]
+modulate = Color(1, 1, 1, 0.6901961)
+texture = ExtResource("4_sp11h")
+
+[node name="Markers" type="Node2D" parent="." unique_id=1497945822]
+
+[node name="NeutralMarker" type="Marker2D" parent="Markers" unique_id=322447460]
+position = Vector2(69, -29)
+
+[node name="ForwardMarker" type="Marker2D" parent="Markers" unique_id=391592213]
+position = Vector2(69, -149)
+
+[node name="ReverseMarker" type="Marker2D" parent="Markers" unique_id=343774871]
+position = Vector2(69, 151)

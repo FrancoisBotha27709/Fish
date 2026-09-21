@@ -5,6 +5,12 @@ class_name WaterBiomeSystem
 ## the "water_biome" group (WaterBiome.gd) — biomes never reference this
 ## node or the water, and the water never references biomes directly.
 ##
+## Optionally also point cloud_path at your CloudLayer.gd node (or any
+## MeshInstance3D whose material is clouds.gdshader) to have the SAME
+## biomes also thicken/darken/tint the sky above them - a storm biome then
+## affects both the water and the clouds overhead from one Area3D, no
+## extra wiring needed. Leave cloud_path empty to skip this entirely.
+##
 ## Biomes are static most of the time, so this only re-reads and pushes
 ## their data every `update_interval` seconds rather than every frame —
 ## if you later want a storm that visibly moves, just move its Area3D
@@ -14,22 +20,32 @@ class_name WaterBiomeSystem
 const MAX_BIOMES := 8
 
 @export var water_path: NodePath
+@export var cloud_path: NodePath   ## optional - see class doc above
+
 @export var update_interval: float = 0.15
 
 var _material: ShaderMaterial
+var _cloud_material: ShaderMaterial
 var _timer := 0.0
 
 func _ready() -> void:
 	var water := get_node_or_null(water_path)
 	if water == null:
 		push_warning("WaterBiomeSystem: water_path is not set or invalid.")
-		return
-	if water.material_override is ShaderMaterial:
-		_material = water.material_override
-	elif water is MeshInstance3D and water.mesh and water.mesh.surface_get_material(0) is ShaderMaterial:
-		_material = water.mesh.surface_get_material(0)
-	if _material == null:
-		push_warning("WaterBiomeSystem: couldn't find a ShaderMaterial on the water node.")
+	else:
+		_material = _find_shader_material(water)
+		if _material == null:
+			push_warning("WaterBiomeSystem: couldn't find a ShaderMaterial on the water node.")
+
+	if not cloud_path.is_empty():
+		var clouds := get_node_or_null(cloud_path)
+		if clouds == null:
+			push_warning("WaterBiomeSystem: cloud_path is set but invalid.")
+		else:
+			_cloud_material = _find_shader_material(clouds)
+			if _cloud_material == null:
+				push_warning("WaterBiomeSystem: couldn't find a ShaderMaterial on the cloud node.")
+
 	_push_biomes() # push once immediately so biomes are active before the first interval elapses
 
 func _process(delta: float) -> void:
@@ -39,8 +55,19 @@ func _process(delta: float) -> void:
 	_timer = 0.0
 	_push_biomes()
 
+## Looks for a ShaderMaterial the same way on any MeshInstance3D-like node:
+## material_override first, then the first surface's material. Shared by the
+## water and cloud lookups so there's exactly one place this logic lives.
+func _find_shader_material(node: Node) -> ShaderMaterial:
+	if "material_override" in node and node.material_override is ShaderMaterial:
+		return node.material_override
+	if node is MeshInstance3D and node.mesh and node.mesh.get_surface_count() > 0 \
+			and node.mesh.surface_get_material(0) is ShaderMaterial:
+		return node.mesh.surface_get_material(0)
+	return null
+
 func _push_biomes() -> void:
-	if _material == null:
+	if _material == null and _cloud_material == null:
 		return
 
 	var biomes := get_tree().get_nodes_in_group("water_biome")
@@ -51,10 +78,11 @@ func _push_biomes() -> void:
 	var biome_ripple: Array[Vector4] = []
 	var biome_look: Array[Vector4] = []
 	var biome_tint: Array[Vector4] = []
+	var biome_cloud: Array[Vector4] = []
 
 	for i in MAX_BIOMES:
 		if i < count:
-			var b: Area3D = biomes[i]
+			var b: WaterBiome = biomes[i]
 			var center: Vector3 = b.global_position
 			var radius := _get_radius(b)
 			biome_data.append(Vector4(center.x, center.z, radius, b.blend_distance))
@@ -67,6 +95,7 @@ func _push_biomes() -> void:
 			biome_ripple.append(Vector4(b.ripple_speed_mult, b.ripple_wavelength_mult, b.ripple_amplitude_mult, 0.0))
 			biome_look.append(Vector4(b.tint_strength, b.foam_amount_mult, b.roughness_add, 0.0))
 			biome_tint.append(Vector4(b.tint_color.r, b.tint_color.g, b.tint_color.b, 1.0))
+			biome_cloud.append(Vector4(b.cloud_density_mult, b.cloud_darken, b.cloud_turbulence, 0.0))
 		else:
 			# neutral filler so unused slots have no effect
 			biome_data.append(Vector4.ZERO)
@@ -74,13 +103,22 @@ func _push_biomes() -> void:
 			biome_ripple.append(Vector4(1.0, 1.0, 1.0, 0.0))
 			biome_look.append(Vector4(0.0, 1.0, 0.0, 0.0))
 			biome_tint.append(Vector4.ZERO)
+			biome_cloud.append(Vector4(1.0, 0.0, 0.0, 0.0))
 
-	_material.set_shader_parameter("biome_count", count)
-	_material.set_shader_parameter("biome_data", biome_data)
-	_material.set_shader_parameter("biome_chop", biome_chop)
-	_material.set_shader_parameter("biome_ripple", biome_ripple)
-	_material.set_shader_parameter("biome_look", biome_look)
-	_material.set_shader_parameter("biome_tint", biome_tint)
+	if _material != null:
+		_material.set_shader_parameter("biome_count", count)
+		_material.set_shader_parameter("biome_data", biome_data)
+		_material.set_shader_parameter("biome_chop", biome_chop)
+		_material.set_shader_parameter("biome_ripple", biome_ripple)
+		_material.set_shader_parameter("biome_look", biome_look)
+		_material.set_shader_parameter("biome_tint", biome_tint)
+
+	if _cloud_material != null:
+		_cloud_material.set_shader_parameter("biome_count", count)
+		_cloud_material.set_shader_parameter("biome_data", biome_data)
+		_cloud_material.set_shader_parameter("biome_cloud", biome_cloud)
+		_cloud_material.set_shader_parameter("biome_look", biome_look)
+		_cloud_material.set_shader_parameter("biome_tint", biome_tint)
 
 func _get_radius(area: Area3D) -> float:
 	for child in area.get_children():

@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://csjgyd88hg2ev"]
+
+[ext_resource type="Script" uid="uid://k2burymtyo35" path="res://Items/Fish/fish_world.gd" id="1_n06hh"]
+[ext_resource type="PackedScene" uid="uid://cxquw2j2ix5ob" path="res://Items/Fish/Cod/CodeExternalMesh.tscn" id="2_funtt"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_o5gks"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="Environment" id="Environment_o5gks"]
+background_energy_multiplier = 2.02
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+
+[sub_resource type="World3D" id="World3D_47v4i"]
+environment = SubResource("Environment_o5gks")
+
+[node name="CodWorld" type="Node2D" unique_id=210724534]
+script = ExtResource("1_n06hh")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1148209983]
+rotation = 1.5707964
+scale = Vector2(0.15, 0.15)
+texture = SubResource("ViewportTexture_o5gks")
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=848846529]
+own_world_3d = true
+world_3d = SubResource("World3D_47v4i")
+transparent_bg = true
+
+[node name="Node3D" type="Node3D" parent="SubViewport" unique_id=743223797]
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport/Node3D" unique_id=2040905736]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.023567796, 2.0115113, 0.09254664)
+projection = 1
+size = 1.2400379
+
+[node name="CodeExternalMesh" parent="SubViewport/Node3D" unique_id=1940321397 instance=ExtResource("2_funtt")]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)

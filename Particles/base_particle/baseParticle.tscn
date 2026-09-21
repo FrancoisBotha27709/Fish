@@ -1,0 +1,105 @@
+[gd_scene format=3 uid="uid://c5qx5b5dl0h3y"]
+
+[ext_resource type="Script" uid="uid://buc8ie37ioc66" path="res://Particles/base_particle/base_particle.gd" id="1_oq8dt"]
+[ext_resource type="Shader" uid="uid://dmn2xd8ul573b" path="res://Particles/base_particle/particle_draw_3d.gdshader" id="2_dc7ix"]
+[ext_resource type="Shader" uid="uid://cugcrdsp3uoeg" path="res://Particles/base_particle/particle_process_3d.gdshader" id="3_cu7ov"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q63ys"]
+shader = ExtResource("3_cu7ov")
+shader_parameter/emission_intensity = 1.0
+shader_parameter/spawn_hash_seed = 41.0
+shader_parameter/gating_curve_power = 1.0
+shader_parameter/emission_shape = 1
+shader_parameter/emission_radius = 0.25
+shader_parameter/emission_box_extents = Vector3(2, 1, 2)
+shader_parameter/size_split_threshold = 0.55
+shader_parameter/small_particle_ratio = 0.7
+shader_parameter/small_scale_mult = 0.5
+shader_parameter/small_lifetime_mult = 1.0
+shader_parameter/small_speed_mult = 1.0
+shader_parameter/spin_direction_bias = 0.5
+shader_parameter/motion_direction = Vector3(0, 1, 0)
+shader_parameter/motion_speed = 0.03
+shader_parameter/motion_speed_variance = 0.8
+shader_parameter/motion_speed_curve_power = 1.0
+shader_parameter/outward_speed = 0.0
+shader_parameter/outward_speed_variance = 0.0
+shader_parameter/side_drift = 0.1
+shader_parameter/wobble_freq_a = 0.3
+shader_parameter/wobble_freq_b = 0.25
+shader_parameter/wobble_amount_a = 0.05
+shader_parameter/wobble_amount_b = 0.05
+shader_parameter/wobble_phase_offset = 1.5708
+shader_parameter/wobble_fps = 12.0
+shader_parameter/turbulence_strength = 0.03
+shader_parameter/turbulence_freq = 0.5
+shader_parameter/accel = 0.0
+shader_parameter/forward_drag = 0.2
+shader_parameter/horizontal_drag = 0.2
+shader_parameter/velocity_inherit_ratio = 0.1
+shader_parameter/lifetime_min = 6.0
+shader_parameter/lifetime_max = 10.0
+shader_parameter/lifetime_curve_power = 1.0
+shader_parameter/start_scale_min = 0.02
+shader_parameter/start_scale_max = 0.04
+shader_parameter/start_scale_curve_power = 1.0
+shader_parameter/end_scale_mult = Vector3(1.1, 1.1, 1.1)
+shader_parameter/scale_curve_power = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oq8dt"]
+render_priority = 0
+shader = ExtResource("2_dc7ix")
+shader_parameter/segment_facets = 6.0
+shader_parameter/twist_speed = 0.3
+shader_parameter/spin_axis = Vector3(0, 1, 0)
+shader_parameter/bump_amount = 0.0
+shader_parameter/bump_freq = 0.0
+shader_parameter/bump_vertical_freq = 0.0
+shader_parameter/bump_phase_mult = 0.0
+shader_parameter/shape_scale = Vector3(1, 1, 1)
+shader_parameter/anim_fps = 12.0
+shader_parameter/light_dir = Vector3(-0.4, 0.6, 0.7)
+shader_parameter/shade_dark = 0.9
+shader_parameter/shade_mid = 1.0
+shader_parameter/shade_bright = 1.05
+shader_parameter/light_threshold_bright = 0.5
+shader_parameter/light_threshold_mid = 0.0
+shader_parameter/facet_shade_min = 1.0
+shader_parameter/facet_shade_max = 1.0
+shader_parameter/facet_shade_period = 2.0
+shader_parameter/rim_color = Color(0.95, 0.92, 0.8, 1)
+shader_parameter/rim_power = 4.0
+shader_parameter/rim_strength = 0.6
+shader_parameter/emission_color = Color(1, 1, 1, 1)
+shader_parameter/emission_strength = 0.0
+shader_parameter/emission_fade_in_end = 0.2
+shader_parameter/emission_fade_out_start = 0.7
+shader_parameter/emission_curve_power = 1.0
+shader_parameter/color_stop_0 = Color(0.62, 0.62, 0.65, 1)
+shader_parameter/color_stop_1 = Color(0.4, 0.4, 0.43, 1)
+shader_parameter/color_stop_2 = Color(0.18, 0.18, 0.2, 1)
+shader_parameter/color_stop_3 = Color(0.05, 0.05, 0.06, 1)
+shader_parameter/color_stop_1_pos = 0.33
+shader_parameter/color_stop_2_pos = 0.66
+shader_parameter/color_life_weight = 0.2
+shader_parameter/color_local_up_weight = 0.0
+shader_parameter/size_split_threshold = 0.55
+shader_parameter/small_tint_shift = 0.05
+shader_parameter/small_alpha_mult = 0.6
+shader_parameter/fade_in_end = 0.2
+shader_parameter/fade_out_start = 0.75
+shader_parameter/fade_curve_power = 1.0
+shader_parameter/max_alpha = 0.35
+
+[sub_resource type="SphereMesh" id="SphereMesh_dc7ix"]
+material = SubResource("ShaderMaterial_oq8dt")
+
+[node name="BaseParticle" type="Node3D" unique_id=314742531 node_paths=PackedStringArray("particle")]
+script = ExtResource("1_oq8dt")
+chosen_preset = "dust"
+particle = NodePath("GPUParticles3D")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=320677183]
+amount = 32
+process_material = SubResource("ShaderMaterial_q63ys")
+draw_pass_1 = SubResource("SphereMesh_dc7ix")

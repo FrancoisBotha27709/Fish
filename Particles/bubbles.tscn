@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://b8gtchmmh4qee"]
+
+[ext_resource type="Texture2D" uid="uid://dga03dn8wwhov" path="res://Assets/2D/UI/Radial/bubble.png" id="1_73y00"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_2jj7t"]
+emission_shape = 1
+emission_sphere_radius = 0.5
+angle_min = -720.0
+angle_max = 720.0
+spread = 49.98
+gravity = Vector3(0, 0, 0)
+linear_accel_min = 1.0099977
+linear_accel_max = 9.1399975
+sub_emitter_mode = 4
+sub_emitter_amount_at_start = 1
+sub_emitter_keep_velocity = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5p6jv"]
+transparency = 1
+albedo_texture = ExtResource("1_73y00")
+texture_filter = 0
+billboard_mode = 1
+
+[sub_resource type="QuadMesh" id="QuadMesh_avdym"]
+material = SubResource("StandardMaterial3D_5p6jv")
+size = Vector2(0.08, 0.08)
+
+[node name="Bubbles" type="GPUParticles3D" unique_id=15562552]
+amount = 64
+randomness = 1.0
+process_material = SubResource("ParticleProcessMaterial_2jj7t")
+draw_pass_1 = SubResource("QuadMesh_avdym")

@@ -1,0 +1,41 @@
+[gd_scene format=4 uid="uid://bak0da73qw7es"]
+
+[ext_resource type="Script" uid="uid://m84ltvtcdg1v" path="res://GameState/Fishing/Clouds/cloudlayer.gd" id="1_j2re3"]
+[ext_resource type="Shader" uid="uid://gqe0f2mpvw8s" path="res://GameState/Fishing/Clouds/clouds.gdshader" id="2_2g0un"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2g0un"]
+render_priority = 0
+shader = ExtResource("2_2g0un")
+shader_parameter/cloud_coverage = 0.55
+shader_parameter/cloud_density = 1.0
+shader_parameter/cloud_scale = 0.006
+shader_parameter/cloud_speed = 2.5
+shader_parameter/cloud_softness = 0.12
+shader_parameter/cloud_top_color = Color(0.46, 0.44, 0.36, 1)
+shader_parameter/cloud_under_color = Color(0.09, 0.1, 0.09, 1)
+shader_parameter/wind_direction_deg = 30.0
+shader_parameter/fade_start = 500.0
+shader_parameter/fade_end = 1100.0
+shader_parameter/sun_direction = Vector3(0.3, -0.6, 0.3)
+shader_parameter/sun_color = Color(0.92, 0.86, 0.64, 1)
+shader_parameter/sun_energy = 1.0
+shader_parameter/hatch_style = 0
+shader_parameter/hatch_scale = 25.0
+shader_parameter/hatch_strength = 1.0
+shader_parameter/hatch_angle_deg = 45.0
+shader_parameter/hatch_sharpness = 3.0
+shader_parameter/biome_data = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/biome_count = 0
+shader_parameter/biome_cloud = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/biome_look = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/biome_tint = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_64y8p"]
+size = Vector2(3000, 3000)
+
+[node name="MeshInstance3D" type="MeshInstance3D" unique_id=2030599833]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 220, 0)
+material_override = SubResource("ShaderMaterial_2g0un")
+mesh = SubResource("PlaneMesh_64y8p")
+script = ExtResource("1_j2re3")
+cloud_shader = ExtResource("2_2g0un")

@@ -13,7 +13,8 @@ class_name WaterBiome
 ## Example presets:
 ##   Storm:      wave_height_mult 2.5, wave_length_mult 2.0, wave_speed_mult 0.8,
 ##               turbulence 0.3, tint_strength 0.4, tint_color dark grey-green,
-##               foam_amount_mult 1.6, roughness_add 0.1
+##               foam_amount_mult 1.6, roughness_add 0.1,
+##               cloud_density_mult 1.6, cloud_darken 0.5, cloud_turbulence 0.6
 ##   Cold ocean: wave_height_mult 1.2, wave_length_mult 0.8, wave_speed_mult 1.8,
 ##               turbulence 0.8, ripple_speed_mult 1.5, tint_strength 0.25,
 ##               tint_color pale steel blue
@@ -34,6 +35,14 @@ class_name WaterBiome
 @export var tint_strength: float = 0.0       # 0 = no color change, 1 = fully tinted
 @export var foam_amount_mult: float = 1.0
 @export var roughness_add: float = 0.0
+
+@export_group("Clouds")
+## Everything here is neutral by default - existing biomes look exactly as
+## before in the sky until you turn these up. tint_color/tint_strength above
+## are reused for the cloud tint too (a biome's "look" applies to both).
+@export var cloud_density_mult: float = 1.0   # >1 = thicker/heavier cloud cover above this biome (storms), <1 = clearer skies
+@export_range(0.0, 1.0) var cloud_darken: float = 0.0     # darkens the cloud deck above this biome - use for storms
+@export_range(0.0, 1.0) var cloud_turbulence: float = 0.0 # extra roiling/chaotic noise in the clouds above this biome
 
 @export_group("Shape")
 @export var blend_distance: float = 8.0      # meters of soft falloff at the biome's edge

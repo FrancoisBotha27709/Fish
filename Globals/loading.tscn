@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://c64a36v48roca"]
+
+[ext_resource type="Script" uid="uid://di0cwe33ivcd3" path="res://Globals/loading.gd" id="1_mva6v"]
+
+[node name="Loading" type="Node2D" unique_id=73626175]
+script = ExtResource("1_mva6v")
+
+[node name="ProgressBar" type="ProgressBar" parent="." unique_id=1824130651]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 832.0
+offset_top = 540.0
+offset_right = 1088.0
+offset_bottom = 567.0
+grow_horizontal = 2
+grow_vertical = 2

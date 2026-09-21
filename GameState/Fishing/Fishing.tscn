@@ -1,60 +1,222 @@
-[gd_scene format=3 uid="uid://c24dav20t54oe"]
+[gd_scene format=4 uid="uid://c24dav20t54oe"]
 
 [ext_resource type="Script" uid="uid://cnakfkctdb2cq" path="res://GameState/Fishing/fishing.gd" id="1_5woiu"]
-[ext_resource type="PackedScene" uid="uid://c2x5n3xa7tbvj" path="res://GameState/environment.tscn" id="4_cgxg8"]
+[ext_resource type="Shader" uid="uid://b020471pgomv8" path="res://GameState/new_sky.gdshader" id="3_55pe8"]
+[ext_resource type="PackedScene" uid="uid://dvfb5h7e2l0jh" path="res://GameState/environment.tscn" id="4_cgxg8"]
+[ext_resource type="Shader" uid="uid://gqe0f2mpvw8s" path="res://GameState/Fishing/Clouds/clouds.gdshader" id="4_wvi11"]
 [ext_resource type="PackedScene" uid="uid://b2sp7qcrjg13i" path="res://GameState/Fishing/camera_rig.tscn" id="5_08esg"]
 [ext_resource type="PackedScene" uid="uid://63mku0k5ogqq" path="res://Player/Fishing/PlayerFish.tscn" id="5_ndv5f"]
-[ext_resource type="PackedScene" uid="uid://dcbrwdbk28bco" path="res://Assets/3D/Temp_Crate/Crate.gltf" id="5_os8xo"]
 [ext_resource type="PackedScene" uid="uid://cmnu6yv52pp56" path="res://GameState/Fishing/spots/fishing_spot.tscn" id="6_45qf1"]
+[ext_resource type="Resource" uid="uid://bob04x8k5wx5y" path="res://Items/Fish/Cod/CodFish.tres" id="6_f01pc"]
 [ext_resource type="Script" uid="uid://chavq1q5fnwrr" path="res://GameState/Fishing/Water/Systems/BuoyancySystem.gd" id="7_08esg"]
-[ext_resource type="PackedScene" uid="uid://cyiehf5ppu4hq" path="res://GameState/Fishing/Water/wo_ws_water.tscn" id="7_ib3f6"]
+[ext_resource type="Resource" uid="uid://7wjtiu8ly50r" path="res://GameState/Fishing/Minigames/BasicFishing.tres" id="7_dcgj5"]
+[ext_resource type="PackedScene" uid="uid://b74k5xyan3dvv" path="res://GameState/Fishing/Water/Water.tscn" id="7_ib3f6"]
+[ext_resource type="Script" uid="uid://cxhya6l2oceb1" path="res://GameState/Fishing/spots/spot.gd" id="8_55pe8"]
 [ext_resource type="Script" uid="uid://qb20sj6bngyb" path="res://GameState/Fishing/Water/Systems/WaterBiomeSystem.gd" id="8_ib3f6"]
+[ext_resource type="PackedScene" uid="uid://djypbw33m7rmv" path="res://Assets/3D/Nature/World/World.tscn" id="10_45qf1"]
+[ext_resource type="PackedScene" uid="uid://r1nxjulb6o82" path="res://GameState/WorldBorder.tscn" id="15_wvi11"]
 
-[node name="Fishing" type="Node3D" unique_id=1517055507 node_paths=PackedStringArray("player")]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wvi11"]
+shader = ExtResource("3_55pe8")
+shader_parameter/zenith_color = Color(0.05, 0.06, 0.055, 1)
+shader_parameter/horizon_color = Color(0.42, 0.4, 0.33, 1)
+shader_parameter/ground_color = Color(0.16, 0.15, 0.12, 1)
+shader_parameter/smog_light_color = Color(0.55, 0.52, 0.42, 1)
+shader_parameter/smog_dark_color = Color(0.11, 0.12, 0.1, 1)
+shader_parameter/smog_coverage = 0.75
+shader_parameter/smog_density = 1.1
+shader_parameter/smog_scale = 1.4
+shader_parameter/smog_speed = 0.006
+shader_parameter/haze_strength = 0.45
+shader_parameter/hatch_style = 2
+shader_parameter/hatch_scale = 1.185
+shader_parameter/hatch_strength = 2.0
+shader_parameter/hatch_angle_deg = 45.0
+shader_parameter/hatch_offset = 0.359
+shader_parameter/hatch_sharpness = 8.0
+shader_parameter/sun_glow = 0.9
+
+[sub_resource type="Sky" id="Sky_yio6j"]
+sky_material = SubResource("ShaderMaterial_wvi11")
+process_mode = 2
+
+[sub_resource type="Environment" id="Environment_21ls3"]
+background_mode = 2
+sky = SubResource("Sky_yio6j")
+ambient_light_source = 3
+ambient_light_energy = 1.7
+reflected_light_source = 2
+tonemap_mode = 3
+tonemap_exposure = 1.35
+tonemap_white = 4.0
+ssao_enabled = true
+ssao_intensity = 1.1
+ssao_power = 1.0
+ssil_enabled = true
+ssil_intensity = 1.2
+glow_enabled = true
+glow_intensity = 0.45
+glow_bloom = 0.06
+glow_blend_mode = 2
+glow_hdr_threshold = 0.9
+fog_enabled = true
+fog_light_color = Color(0.357, 0.34, 0.28050002, 1)
+fog_sun_scatter = 0.08
+fog_density = 0.0014
+fog_aerial_perspective = 0.2
+fog_sky_affect = 0.35
+fog_height = 25.0
+fog_height_density = 0.006
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.012
+volumetric_fog_albedo = Color(0.55, 0.52, 0.42, 1)
+volumetric_fog_anisotropy = 0.07
+volumetric_fog_length = 143.434
+adjustment_enabled = true
+adjustment_contrast = 1.05
+adjustment_saturation = 0.55
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_88b6t"]
+render_priority = 0
+shader = ExtResource("4_wvi11")
+shader_parameter/cloud_coverage = 0.686
+shader_parameter/cloud_density = 1.0
+shader_parameter/cloud_scale = 0.006
+shader_parameter/cloud_speed = 0.3
+shader_parameter/cloud_softness = 0.12
+shader_parameter/cloud_top_color = Color(0.46, 0.44, 0.36, 1)
+shader_parameter/cloud_under_color = Color(0.09, 0.1, 0.09, 1)
+shader_parameter/wind_direction_deg = 30.0
+shader_parameter/fade_start = 500.0
+shader_parameter/fade_end = 1100.0
+shader_parameter/sun_direction = Vector3(0.31711558, -0.3746066, 0.87126786)
+shader_parameter/sun_color = Color(0.92, 0.86, 0.64, 1)
+shader_parameter/sun_energy = 0.7
+shader_parameter/hatch_style = 0
+shader_parameter/hatch_scale = 25.0
+shader_parameter/hatch_strength = 1.0
+shader_parameter/hatch_angle_deg = 45.0
+shader_parameter/hatch_sharpness = 3.0
+shader_parameter/biome_data = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/biome_count = 0
+shader_parameter/biome_cloud = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/biome_look = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/biome_tint = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_80ial"]
+size = Vector2(3000, 3000)
+
+[sub_resource type="Resource" id="Resource_wvi11"]
+script = ExtResource("8_55pe8")
+display_name = "Basic"
+active_fish = ExtResource("6_f01pc")
+current_amount_available = 4
+minigame = ExtResource("7_dcgj5")
+metadata/_custom_type_script = "uid://cxhya6l2oceb1"
+
+[sub_resource type="FogMaterial" id="FogMaterial_os8xo"]
+density = 0.05
+albedo = Color(0, 0.47427702, 0.5053218, 1)
+
+[node name="Fishing" type="Node3D" unique_id=1517055507 node_paths=PackedStringArray("player", "world_origin_poi", "world_borders")]
 script = ExtResource("1_5woiu")
 player = NodePath("PlayerFish")
+world_origin_poi = NodePath("CenterOriginPOI")
+world_borders = [NodePath("Borders/Area3D"), NodePath("Borders/Area3D2"), NodePath("Borders/Area3D3"), NodePath("Borders/Area3D4")]
 
-[node name="Environment" parent="." unique_id=2110845524 instance=ExtResource("4_cgxg8")]
+[node name="WorldEnvironment" parent="." unique_id=200964977 instance=ExtResource("4_cgxg8")]
+environment = SubResource("Environment_21ls3")
 
-[node name="CameraRig" parent="." unique_id=2083488559 node_paths=PackedStringArray("target", "characterTarget") instance=ExtResource("5_08esg")]
-transform = Transform3D(0.44059196, 0.5864284, 0.67969143, 0.16846986, -0.7977027, 0.57904077, 0.8817577, -0.1406132, -0.4502569, 0, -0.74191463, 0)
-target = NodePath("../PlayerFish/CameraTarget")
-characterTarget = NodePath("../PlayerFish")
-target_height = 5.0
-distance = 20.0
+[node name="CloudLayer" parent="WorldEnvironment" index="0" unique_id=2030599833]
+material_override = SubResource("ShaderMaterial_88b6t")
+mesh = SubResource("PlaneMesh_80ial")
 
-[node name="PlayerFish" parent="." unique_id=1016697865 instance=ExtResource("5_ndv5f")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.910425, -21.227451)
-max_speed = 1.5
-acceleration = 0.5
-deceleration = 0.8
-turn_speed = 0.6
+[node name="CameraRig" parent="." unique_id=2083488559 node_paths=PackedStringArray("target", "camera_target", "character_target") instance=ExtResource("5_08esg")]
+transform = Transform3D(-4.371138e-08, 0, -0.9999999, 0, 1, 0, 0.9999999, 0, -4.371138e-08, -33.54216, 16.68062, 18.386274)
+target = NodePath("../PlayerFish")
+camera_target = NodePath("../PlayerFish/CameraTarget")
+character_target = NodePath("../PlayerFish")
+follow_speed = 3.585
+target_height = 18.12
+distance = 13.44
+pitch = 8.0
+orbit_smoothing = 4.505
 
-[node name="Crate2" parent="PlayerFish" unique_id=358170141 instance=ExtResource("5_os8xo")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4822502, 0)
+[node name="PlayerFish" parent="." unique_id=1016697865 node_paths=PackedStringArray("cam_rig") instance=ExtResource("5_ndv5f")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -12.314711, 17.543598, 18.386274)
+max_speed = 5.0
+acceleration = 0.9
+deceleration = 1.2
+turn_speed = 0.385
+drift_factor = 0.66
+cam_rig = NodePath("../CameraRig")
 
-[node name="fishingSpot" parent="." unique_id=73682153 node_paths=PackedStringArray("player") instance=ExtResource("6_45qf1")]
-transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -51.337135)
-player = NodePath("../PlayerFish")
+[node name="FishingSpots" type="Node3D" parent="." unique_id=1010515394]
 
-[node name="Buoy" parent="fishingSpot" index="1" unique_id=570086992]
-water_path = NodePath("../../WoWs Water")
+[node name="fishingSpot" parent="FishingSpots" unique_id=73682153 node_paths=PackedStringArray("player") instance=ExtResource("6_45qf1")]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 1, -169.90634, 16.68062, -91.787155)
+player = NodePath("../../PlayerFish")
+
+[node name="Buoy" parent="FishingSpots/fishingSpot" index="1" unique_id=570086992]
+water_path = NodePath("../../../WoWs Water")
+
+[node name="fishingSpot2" parent="FishingSpots" unique_id=1605237646 node_paths=PackedStringArray("player") instance=ExtResource("6_45qf1")]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 1, -60.90634, 16.68062, -58.787155)
+data_resource = SubResource("Resource_wvi11")
+player = NodePath("../../PlayerFish")
+
+[node name="Buoy" parent="FishingSpots/fishingSpot2" index="1" unique_id=570086992]
+water_path = NodePath("../../../WoWs Water")
 
 [node name="WoWs Water" parent="." unique_id=2069854430 instance=ExtResource("7_ib3f6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.531, 0)
 ripple_wavelength = 6.045
-sea_state_max = 0.935
+swell_wavelength_scale = 3.426
+chop_amplitude = 0.225
+wave_speed = 0.64
+
+[node name="FogVolume" type="FogVolume" parent="WoWs Water" unique_id=1425771653]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -80.8546, 0)
+size = Vector3(1000, 162.5358, 1000)
+material = SubResource("FogMaterial_os8xo")
 
 [node name="Systems" type="Node" parent="." unique_id=621716690]
 
 [node name="Buyoncy" type="Node" parent="Systems" unique_id=730281467 groups=["buoyancy_system"]]
 script = ExtResource("7_08esg")
 water_path = NodePath("../../WoWs Water")
+water_base_height = 16.6
 
 [node name="WaterBiome" type="Node" parent="Systems" unique_id=504966038]
 script = ExtResource("8_ib3f6")
 water_path = NodePath("../../WoWs Water")
+cloud_path = NodePath("../../WorldEnvironment/CloudLayer")
 
+[node name="Terrain3D" parent="." unique_id=360853756 instance=ExtResource("10_45qf1")]
+
+[node name="Biomes" type="Node3D" parent="." unique_id=1251242249]
+
+[node name="CenterOriginPOI" type="Marker3D" parent="." unique_id=1744400984]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 21.879292, 0)
+
+[node name="Borders" type="Node3D" parent="." unique_id=345324259]
+
+[node name="Area3D" parent="Borders" unique_id=123936812 instance=ExtResource("15_wvi11")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 300, 0, 0)
+
+[node name="Area3D2" parent="Borders" unique_id=711524129 instance=ExtResource("15_wvi11")]
+transform = Transform3D(-1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0, 1, -300, 0, 0)
+
+[node name="Area3D3" parent="Borders" unique_id=17193952 instance=ExtResource("15_wvi11")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, -300)
+
+[node name="Area3D4" parent="Borders" unique_id=148178844 instance=ExtResource("15_wvi11")]
+transform = Transform3D(4.371139e-08, -3.821371e-15, 1, -8.742278e-08, -1, 0, 1, -8.742278e-08, -4.371139e-08, 0, 0, 300)
+
+[editable path="WorldEnvironment"]
 [editable path="CameraRig"]
 [editable path="PlayerFish"]
 [editable path="PlayerFish/Boat_Test"]
-[editable path="fishingSpot"]
+[editable path="FishingSpots/fishingSpot"]
+[editable path="FishingSpots/fishingSpot2"]
+[editable path="WoWs Water"]

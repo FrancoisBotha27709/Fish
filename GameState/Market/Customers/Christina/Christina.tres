@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Customer" format=3 uid="uid://cpomm6qfa348h"]
+
+[ext_resource type="Script" uid="uid://c7d2cthfrlurq" path="res://GameState/Market/Customers/Customer.gd" id="1_leb03"]
+[ext_resource type="PackedScene" uid="uid://bfaueoejdvfl2" path="res://GameState/Market/Customers/Christina/Christina.tscn" id="2_khh4m"]
+
+[resource]
+script = ExtResource("1_leb03")
+display_name = "Christina"
+dialog_file = "res://GameState/Market/Customers/Christina/christina_dialog.json"
+haggle_level = 0
+outcome = 0
+visual_scene = ExtResource("2_khh4m")
+metadata/_custom_type_script = "uid://c7d2cthfrlurq"

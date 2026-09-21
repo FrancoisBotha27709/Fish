@@ -1,31 +1,115 @@
 [gd_scene format=3 uid="uid://uhh2dw8abi5d"]
 
+[ext_resource type="Theme" uid="uid://bxi4lg4xa8uq4" path="res://Assets/2D/UI/pastel/pastel/pastel.tres" id="1_6p4ki"]
 [ext_resource type="Script" uid="uid://cjjh1snbt38w3" path="res://Player/User Interface/ui.gd" id="1_lfgwr"]
 [ext_resource type="PackedScene" uid="uid://d2vbvhw4dahng" path="res://Player/User Interface/Item_box/Item_box.tscn" id="2_uxcms"]
+[ext_resource type="Script" uid="uid://c4x0np2q7ul41" path="res://addons/radial_menu/addons/advanced_radial_menu/radial_menu_class.gd" id="3_5matg"]
+[ext_resource type="PackedScene" uid="uid://c04b8im58d68s" path="res://Player/User Interface/radial_category_slot.tscn" id="4_e3yml"]
 
-[node name="UI" type="Control" unique_id=2005672883 node_paths=PackedStringArray("end_day_btn", "end_night_btn", "inventory_lbl", "inventory_grid")]
+[sub_resource type="GDScript" id="GDScript_e3yml"]
+resource_name = "radial_menu_example_script"
+script/source = "extends Control
+
+
+@onready var radial_menu: RadialMenuAdvanced = $radial_menu
+
+
+var _prev_slot: Control = null
+
+func _ready() -> void:
+	#Press \"Enter\" to select current hovered slot
+	#(because select action is \"ui_accept\")
+	radial_menu.slot_selected.connect(func(slot: Control, index: int) -> void:
+		if _prev_slot != null:
+			_prev_slot.modulate = Color.WHITE
+		slot.modulate = Color.GREEN
+		_prev_slot = slot
+	)
+
+func _input(event: InputEvent) -> void:
+	#Hold tab to temporarily select
+	if event.is_action_pressed(&'ui_text_completion_replace'):
+		radial_menu.set_temporary_selection(2)
+	elif event.is_action_released(&'ui_text_completion_replace'):
+		radial_menu.set_temporary_selection(-2)
+"
+
+[node name="UI" type="Control" unique_id=2005672883 node_paths=PackedStringArray("end_day_btn", "end_night_btn", "view_radial_btn", "inventory_lbl", "inventory_grid", "inventory_radial", "dialog_lbl", "price_slider", "money_label", "offer_btn", "preview_label", "preview_symbol_container", "preview_description", "preview_sprite")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
+theme = ExtResource("1_6p4ki")
 script = ExtResource("1_lfgwr")
 end_day_btn = NodePath("MarginContainer/PanelContainer/MarginContainer/VBoxContainer/EndDayBtn")
 end_night_btn = NodePath("MarginContainer/PanelContainer/MarginContainer/VBoxContainer/EndNightBtn")
+view_radial_btn = NodePath("MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Button")
 inventory_lbl = NodePath("MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Label")
-inventory_grid = NodePath("MarginContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer")
+inventory_grid = NodePath("GridContainer")
+inventory_radial = NodePath("MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Radial/radial_menu")
 inventory_button = ExtResource("2_uxcms")
+dialog_lbl = NodePath("MarginContainer2/PanelContainer/MarginContainer/VBoxContainer/Label")
+price_slider = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/HSlider")
+money_label = NodePath("MarginContainer2/PanelContainer/MarginContainer/VBoxContainer/RichTextLabel")
+offer_btn = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/Offerbtn")
+preview_label = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/RichTextLabel")
+preview_symbol_container = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/SymbolsContainer")
+preview_description = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/RichTextLabel")
+preview_sprite = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/Control/Sprite2D")
+
+[node name="GridContainer" type="GridContainer" parent="." unique_id=384191173]
+visible = false
+layout_mode = 0
+offset_left = 710.0
+offset_top = 1080.0
+offset_right = 1210.0
+offset_bottom = 1080.0
+
+[node name="MarginContainer2" type="MarginContainer" parent="." unique_id=1324244525]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.75000006
+anchor_right = 0.75000006
+anchor_bottom = 1.0
+offset_top = -6.1035156e-05
+offset_right = -0.00012207031
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer2" unique_id=695575647]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer2/PanelContainer" unique_id=1325911220]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer2/PanelContainer/MarginContainer" unique_id=1597166435]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer2/PanelContainer/MarginContainer/VBoxContainer" unique_id=669989299]
+layout_mode = 2
+text = "This is text"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer2/PanelContainer/MarginContainer/VBoxContainer" unique_id=377648264]
+layout_mode = 2
+bbcode_enabled = true
+text = "Money: [color=light_green][b][i]$0[/i][/b][/color]"
+fit_content = true
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=35647498]
+custom_minimum_size = Vector2(500, 0)
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
 anchor_bottom = 1.0
+offset_left = -63.5
+offset_right = 63.5
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer" unique_id=2032212643]
+self_modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/PanelContainer" unique_id=1544646234]
@@ -38,15 +122,136 @@ layout_mode = 2
 layout_mode = 2
 text = "Inventory"
 
-[node name="GridContainer" type="GridContainer" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1096970941]
-custom_minimum_size = Vector2(0, 300)
+[node name="Button" type="Button" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1429321865]
 layout_mode = 2
-columns = 3
+text = "View"
+
+[node name="Radial" type="Control" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=158412718]
+layout_mode = 2
+size_flags_vertical = 3
+script = SubResource("GDScript_e3yml")
+
+[node name="radial_menu" type="Control" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Radial" unique_id=386053395]
+z_index = 2
+layout_mode = 1
+anchor_left = 0.108
+anchor_top = 0.272
+anchor_right = 0.892
+anchor_bottom = 0.72800004
+offset_top = 0.14398193
+offset_bottom = -0.14404297
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(196, 216)
+script = ExtResource("3_5matg")
+select_action_name = &"ui_accept"
+color = Color(0.08, 0.08, 0.08, 0.7372549)
+arc_start_angle = 7.47281469282041
+arc_end_angle = 1.9996293856408
+children_auto_sizing = true
+children_rotate = true
+popout_item_size = 198
+popout_spacing = 60.0
+popout_background_padding_top = 48
+popout_background_padding_bottom = 32
+metadata/_custom_type_script = "uid://c4x0np2q7ul41"
+
+[node name="RadialCategorySlot" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Radial/radial_menu" unique_id=2110834260 instance=ExtResource("4_e3yml")]
+layout_mode = 1
+tags = Array[String](["fish"])
+label_text = "fish"
+
+[node name="RadialCategorySlot2" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Radial/radial_menu" unique_id=1455199738 instance=ExtResource("4_e3yml")]
+layout_mode = 1
+label_text = "Treasure"
+
+[node name="RadialCategorySlot3" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Radial/radial_menu" unique_id=1873536086 instance=ExtResource("4_e3yml")]
+layout_mode = 1
+label_text = "Items"
 
 [node name="EndDayBtn" type="Button" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=57272319]
 layout_mode = 2
 text = "End the day..."
 
+[node name="Control" type="Control" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=174892392]
+layout_mode = 2
+
 [node name="EndNightBtn" type="Button" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=244906313]
 layout_mode = 2
 text = "End the Night..."
+
+[node name="MarginContainer3" type="MarginContainer" parent="." unique_id=1537911011]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.75000006
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -0.00012207031
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer3" unique_id=1834375190]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer3/PanelContainer" unique_id=1085557286]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer3/PanelContainer/MarginContainer" unique_id=197728198]
+layout_mode = 2
+
+[node name="ItemPreview" type="Control" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer" unique_id=220133102]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview" unique_id=1163971840]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer" unique_id=15037816]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer" unique_id=147801142]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer" unique_id=619150388]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=811320199]
+custom_minimum_size = Vector2(150, 20)
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=cyan][b]Salmon[/b][/color][i] (common)[/i]"
+fit_content = true
+
+[node name="SymbolsContainer" type="HBoxContainer" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=776782042]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 49
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer" unique_id=935557277]
+visible = false
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer" unique_id=192389405]
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="Control" type="Control" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer" unique_id=31915305]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+
+[node name="Sprite2D" type="Sprite2D" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/Control" unique_id=914497783]
+
+[node name="HSlider" type="HSlider" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer" unique_id=381088020]
+layout_mode = 2
+
+[node name="Offerbtn" type="Button" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer" unique_id=1045365107]
+layout_mode = 2
+text = "Offer "
