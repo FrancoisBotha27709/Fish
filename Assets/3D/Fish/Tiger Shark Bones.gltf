@@ -15,12 +15,12 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Cod"
+			"name":"Tiger Shark Bones"
 		}
 	],
 	"meshes":[
 		{
-			"name":"Cod Mesh",
+			"name":"Cod Mesh.005",
 			"primitives":[
 				{
 					"attributes":{
@@ -37,68 +37,68 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":117,
+			"count":774,
 			"max":[
-				0.3258872628211975,
-				0.3981846570968628,
-				0.6674842834472656
+				0.3354414701461792,
+				0.44388073682785034,
+				1.986898422241211
 			],
 			"min":[
-				-0.3258872628211975,
-				-0.2196817845106125,
-				-0.5398576855659485
+				-0.3354414701461792,
+				-0.3708159625530243,
+				-1.1474835872650146
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":117,
+			"count":774,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":117,
+			"count":774,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":153,
+			"count":1086,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":1404,
+			"byteLength":9288,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1404,
-			"byteOffset":1404,
+			"byteLength":9288,
+			"byteOffset":9288,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":936,
-			"byteOffset":2808,
+			"byteLength":6192,
+			"byteOffset":18576,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":306,
-			"byteOffset":3744,
+			"byteLength":2172,
+			"byteOffset":24768,
 			"target":34963
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":4052,
-			"uri":"Cod.bin"
+			"byteLength":26940,
+			"uri":"Tiger%20Shark%20Bones.bin"
 		}
 	]
 }

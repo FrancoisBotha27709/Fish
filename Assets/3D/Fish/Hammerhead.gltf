@@ -15,12 +15,12 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Cod"
+			"name":"Hammerhead"
 		}
 	],
 	"meshes":[
 		{
-			"name":"Cod Mesh",
+			"name":"Cod Mesh.007",
 			"primitives":[
 				{
 					"attributes":{
@@ -37,68 +37,68 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":117,
+			"count":342,
 			"max":[
-				0.3258872628211975,
-				0.3981846570968628,
-				0.6674842834472656
+				0.8469467759132385,
+				0.6656427979469299,
+				2.4295921325683594
 			],
 			"min":[
-				-0.3258872628211975,
-				-0.2196817845106125,
-				-0.5398576855659485
+				-0.8469467759132385,
+				-0.3347506821155548,
+				-1.501082420349121
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":117,
+			"count":342,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":117,
+			"count":342,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":153,
+			"count":468,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":1404,
+			"byteLength":4104,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1404,
-			"byteOffset":1404,
+			"byteLength":4104,
+			"byteOffset":4104,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":2736,
+			"byteOffset":8208,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":936,
-			"byteOffset":2808,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":306,
-			"byteOffset":3744,
+			"byteOffset":10944,
 			"target":34963
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":4052,
-			"uri":"Cod.bin"
+			"byteLength":11880,
+			"uri":"Hammerhead.bin"
 		}
 	]
 }
