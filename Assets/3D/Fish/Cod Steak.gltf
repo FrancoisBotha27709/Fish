@@ -18,19 +18,6 @@
 			"name":"Cod Steak"
 		}
 	],
-	"materials":[
-		{
-			"doubleSided":true,
-			"name":"Fish_Material",
-			"pbrMetallicRoughness":{
-				"baseColorTexture":{
-					"index":0
-				},
-				"metallicFactor":0,
-				"roughnessFactor":0.30000001192092896
-			}
-		}
-	],
 	"meshes":[
 		{
 			"name":"Cod Steak Mesh",
@@ -41,23 +28,9 @@
 						"NORMAL":1,
 						"TEXCOORD_0":2
 					},
-					"indices":3,
-					"material":0
+					"indices":3
 				}
 			]
-		}
-	],
-	"textures":[
-		{
-			"sampler":0,
-			"source":0
-		}
-	],
-	"images":[
-		{
-			"mimeType":"image/png",
-			"name":"fish-texture",
-			"uri":"fish-texture.png"
 		}
 	],
 	"accessors":[
@@ -120,12 +93,6 @@
 			"byteLength":240,
 			"byteOffset":2432,
 			"target":34963
-		}
-	],
-	"samplers":[
-		{
-			"magFilter":9728,
-			"minFilter":9984
 		}
 	],
 	"buffers":[

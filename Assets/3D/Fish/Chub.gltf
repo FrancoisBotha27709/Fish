@@ -15,12 +15,12 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Cod"
+			"name":"Chub"
 		}
 	],
 	"meshes":[
 		{
-			"name":"Cod Mesh",
+			"name":"Salmon Mesh.002",
 			"primitives":[
 				{
 					"attributes":{
@@ -37,68 +37,68 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":117,
+			"count":106,
 			"max":[
-				0.3258872628211975,
-				0.3981846570968628,
-				0.6674842834472656
+				0.2115461230278015,
+				0.32478681206703186,
+				0.6443652510643005
 			],
 			"min":[
-				-0.3258872628211975,
-				-0.2196817845106125,
-				-0.5398576855659485
+				-0.2115461230278015,
+				-0.33033236861228943,
+				-0.42815038561820984
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":117,
+			"count":106,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":117,
+			"count":106,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":153,
+			"count":138,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":1404,
+			"byteLength":1272,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1404,
-			"byteOffset":1404,
+			"byteLength":1272,
+			"byteOffset":1272,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":936,
-			"byteOffset":2808,
+			"byteLength":848,
+			"byteOffset":2544,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":306,
-			"byteOffset":3744,
+			"byteLength":276,
+			"byteOffset":3392,
 			"target":34963
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":4052,
-			"uri":"Cod.bin"
+			"byteLength":3668,
+			"uri":"Chub.bin"
 		}
 	]
 }
