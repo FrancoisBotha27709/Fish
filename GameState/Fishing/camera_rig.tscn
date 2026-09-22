@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cheulf08cvleb" path="res://Player/Fishing/camera_rig.gd" id="1_xdslm"]
 [ext_resource type="Script" uid="uid://k30p0osfjf8o" path="res://GameState/Fishing/camera_look.gd" id="2_f1ab1"]
+[ext_resource type="PackedScene" uid="uid://dppygydb1n6sa" path="res://Player/Camera/Camera.tscn" id="3_n3wae"]
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_n3wae"]
 dof_blur_far_distance = 50.0
@@ -30,3 +31,5 @@ transform = Transform3D(1, 0, 0, 0, -0.15008757, -0.98867255, 0, 0.98867255, -0.
 target_position = Vector3(0, -60, 0)
 collision_mask = 0
 collide_with_bodies = false
+
+[node name="CanvasLayer" parent="Camera3D" unique_id=1481063301 instance=ExtResource("3_n3wae")]

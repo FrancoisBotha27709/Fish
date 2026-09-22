@@ -2,8 +2,9 @@
 
 [ext_resource type="Script" uid="uid://di0cwe33ivcd3" path="res://Globals/loading.gd" id="1_mva6v"]
 
-[node name="Loading" type="Node2D" unique_id=73626175]
+[node name="Loading" type="Node2D" unique_id=73626175 node_paths=PackedStringArray("progress_bar")]
 script = ExtResource("1_mva6v")
+progress_bar = NodePath("ProgressBar")
 
 [node name="ProgressBar" type="ProgressBar" parent="." unique_id=1824130651]
 anchors_preset = 8

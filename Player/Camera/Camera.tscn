@@ -1,0 +1,74 @@
+[gd_scene format=3 uid="uid://dppygydb1n6sa"]
+
+[ext_resource type="Script" uid="uid://fntsyr3r28lw" path="res://Player/Camera/CameraFX.gd" id="1_duwd7"]
+[ext_resource type="Shader" uid="uid://cjkalew0gi5uy" path="res://Player/Camera/camera_fx.gdshader" id="2_pmsri"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_pmsri"]
+seed = 102
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ka0eo"]
+noise = SubResource("FastNoiseLite_pmsri")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ka0eo"]
+shader = ExtResource("2_pmsri")
+shader_parameter/vhs_enabled = true
+shader_parameter/vhs_scanline_intensity = 0.15
+shader_parameter/vhs_scanline_count = 240.0
+shader_parameter/vhs_noise_intensity = 0.05
+shader_parameter/vhs_tracking_distortion = 0.0015
+shader_parameter/vhs_wobble_speed = 1.0
+shader_parameter/vhs_color_bleed = 0.003
+shader_parameter/vhs_vignette = 0.2
+shader_parameter/ca_enabled = true
+shader_parameter/ca_samples = 3
+shader_parameter/ca_strength = 0.004
+shader_parameter/ca_radial = true
+shader_parameter/scuff_enabled = true
+shader_parameter/scuff_opacity = 0.35
+shader_parameter/scuff_scale = 1.0
+shader_parameter/scuff_offset = Vector2(0, 0)
+shader_parameter/scuff_smudge = 0.0
+shader_parameter/cc_exposure = 0.0
+shader_parameter/cc_contrast = 1.0
+shader_parameter/cc_saturation = 1.0
+shader_parameter/cc_gamma = 1.0
+shader_parameter/cc_color_filter = Color(1, 1, 1, 1)
+shader_parameter/cc_shadows_tint = Color(1, 1, 1, 1)
+shader_parameter/cc_highlights_tint = Color(1, 1, 1, 1)
+shader_parameter/lens_distortion_enabled = false
+shader_parameter/lens_barrel_amount = 0.0
+shader_parameter/grain_enabled = true
+shader_parameter/grain_intensity = 0.05
+shader_parameter/vignette_enabled = true
+shader_parameter/vignette_strength = 0.3
+shader_parameter/vignette_softness = 0.8
+shader_parameter/letterbox_enabled = false
+shader_parameter/letterbox_size = 0.1
+
+[node name="CanvasLayer" type="CanvasLayer" unique_id=1481063301]
+layer = 100
+script = ExtResource("1_duwd7")
+vhs_enabled = false
+ca_enabled = false
+ca_strength = 0.001
+ca_radial = false
+scuff_enabled = false
+scuff_texture = SubResource("NoiseTexture2D_ka0eo")
+cc_contrast = 1.055
+cc_saturation = 1.06
+lens_distortion_enabled = true
+lens_barrel_amount = 0.02499999999999991
+grain_enabled = false
+vignette_enabled = false
+letterbox_size = 0.0
+rect_path = NodePath("ColorRect")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=761132647]
+material = SubResource("ShaderMaterial_ka0eo")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
