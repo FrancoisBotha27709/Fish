@@ -70,46 +70,26 @@
 [ext_resource type="PackedScene" uid="uid://dio42u1ocmt50" path="res://Assets/3D/Nature/Stylized Nature MegaKit[Standard]/glTF/TwistedTree_5.gltf" id="68_uv2je"]
 [ext_resource type="Texture2D" uid="uid://c4vb1y6b5frnv" path="res://Assets/2D/480x800-868829797d609603fb1bf05c84d052ce.jpg" id="69_hhh4d"]
 
-[sub_resource type="Gradient" id="Gradient_n2sld"]
-offsets = PackedFloat32Array(0.2, 1)
-colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_2oc3u"]
-noise_type = 2
-frequency = 0.03
-cellular_jitter = 3.0
-cellular_return_type = 0
-domain_warp_enabled = true
-domain_warp_type = 1
-domain_warp_amplitude = 50.0
-domain_warp_fractal_type = 2
-domain_warp_fractal_lacunarity = 1.5
-domain_warp_fractal_gain = 1.0
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kwkhw"]
-noise = SubResource("FastNoiseLite_2oc3u")
-color_ramp = SubResource("Gradient_n2sld")
-seamless = true
-
 [sub_resource type="Terrain3DMaterial" id="Terrain3DMaterial_vb3a5"]
 _shader_parameters = {
-&"bias_distance": null,
-&"blend_sharpness": null,
-&"depth_blur": null,
-&"enable_macro_variation": null,
-&"enable_projection": null,
-&"flat_terrain_normals": null,
-&"macro_variation1": null,
-&"macro_variation2": null,
-&"macro_variation_slope": null,
-&"mipmap_bias": null,
-&"noise1_angle": null,
-&"noise1_offset": null,
-&"noise1_scale": null,
-&"noise2_scale": null,
-&"noise_texture": SubResource("NoiseTexture2D_kwkhw"),
-&"projection_threshold": null
+&"bias_distance": 512.0,
+&"blend_sharpness": 0.5,
+&"depth_blur": 0.0,
+&"enable_macro_variation": true,
+&"enable_projection": true,
+&"flat_terrain_normals": false,
+&"macro_variation1": Color(1, 1, 1, 1),
+&"macro_variation2": Color(1, 1, 1, 1),
+&"macro_variation_slope": 0.333,
+&"mipmap_bias": 1.0,
+&"noise1_angle": 0.0,
+&"noise1_offset": Vector2(0.5, 0.5),
+&"noise1_scale": 0.04,
+&"noise2_scale": 0.076,
+&"noise_texture": null,
+&"projection_threshold": 0.8
 }
+world_background = 0
 
 [sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_ew1kt"]
 name = "Bush_Common"
@@ -703,12 +683,14 @@ mesh_list = Array[Terrain3DMeshAsset]([SubResource("Terrain3DMeshAsset_ew1kt"), 
 texture_list = Array[Terrain3DTextureAsset]([SubResource("Terrain3DTextureAsset_bu8tv")])
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_f0ta8"]
-rough = true
 
 [node name="Terrain3D" type="Terrain3D" unique_id=360853756]
 data_directory = "res://Assets/3D/Nature/World"
 material = SubResource("Terrain3DMaterial_vb3a5")
 assets = SubResource("Terrain3DAssets_0i2pv")
+collision_mode = 3
+collision_shape_size = 64
+collision_radius = 256
 collision_mask = 3
 physics_material = SubResource("PhysicsMaterial_f0ta8")
 mesh_lods = 10

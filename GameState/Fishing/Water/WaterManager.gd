@@ -1,74 +1,43 @@
 extends MeshInstance3D
-
 class_name WaterManager
 
 const MAX_RIPPLES := 16
+const JITTER_RATE := 0.002      # must match the shader
+const HEIGHT_ITERATIONS := 3    # inverts the horizontal Gerstner shift; 2 is fine if you need speed
 
-# Keep these in sync with the shader's uniforms of the same name — they're
-# pushed to the material in _ready so the script is the single source of
-# truth (handy if you want to tune these from code/UI instead of the
-# inspector).
-@export var ripple_lifetime: float = 6.0
-@export var ripple_speed: float = 2.2
-@export var ripple_wavelength: float = 0.7
-@export var ripple_width: float = 1.2
+@export var follow_target: Node3D   # optional: water plane follows this, snapped to the vertex grid
+
+@export var ripple_lifetime: float = 5.0
+@export var ripple_speed: float = 4.0
+@export var ripple_wavelength: float = 1.5
+@export var ripple_width: float = 3.0
 @export var ripple_amplitude: float = 0.4
 @export var meters_per_unit: float = 1.0
 
-# Mirrors the shader's Waves / Large_Scale_Variation uniform groups, same
-# reason as the ripple params above: get_water_height_at() below has to
-# reproduce this exact math on the CPU, so it needs the exact same values
-# the shader is using, not a second hand-tuned copy that can drift.
 @export_group("Waves")
-@export var swell_amplitude: float = 3.2
-@export var swell_wavelength_scale: float = 1.0
-@export var chop_amplitude: float = 0.35
+@export var swell_amplitude: float = 1.2
+@export var swell_wavelength_scale: float = 0.5
+@export var chop_amplitude: float = 0.6
 @export var wave_speed: float = 1.0
-@export var wave_choppiness: float = 0.9        # steepens visual peaks only — doesn't affect the vertical height sampled below
+@export var wave_choppiness: float = 0.6
 @export var wind_direction_deg: float = 30.0
-@export var wave_direction_jitter: float = 20.0
+@export var wave_direction_jitter: float = 12.0
 @export var chop_patchiness: float = 0.5
-@export var mesh_vertex_spacing: float = 1.25   # ← add this, keep in sync with the shader uniform
+@export var mesh_vertex_spacing: float = 1.25   # keep equal to your mesh's real spacing
 
 @export_group("Large Scale Variation")
-@export var domain_warp_amount: float = 35.0
+@export var domain_warp_amount: float = 15.0
 @export var domain_warp_scale: float = 0.004
 @export var domain_warp_speed: float = 0.02
 
-# Slowly, organically varies overall wave energy over time — calm
-# stretches, then building chop, then big rolling swell, on no fixed
-# cycle. This is a MULTIPLIER on swell_amplitude / chop_amplitude (and,
-# more softly, wave_speed) — it doesn't replace biomes, which vary wave
-# character by LOCATION; this varies it by TIME, everywhere at once. Both
-# layer together: a biome's own amplitude multiplier still applies on top
-# of whatever the sea state currently is.
 @export_group("Sea State (Temporal Variation)")
 @export var enable_sea_state_variation: bool = true
-@export var sea_state_min: float = 0.3          # was 0.2 — 0.2 meant "almost flat", too extreme a swing
-@export var sea_state_max: float = 0.6           # was 1.6 — keep the swing gentle
-@export var sea_state_period: float = 120.0      # seconds for one full calm->rough->calm cycle
-@export var sea_state_jitter: float = 0.15       # 0 = pure sine, 1 = pure noise; small = mostly smooth with organic texture
-@export var sea_state_speed_influence: float = 0.15  # was 0.4 — speed swings were the most noticeable part of "wild"
-var _material: ShaderMaterial
+@export var sea_state_min: float = 0.6
+@export var sea_state_max: float = 1.0
+@export var sea_state_period: float = 120.0
+@export var sea_state_jitter: float = 0.15
+@export var sea_state_speed_influence: float = 0.15
 
-var _slot_pos: Array[Vector2] = []
-var _slot_time: Array[float] = []
-var _slot_strength: Array[float] = []
-var _next_slot := 0
-var _sim_time := 0.0
-
-# Current sea-state-modulated values — what get_water_height_at() and the
-# shader push actually use each frame. Initialized to the base exports and
-# recomputed in _update_sea_state() every _process if variation is on.
-var _sea_state_phase := 0.0
-var _current_swell_amplitude: float
-var _current_chop_amplitude: float
-var _current_wave_speed: float
-
-# ------------------------------------------------------------------
-# Gerstner wave constants — copied verbatim from the shader so the
-# height field sampled here matches what's actually rendered.
-# ------------------------------------------------------------------
 const WAVE_COUNT := 6
 const IS_SWELL: Array[bool] = [true, true, false, false, false, false]
 const WAVE_ANGLES: Array[float] = [0.0, 24.0, 61.0, -37.0, 104.0, -73.0]
@@ -77,19 +46,34 @@ const WAVE_STEEPNESS: Array[float] = [0.8, 0.7, 0.45, 0.35, 0.22, 0.14]
 const WAVE_AMP_SCALE: Array[float] = [1.0, 0.6, 0.32, 0.2, 0.1, 0.05]
 const WAVE_SPEED_MULT: Array[float] = [0.9, 1.05, 1.3, 1.5, 1.9, 2.2]
 
+var _material: ShaderMaterial
+var _slot_pos: Array[Vector2] = []
+var _slot_time: Array[float] = []
+var _slot_strength: Array[float] = []
+var _next_slot := 0
+var _sim_time := 0.0      # ripples, pollution drift
+var _wave_clock := 0.0    # waves, warp, turbulence (speed-integrated)
+var _sea_state_phase := 0.0
+var _cur_swell: float
+var _cur_chop: float
+var _cur_speed: float
+var _dirs: Array[Vector2] = []
+var _b_n := 0
+var _b_data = null
+var _b_chop = null
+var _b_rip = null
+
 func _ready() -> void:
 	if material_override is ShaderMaterial:
 		_material = material_override
 	elif mesh and mesh.surface_get_material(0) is ShaderMaterial:
 		_material = mesh.surface_get_material(0)
-
 	if _material == null:
 		push_warning("WaterManager: no ShaderMaterial found on this MeshInstance3D.")
 
-	_current_swell_amplitude = swell_amplitude
-	_current_chop_amplitude = chop_amplitude
-	_current_wave_speed = wave_speed
-
+	_cur_swell = swell_amplitude
+	_cur_chop = chop_amplitude
+	_cur_speed = wave_speed
 	_slot_pos.resize(MAX_RIPPLES)
 	_slot_time.resize(MAX_RIPPLES)
 	_slot_strength.resize(MAX_RIPPLES)
@@ -97,71 +81,58 @@ func _ready() -> void:
 		_slot_pos[i] = Vector2.ZERO
 		_slot_time[i] = -1000.0
 		_slot_strength[i] = 0.0
+	_dirs.resize(WAVE_COUNT)
+	_refresh_dirs()
 
 	if _material:
-		_material.set_shader_parameter("ripple_lifetime", ripple_lifetime)
-		_material.set_shader_parameter("ripple_speed", ripple_speed)
-		_material.set_shader_parameter("ripple_wavelength", ripple_wavelength)
-		_material.set_shader_parameter("ripple_width", ripple_width)
-		_material.set_shader_parameter("ripple_amplitude", ripple_amplitude)
-		_material.set_shader_parameter("meters_per_unit", meters_per_unit)
-		_material.set_shader_parameter("swell_amplitude", _current_swell_amplitude)
-		_material.set_shader_parameter("swell_wavelength_scale", swell_wavelength_scale)
-		_material.set_shader_parameter("chop_amplitude", _current_chop_amplitude)
-		_material.set_shader_parameter("wave_speed", _current_wave_speed)
-		_material.set_shader_parameter("wave_choppiness", wave_choppiness)
-		_material.set_shader_parameter("wind_direction_deg", wind_direction_deg)
-		_material.set_shader_parameter("wave_direction_jitter", wave_direction_jitter)
-		_material.set_shader_parameter("chop_patchiness", chop_patchiness)
-		_material.set_shader_parameter("domain_warp_amount", domain_warp_amount)
-		_material.set_shader_parameter("domain_warp_scale", domain_warp_scale)
-		_material.set_shader_parameter("domain_warp_speed", domain_warp_speed)
-		_material.set_shader_parameter("mesh_vertex_spacing", mesh_vertex_spacing)
+		var p := {
+			"ripple_lifetime": ripple_lifetime, "ripple_speed": ripple_speed,
+			"ripple_wavelength": ripple_wavelength, "ripple_width": ripple_width,
+			"ripple_amplitude": ripple_amplitude, "meters_per_unit": meters_per_unit,
+			"swell_amplitude": _cur_swell, "swell_wavelength_scale": swell_wavelength_scale,
+			"chop_amplitude": _cur_chop, "wave_choppiness": wave_choppiness,
+			"wind_direction_deg": wind_direction_deg, "wave_direction_jitter": wave_direction_jitter,
+			"chop_patchiness": chop_patchiness, "domain_warp_amount": domain_warp_amount,
+			"domain_warp_scale": domain_warp_scale, "domain_warp_speed": domain_warp_speed,
+			"mesh_vertex_spacing": mesh_vertex_spacing,
+		}
+		for k in p:
+			_material.set_shader_parameter(k, p[k])
 
 func _process(delta: float) -> void:
 	_sim_time += delta
 	_update_sea_state(delta)
+	_wave_clock += delta * _cur_speed   # speed changes only affect the future, never scrub the past
+	_refresh_dirs()
+	_refresh_biomes()
+	if follow_target:
+		global_position.x = snappedf(follow_target.global_position.x, mesh_vertex_spacing)
+		global_position.z = snappedf(follow_target.global_position.z, mesh_vertex_spacing)
 	if _material == null:
 		return
 	_material.set_shader_parameter("sim_time", _sim_time)
-	_material.set_shader_parameter("wave_time", _sim_time)   # ← add this
-	if enable_sea_state_variation:
-		_material.set_shader_parameter("swell_amplitude", _current_swell_amplitude)
-		_material.set_shader_parameter("chop_amplitude", _current_chop_amplitude)
-		_material.set_shader_parameter("wave_speed", _current_wave_speed)
+	_material.set_shader_parameter("wave_time", _wave_clock)
+	_material.set_shader_parameter("swell_amplitude", _cur_swell)
+	_material.set_shader_parameter("chop_amplitude", _cur_chop)
 
-## Advances the sea state's phase and recomputes the current
-## amplitude/speed multiplier. Driven by a sine wave so it's GUARANTEED to
-## ramp up and back down within sea_state_period — no risk of a long,
-## unpredictable one-directional drift like pure fbm can produce. A touch
-## of fbm is blended in (via sea_state_jitter) purely so the motion doesn't
-## read as a metronome; it never dominates the direction of travel.
 func _update_sea_state(delta: float) -> void:
 	if not enable_sea_state_variation:
-		_current_swell_amplitude = swell_amplitude
-		_current_chop_amplitude = chop_amplitude
-		_current_wave_speed = wave_speed
+		_cur_swell = swell_amplitude
+		_cur_chop = chop_amplitude
+		_cur_speed = wave_speed
 		return
-
-	var period: float = max(sea_state_period, 1.0)
-	_sea_state_phase += delta * TAU / period
-
-	var wave: float = 0.5 + 0.5 * sin(_sea_state_phase) # smooth 0..1, guaranteed full cycle every `period` seconds
-
-	var jitter_raw: float = _fbm(Vector2(_sea_state_phase * 0.15, 91.7))
-	var jitter: float = clamp(jitter_raw / 0.9375, 0.0, 1.0)
-
+	_sea_state_phase += delta * TAU / max(sea_state_period, 1.0)
+	var wave: float = 0.5 + 0.5 * sin(_sea_state_phase)
+	var jitter: float = clamp(_fbm(Vector2(_sea_state_phase * 0.15, 91.7)) / 0.9375, 0.0, 1.0)
 	var state: float = clamp(lerp(wave, jitter, sea_state_jitter), 0.0, 1.0)
 	var mult: float = lerp(sea_state_min, sea_state_max, state)
+	_cur_swell = swell_amplitude * mult
+	_cur_chop = chop_amplitude * mult
+	_cur_speed = wave_speed * lerp(1.0, mult, sea_state_speed_influence)
 
-	_current_swell_amplitude = swell_amplitude * mult
-	_current_chop_amplitude = chop_amplitude * mult
-	_current_wave_speed = wave_speed * lerp(1.0, mult, sea_state_speed_influence)
-
-## Call this any time something touches the water: a hull cutting the
-## surface, a shell/object splashing in, footsteps in shallows, etc.
-## `world_pos` only needs x/z (world space) — y is ignored.
-## `strength` roughly scales ring amplitude; 1.0 is a normal-sized disturbance.
+# ------------------------------------------------------------------
+# Public API
+# ------------------------------------------------------------------
 func spawn_ripple(world_pos: Vector3, strength: float = 1.0) -> void:
 	if _material == null:
 		return
@@ -172,62 +143,32 @@ func spawn_ripple(world_pos: Vector3, strength: float = 1.0) -> void:
 	_slot_strength[slot] = strength
 	_push_to_shader()
 
-# ---------------------------------------------------------------------------
-# PATCH for WaterManager.gd - replace get_ripple_height_at() with these two
-# functions. They mirror the shader's ripple block exactly (ripple_env(), the
-# mesh-safe wavelength/width clamp, the widening ring and the 1/sqrt(r) falloff),
-# so BuoyancySystem.gd keeps sampling the same surface the mesh draws.
-# Nothing else in WaterManager.gd needs to change.
-# ---------------------------------------------------------------------------
+## Height offset from calm sea level at a world XZ point. Matches the rendered surface.
+func get_water_height_at(world_xz: Vector2) -> float:
+	var p := world_xz
+	var m: Array
+	var o := Vector3.ZERO
+	var wp := Vector2.ZERO
+	for i in HEIGHT_ITERATIONS:
+		m = _biomes_at(p)
+		wp = _domain_warp(p)
+		o = _gerstner(wp, m[0])
+		if i < HEIGHT_ITERATIONS - 1:
+			p = world_xz - Vector2(o.x, o.z)   # rest position whose displaced vertex lands on world_xz
+	return o.y + _turbulence(wp, m[0]) + _ripple_h(p, m[1])
 
-## Mirrors ripple_env() in the shader: short fade-in, smoothstep ease-out.
-func _ripple_env(age: float) -> float:
-	var u: float = clamp(age / max(ripple_lifetime, 0.001), 0.0, 1.0)
-	var fade_out: float = 1.0 - u * u * (3.0 - 2.0 * u)
-	return smoothstep(0.0, 0.15, age) * fade_out
+## Absolute world-space Y of the water surface.
+func get_water_world_y(world_pos: Vector3) -> float:
+	return global_position.y + get_water_height_at(Vector2(world_pos.x, world_pos.z))
+
+## Surface normal (world space) via central differences. Use for aligning hulls.
+func get_water_normal_at(world_xz: Vector2, e: float = 1.0) -> Vector3:
+	var hx := get_water_height_at(world_xz + Vector2(e, 0)) - get_water_height_at(world_xz - Vector2(e, 0))
+	var hz := get_water_height_at(world_xz + Vector2(0, e)) - get_water_height_at(world_xz - Vector2(0, e))
+	return Vector3(-hx, 2.0 * e, -hz).normalized()
 
 func get_ripple_height_at(world_xz: Vector2) -> float:
-	var total := 0.0
-	var sc: float = 1.0 / max(meters_per_unit, 0.001)
-	# The shader clamps the DISPLACEMENT ring to what the mesh can represent
-	# (fine detail is drawn per-pixel and has no height), so clamp identically here.
-	var wl: float = max(ripple_wavelength, mesh_vertex_spacing * 3.5)
-	var width0: float = max(ripple_width, mesh_vertex_spacing * 2.0)
-	var k: float = TAU / wl
-	for i in MAX_RIPPLES:
-		var strength: float = _slot_strength[i]
-		if strength <= 0.0001:
-			continue
-		var age: float = _sim_time - _slot_time[i]
-		if age < 0.0 or age > ripple_lifetime:
-			continue
-		var to_point: Vector2 = (world_xz - _slot_pos[i]) * sc
-		var dist: float = to_point.length()
-		var wavefront: float = age * ripple_speed
-		var bx: float = (dist - wavefront) / (width0 * (1.0 + age * 0.25))
-		var band: float = exp(-bx * bx)
-		if band < 0.001:
-			continue
-		var decay: float = strength * _ripple_env(age) / sqrt(1.0 + wavefront * 0.5)
-		var phase: float = (dist - wavefront) * k
-		total += sin(phase) * ripple_amplitude * decay * band
-	return total
-
-## Full water surface height (world-space Y offset from calm sea level) at
-## a world-space XZ point: swell + chop Gerstner waves, domain warp,
-## turbulence (if a biome sets it), and object-driven ripples — the same
-## displacement the vertex shader applies, evaluated on the CPU. This is
-## what BuoyancySystem.gd should sample; get_ripple_height_at() alone only
-## covers interaction ripples, which is why floating objects were settling
-## on a flat plane instead of riding the actual waves.
-func get_water_height_at(world_xz: Vector2) -> float:
-	var chop_mult := _blend_chop_mult(world_xz)
-	var warped_pos := _domain_warp(world_xz, _sim_time)
-	var wind_rad := deg_to_rad(wind_direction_deg)
-	var height := _gerstner_height(warped_pos, _sim_time, wind_rad, chop_mult)
-	height += _turbulence_height(warped_pos, _sim_time, chop_mult)
-	height += get_ripple_height_at(world_xz)
-	return height
+	return _ripple_h(world_xz, Vector4(1, 1, 1, 0))
 
 func _push_to_shader() -> void:
 	var data: Array[Vector4] = []
@@ -236,140 +177,139 @@ func _push_to_shader() -> void:
 	_material.set_shader_parameter("ripple_data", data)
 	_material.set_shader_parameter("ripple_count", MAX_RIPPLES)
 
-# ==================================================================
-# Wave-field math ported from the shader (hash21 / value_noise / fbm /
-# gerstner / domain warp / turbulence). Only the pieces needed for a
-# height query are kept — horizontal (x/z) displacement, the Gerstner
-# jacobian, and tangent/binormal (used by the shader for lighting only)
-# are intentionally not reproduced here.
-# ==================================================================
+# ------------------------------------------------------------------
+# Wave math (mirrors the shader)
+# ------------------------------------------------------------------
+func _refresh_dirs() -> void:
+	var wind := deg_to_rad(wind_direction_deg)
+	for i in WAVE_COUNT:
+		var jit: float = (_fbm(Vector2(float(i) * 17.17, _wave_clock * JITTER_RATE)) - 0.5) * 2.0 * wave_direction_jitter
+		var ang: float = deg_to_rad(WAVE_ANGLES[i] + jit) + wind
+		_dirs[i] = Vector2(cos(ang), sin(ang))
 
+func _refresh_biomes() -> void:
+	_b_n = 0
+	if _material == null:
+		return
+	var cnt = _material.get_shader_parameter("biome_count")
+	_b_data = _material.get_shader_parameter("biome_data")
+	_b_chop = _material.get_shader_parameter("biome_chop")
+	_b_rip = _material.get_shader_parameter("biome_ripple")
+	if cnt == null or _b_data == null or _b_chop == null:
+		return
+	_b_n = int(min(int(cnt), min(_b_data.size(), _b_chop.size())))
+
+## Returns [chop_mult, ripple_mult] blended at pos (same soft circles as the shader).
+func _biomes_at(pos: Vector2) -> Array:
+	var chop := Vector4(1, 1, 1, 0)
+	var rip := Vector4(1, 1, 1, 0)
+	for i in _b_n:
+		var bd: Vector4 = _b_data[i]
+		var w: float = 1.0 - smoothstep(bd.z, bd.z + max(bd.w, 0.001), pos.distance_to(Vector2(bd.x, bd.y)))
+		if w <= 0.001:
+			continue
+		chop = chop.lerp(_b_chop[i], w)
+		if _b_rip != null and i < _b_rip.size():
+			rip = rip.lerp(_b_rip[i], w)
+	return [chop, rip]
+
+func _domain_warp(pos: Vector2) -> Vector2:
+	var s := pos * domain_warp_scale
+	var t := _wave_clock * domain_warp_speed
+	var w := Vector2(_fbm(s + Vector2(0.0, t)), _fbm(s + Vector2(5.2, -t))) - Vector2(0.5, 0.5)
+	return pos + w * domain_warp_amount
+
+## Full Gerstner displacement: x/z horizontal shift, y height.
+func _gerstner(wp: Vector2, cm: Vector4) -> Vector3:
+	var cp: float = _fbm(wp * 0.015 + Vector2(4.0, 9.0))
+	var pm: float = lerp(1.0 - chop_patchiness * 0.7, 1.0 + chop_patchiness * 0.7, cp)
+	var o := Vector3.ZERO
+	for i in WAVE_COUNT:
+		var wl: float
+		var amp: float
+		var spd: float
+		if IS_SWELL[i]:
+			wl = max(WAVE_BASE_LENGTHS[i] * swell_wavelength_scale, 0.5)
+			amp = _cur_swell * lerp(1.0, cm.x, 0.35)
+			spd = lerp(1.0, cm.z, 0.35)
+		else:
+			wl = max(WAVE_BASE_LENGTHS[i] / max(cm.y, 0.01), 0.5)
+			amp = _cur_chop * pm * cm.x
+			spd = cm.z
+		amp *= smoothstep(mesh_vertex_spacing * 2.0, mesh_vertex_spacing * 3.5, wl)
+		var k: float = TAU / wl
+		var c: float = sqrt(9.8 / k) * WAVE_SPEED_MULT[i] * spd
+		var a: float = WAVE_AMP_SCALE[i] * amp
+		var st: float = WAVE_STEEPNESS[i] * wave_choppiness
+		var dir: Vector2 = _dirs[i]
+		var f: float = k * (dir.dot(wp) - c * _wave_clock)
+		var co := cos(f)
+		o.x += st * a * dir.x * co
+		o.z += st * a * dir.y * co
+		o.y += a * sin(f)
+	return o
+
+func _turbulence(wp: Vector2, cm: Vector4) -> float:
+	if cm.w <= 0.01:
+		return 0.0
+	var sc: float = 1.0 / max(meters_per_unit, 0.001)
+	var tf: float = 0.03 * max(cm.y, 0.01)
+	var uv := wp * sc * tf + Vector2(_wave_clock * 0.6, _wave_clock * 0.45)
+	var fade: float = smoothstep(mesh_vertex_spacing * 2.0, mesh_vertex_spacing * 3.5, 1.0 / max(tf, 0.0001) / sc)
+	return (_fbm(uv) - 0.5) * _cur_chop * 1.5 * cm.w * fade
+
+func _ripple_env(age: float) -> float:
+	var u: float = clamp(age / max(ripple_lifetime, 0.001), 0.0, 1.0)
+	return smoothstep(0.0, 0.15, age) * (1.0 - u * u * (3.0 - 2.0 * u))
+
+func _ripple_h(pos: Vector2, rm: Vector4) -> float:
+	var total := 0.0
+	var sc: float = 1.0 / max(meters_per_unit, 0.001)
+	var spd: float = ripple_speed * rm.x
+	var k: float = TAU / max(ripple_wavelength * rm.y, mesh_vertex_spacing * 3.5)
+	var w0: float = max(ripple_width, mesh_vertex_spacing * 2.0)
+	for i in MAX_RIPPLES:
+		var s: float = _slot_strength[i]
+		if s <= 0.0001:
+			continue
+		var age: float = _sim_time - _slot_time[i]
+		if age < 0.0 or age > ripple_lifetime:
+			continue
+		var dist: float = ((pos - _slot_pos[i]) * sc).length()
+		var front: float = age * spd
+		var bx: float = (dist - front) / (w0 * (1.0 + age * 0.25))
+		var band: float = exp(-bx * bx)
+		if band < 0.001:
+			continue
+		var decay: float = s * _ripple_env(age) / sqrt(1.0 + front * 0.5)
+		total += sin((dist - front) * k) * ripple_amplitude * rm.z * decay * band
+	return total
+
+# ------------------------------------------------------------------
+# Noise (must match the shader's hash21 / value_noise / fbm)
+# ------------------------------------------------------------------
 static func _fract(x: float) -> float:
 	return x - floor(x)
 
 static func _hash21(p: Vector2) -> float:
-	var q := Vector2(_fract(p.x * 123.34), _fract(p.y * 456.21))
-	var d: float = q.dot(q + Vector2(45.32, 45.32))
-	q += Vector2(d, d)
-	return _fract(q.x * q.y)
+	var m := Vector2(fposmod(p.x, 289.0), fposmod(p.y, 289.0))
+	var p3 := Vector3(_fract(m.x * 0.1031), _fract(m.y * 0.1031), _fract(m.x * 0.1031))
+	var d: float = p3.dot(Vector3(p3.y, p3.z, p3.x) + Vector3(33.33, 33.33, 33.33))
+	p3 += Vector3(d, d, d)
+	return _fract((p3.x + p3.y) * p3.z)
 
 static func _value_noise(p: Vector2) -> float:
 	var i := Vector2(floor(p.x), floor(p.y))
 	var f := Vector2(_fract(p.x), _fract(p.y))
-	var a := _hash21(i)
-	var b := _hash21(i + Vector2(1.0, 0.0))
-	var c := _hash21(i + Vector2(0.0, 1.0))
-	var d := _hash21(i + Vector2(1.0, 1.0))
 	var u := Vector2(f.x * f.x * (3.0 - 2.0 * f.x), f.y * f.y * (3.0 - 2.0 * f.y))
-	return lerp(lerp(a, b, u.x), lerp(c, d, u.x), u.y)
+	return lerp(lerp(_hash21(i), _hash21(i + Vector2(1, 0)), u.x),
+			lerp(_hash21(i + Vector2(0, 1)), _hash21(i + Vector2(1, 1)), u.x), u.y)
 
 static func _fbm(p: Vector2) -> float:
 	var v := 0.0
 	var amp := 0.5
-	var pp := p
 	for i in 4:
-		v += amp * _value_noise(pp)
-		pp *= 2.03
+		v += amp * _value_noise(p)
+		p *= 2.03
 		amp *= 0.5
 	return v
-
-func _domain_warp(pos: Vector2, t: float) -> Vector2:
-	var warp_seed: Vector2 = pos * domain_warp_scale
-	var warp: Vector2 = Vector2(
-		_fbm(warp_seed + Vector2(0.0, t * domain_warp_speed)),
-		_fbm(warp_seed + Vector2(5.2, -t * domain_warp_speed))
-	) - Vector2(0.5, 0.5)
-	return pos + warp * domain_warp_amount
-
-## Vertical (Y) component only of the shader's gerstner() function — the
-## horizontal displacement, tangent/binormal, and jacobian are dropped
-## since a height query doesn't need them.
-func _gerstner_height(pos: Vector2, t: float, wind_rad: float, chop_mult: Vector4) -> float:
-	var offset_y := 0.0
-	var chop_patch: float = _fbm(pos * 0.015 + Vector2(4.0, 9.0))
-	var chop_patch_mult: float = lerp(1.0 - chop_patchiness * 0.7, 1.0 + chop_patchiness * 0.7, chop_patch)
-
-	for i in WAVE_COUNT:
-		var wave_seed: float = float(i) * 17.17
-		var jitter_deg: float = (_fbm(Vector2(wave_seed, t * 0.015)) - 0.5) * 2.0 * wave_direction_jitter
-		var ang: float = deg_to_rad(WAVE_ANGLES[i] + jitter_deg) + wind_rad
-		var dir := Vector2(cos(ang), sin(ang))
-
-		var wavelength: float = WAVE_BASE_LENGTHS[i]
-		var category_amp: float = _current_chop_amplitude
-		var speed_mult_biome: float = 1.0
-
-		if IS_SWELL[i]:
-			wavelength *= swell_wavelength_scale
-			category_amp = _current_swell_amplitude
-			category_amp *= lerp(1.0, chop_mult.x, 0.35)
-			speed_mult_biome = lerp(1.0, chop_mult.z, 0.35)
-		else:
-			wavelength /= max(chop_mult.y, 0.01)
-			category_amp *= chop_patch_mult * chop_mult.x
-			speed_mult_biome = chop_mult.z
-		wavelength = max(wavelength, 0.5)
-
-		# NEW: match the shader's nyquist fade, or short waves keep their
-		# full CPU-side amplitude after the shader has visually damped them.
-		var nyquist_fade: float = smoothstep(mesh_vertex_spacing * 2.0, mesh_vertex_spacing * 3.5, wavelength)
-		category_amp *= nyquist_fade
-
-		var k: float = TAU / wavelength
-		var c: float = sqrt(9.8 / k) * WAVE_SPEED_MULT[i] * speed_mult_biome
-		var a: float = WAVE_AMP_SCALE[i] * category_amp
-		var f: float = k * (dir.dot(pos) - c * t * _current_wave_speed)
-
-		offset_y += a * sin(f)
-
-	return offset_y
-
-func _turbulence_height(warped_pos: Vector2, t: float, chop_mult: Vector4) -> float:
-	if chop_mult.w <= 0.01:
-		return 0.0
-	var sc: float = 1.0 / max(meters_per_unit, 0.001)
-	var turb_freq: Vector2 = Vector2(0.03, 0.03) * max(chop_mult.y, 0.01)
-	var uv_t: Vector2 = warped_pos * sc * turb_freq + Vector2(t * 0.6, t * 0.45)
-	var h_t: float = _fbm(uv_t) - 0.5
-
-	# NEW: same fade the shader applies to turb_height
-	var turb_wavelength: float = 1.0 / max(turb_freq.x, 0.0001) / sc
-	var turb_nyquist_fade: float = smoothstep(mesh_vertex_spacing * 2.0, mesh_vertex_spacing * 3.5, turb_wavelength)
-
-	var turb_height: float = _current_chop_amplitude * 1.5 * chop_mult.w * turb_nyquist_fade
-	return h_t * turb_height
-
-## Blends biome_chop across whichever biomes (from WaterBiomeSystem.gd)
-## overlap this XZ point — same soft-edged-circle blend the shader does.
-## Reads biome_data/biome_chop/biome_count straight off this water's own
-## shader material, so WaterManager doesn't need any reference to
-## WaterBiomeSystem itself. Returns the neutral (1,1,1,0) multiplier if no
-## biome uniforms have been set yet.
-func _blend_chop_mult(pos_xz: Vector2) -> Vector4:
-	var chop_mult := Vector4(1.0, 1.0, 1.0, 0.0)
-	if _material == null:
-		return chop_mult
-
-	var count_variant = _material.get_shader_parameter("biome_count")
-	var data_variant = _material.get_shader_parameter("biome_data")
-	var chop_variant = _material.get_shader_parameter("biome_chop")
-	if count_variant == null or data_variant == null or chop_variant == null:
-		return chop_mult
-
-	var biome_count: int = int(count_variant)
-	var biome_data: Array = data_variant
-	var biome_chop: Array = chop_variant
-	var n: int = min(biome_count, min(biome_data.size(), biome_chop.size()))
-
-	for i in n:
-		var bd: Vector4 = biome_data[i]
-		var center := Vector2(bd.x, bd.y)
-		var radius: float = bd.z
-		var blend: float = max(bd.w, 0.001)
-		var dist: float = (pos_xz - center).length()
-		var w: float = 1.0 - smoothstep(radius, radius + blend, dist)
-		if w <= 0.001:
-			continue
-		chop_mult = chop_mult.lerp(biome_chop[i], w)
-
-	return chop_mult

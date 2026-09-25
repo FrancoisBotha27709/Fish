@@ -57,9 +57,6 @@ extends CanvasLayer
 ## reads that existing material and pushes the exported values into it.
 @export var rect_path: NodePath = ^"Rect"
 
-## Emitted once the "loading started" letterbox tween (-> 0.5) finishes.
-signal prepared_load
-
 const TWEEN_DUR := 0.6
 
 var _mat: ShaderMaterial
@@ -209,7 +206,7 @@ func _on_loading_started() -> void:
 	tw.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tw.tween_property(self, "letterbox_size", 0.5, TWEEN_DUR)
 	await tw.finished
-	prepared_load.emit()
+	SignalBus.prepared_load.emit()   # was: prepared_load.emit()
 
 func apply_preset(preset_name: String) -> void:
 	match preset_name:

@@ -17,7 +17,6 @@ var _slider_touched : bool = false
 ## Wire to the "Offer" button's `pressed` signal
 @export var market : GameMarket
 
-
 func start_negotiating(customer : Customer) -> void:
 	active_customer = customer
 	_slider_touched = false

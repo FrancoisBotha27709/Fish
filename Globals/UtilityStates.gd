@@ -15,7 +15,7 @@ const COMMON = preload("uid://eiexci1n8x7x")
 # const LEGENDARY = preload("uid://...")
 
 const SALMON_FISH = preload("uid://db5u6fhyhwtf2")
-
+var img_save_path : String = "user://screenshot/"
 
 func _ready() -> void:
 	tiers = [COMMON]  # add UNCOMMON, RARE, LEGENDARY etc. here as you create them

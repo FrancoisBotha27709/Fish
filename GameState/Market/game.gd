@@ -12,11 +12,9 @@ var pending_customers : Array[Customer] = []
 var active_visual : Node3D = null
 var active_character : CharacterScene = null
 
-
 func _ready() -> void:
 	pending_customers = customer_list.duplicate()
 	next_customer()
-
 
 ## Bring in the next customer: instantiate, position, walk them to the clerk, THEN negotiate
 func next_customer() -> void:
@@ -53,10 +51,8 @@ func next_customer() -> void:
 	)
 	active_character.walk_to_clerk()
 
-
 func _start_after_entrance(c : Customer) -> void:
 	player.start_negotiating(c)
-
 
 ## Plays the given reaction animation (must be a name from CharacterScene.anim_dict,
 ## e.g. "Accept" / "Reject" / "End"), holds on it briefly, then walks the customer
@@ -74,11 +70,7 @@ func play_exit_animation(anim_name : String, on_finished : Callable) -> void:
 
 	var hold_timer := get_tree().create_timer(reaction_hold_time)
 	print("GameMarket: reaction hold started for '%s', %.2fs" % [anim_name, reaction_hold_time])
-	hold_timer.timeout.connect(
-		_on_reaction_hold_finished.bind(active_character, on_finished),
-		CONNECT_ONE_SHOT
-	)
-
+	hold_timer.timeout.connect(_on_reaction_hold_finished.bind(active_character, on_finished), CONNECT_ONE_SHOT)
 
 func _on_reaction_hold_finished(character : CharacterScene, on_finished : Callable) -> void:
 	if character == null:
@@ -87,13 +79,11 @@ func _on_reaction_hold_finished(character : CharacterScene, on_finished : Callab
 	character.left_scene.connect(on_finished, CONNECT_ONE_SHOT)
 	character.leave_scene()
 
-
 func _id_for_anim_name(anim_name : String) -> int:
 	for id : int in active_character.anim_dict.keys():
 		if active_character.anim_dict[id] == anim_name:
 			return id
 	return -1
-
 
 ## Called once the current customer is fully done (bought or walked away)
 func on_customer_done() -> void:

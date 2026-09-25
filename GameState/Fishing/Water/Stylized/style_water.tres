@@ -2,63 +2,111 @@
 
 [ext_resource type="Shader" uid="uid://cod4in3oa7ixd" path="res://GameState/Fishing/Water/Stylized/stylized_water.gdshader" id="1_he4ax"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_fy73t"]
-seed = 40
-frequency = 0.05
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_he4ax"]
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cjfj7"]
-noise = SubResource("FastNoiseLite_fy73t")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_f254m"]
+width = 1024
+height = 1024
+noise = SubResource("FastNoiseLite_he4ax")
 seamless = true
+as_normal_map = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_f254m"]
+seed = 1432
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fg5su"]
+width = 1024
+height = 1024
+noise = SubResource("FastNoiseLite_f254m")
+seamless = true
+as_normal_map = true
+normalize = false
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_h1ldf"]
+seed = 86
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4fhog"]
+width = 1024
+height = 1024
+noise = SubResource("FastNoiseLite_h1ldf")
+seamless = true
+as_normal_map = true
+normalize = false
 
 [resource]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_he4ax")
-shader_parameter/swell_amplitude = 0.1750000083125
-shader_parameter/swell_wavelength_scale = 0.23000000440523
-shader_parameter/chop_amplitude = 0.2150000102125
+shader_parameter/swell_amplitude = 1.2
+shader_parameter/swell_wavelength_scale = 0.5
+shader_parameter/chop_amplitude = 0.6
 shader_parameter/wave_speed = 1.0
-shader_parameter/wave_choppiness = 0.0
-shader_parameter/wind_direction_deg = 0.0
-shader_parameter/wave_direction_jitter = 0.0
-shader_parameter/chop_patchiness = 0.0
-shader_parameter/domain_warp_amount = 35.0
+shader_parameter/wave_choppiness = 0.6
+shader_parameter/wind_direction_deg = 30.0
+shader_parameter/wave_direction_jitter = 12.0
+shader_parameter/chop_patchiness = 0.5
+shader_parameter/domain_warp_amount = 15.0
 shader_parameter/domain_warp_scale = 0.004
 shader_parameter/domain_warp_speed = 0.02
 shader_parameter/meters_per_unit = 1.0
 shader_parameter/mesh_vertex_spacing = 1.25
-shader_parameter/color_shallow = Color(0.25, 0.6, 0.52, 1)
-shader_parameter/color_deep = Color(0.04, 0.22, 0.24, 1)
-shader_parameter/depth_fade_distance = 3.0
-shader_parameter/depth_bands = 0
-shader_parameter/color_crest = Color(0.32, 0.72, 0.62, 1)
-shader_parameter/crest_amount = 0.25
+shader_parameter/absorption_color = Color(0.3, 0.6, 0.48, 1)
+shader_parameter/absorption_distance = 20.7790009632525
+shader_parameter/color_scatter = Color(0.035, 0.18, 0.16, 1)
+shader_parameter/color_crest_scatter = Color(0.14, 0.4, 0.32, 1)
+shader_parameter/crest_scatter_amount = 0.55
 shader_parameter/color_variation_tint = Color(0.1, 0.2, 0.05, 1)
-shader_parameter/color_variation_scale = 0.005
+shader_parameter/color_variation_scale = 0.02
 shader_parameter/color_variation_speed = 0.003
-shader_parameter/color_variation_strength = 0.25
-shader_parameter/see_through = 0.85
-shader_parameter/clarity_distance = 2.5
-shader_parameter/see_through_tint = 0.35
-shader_parameter/normal_flatten = 0.75
-shader_parameter/pollution_amount = 0.35
+shader_parameter/color_variation_strength = 0.3
+shader_parameter/water_roughness = 0.09
+shader_parameter/specular_amount = 0.5
+shader_parameter/far_roughen_start = 80.0
+shader_parameter/far_roughen_end = 500.0
+shader_parameter/enable_reflections = true
+shader_parameter/reflection_strength = 1.0
+shader_parameter/reflection_min = 0.12
+shader_parameter/reflection_blur = 0.05
+shader_parameter/reflection_step = 0.5
+shader_parameter/detail_height = 0.14
+shader_parameter/detail_scale = 1.0
+shader_parameter/detail_speed = 0.25
+shader_parameter/detail_fade_start = 40.0
+shader_parameter/detail_fade_end = 170.0
+shader_parameter/use_normal_maps = true
+shader_parameter/normal_map_a = SubResource("NoiseTexture2D_fg5su")
+shader_parameter/normal_map_b = SubResource("NoiseTexture2D_4fhog")
+shader_parameter/normal_tile = 3.96300018172273
+shader_parameter/normal_strength = 1.02800004883
+shader_parameter/normal_speed = 1.2450000591375
+shader_parameter/ripple_bump_boost = 3.3950001612625
+shader_parameter/enable_refraction = true
+shader_parameter/refraction_strength = 0.06
+shader_parameter/underwater_blur = 0.15
+shader_parameter/caustics_strength = 1.2
+shader_parameter/caustics_scale = 0.3
+shader_parameter/caustics_depth = 4.0
+shader_parameter/use_caustics_texture = false
+shader_parameter/caustics_tile = 2.5
+shader_parameter/caustics_sharpness = 2.0
+shader_parameter/pollution_amount = 0.2
 shader_parameter/pollution_murk = 3.0
-shader_parameter/slick_scale = 0.02
-shader_parameter/slick_color = Color(0.1, 0.09, 0.14, 1)
-shader_parameter/slick_strength = 0.7
+shader_parameter/slick_scale = 0.03
+shader_parameter/slick_sheen = 0.7
 shader_parameter/scum_color = Color(0.22, 0.24, 0.07, 1)
-shader_parameter/scum_scale = 0.02
+shader_parameter/scum_scale = 0.03
 shader_parameter/scum_strength = 0.6
 shader_parameter/color_foam = Color(0.88, 0.9, 0.82, 1)
 shader_parameter/foam_jacobian_threshold = 0.75
-shader_parameter/foam_edge_softness = 0.35
+shader_parameter/foam_edge_softness = 0.4
 shader_parameter/foam_threshold_jitter = 0.5
 shader_parameter/foam_noise_scale = 0.15
 shader_parameter/foam_scroll_speed = 0.2
 shader_parameter/foam_amount = 0.65
-shader_parameter/foam_crispness = 0.6
+shader_parameter/foam_crispness = 0.75
+shader_parameter/foam_dither_amount = 0.04
 shader_parameter/use_custom_foam_texture = true
-shader_parameter/foam_texture = SubResource("NoiseTexture2D_cjfj7")
+shader_parameter/foam_texture = SubResource("NoiseTexture2D_f254m")
 shader_parameter/foam_uv_scale = 2.0
 shader_parameter/foam_uv_scale_2 = 2.70000012662006
 shader_parameter/foam_warp_amount = 0.5
@@ -66,20 +114,18 @@ shader_parameter/foam_speed = 0.12
 shader_parameter/foam_crest_threshold = 0.5
 shader_parameter/foam_crest_softness = 0.3
 shader_parameter/enable_shore_foam = true
-shader_parameter/shore_foam_distance = 0.8
+shader_parameter/shore_foam_distance = 1.5
 shader_parameter/shore_band_speed = 1.2
 shader_parameter/wave_time = 0.0
 shader_parameter/ripple_data = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 shader_parameter/ripple_count = 0
 shader_parameter/sim_time = 0.0
-shader_parameter/ripple_lifetime = 6.0
-shader_parameter/ripple_speed = 2.2
-shader_parameter/ripple_wavelength = 0.7
-shader_parameter/ripple_width = 1.2
+shader_parameter/ripple_lifetime = 5.0
+shader_parameter/ripple_speed = 4.0
+shader_parameter/ripple_wavelength = 1.5
+shader_parameter/ripple_width = 3.0
 shader_parameter/ripple_amplitude = 0.4
-shader_parameter/ripple_line_width = 0.9
-shader_parameter/ripple_line_threshold = 0.3
-shader_parameter/ripple_line_strength = 1.0
+shader_parameter/ripple_detail_height = 0.05
 shader_parameter/biome_data = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 shader_parameter/biome_count = 0
 shader_parameter/biome_chop = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)

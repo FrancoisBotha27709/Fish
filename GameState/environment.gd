@@ -165,11 +165,11 @@ func _ready() -> void:
 	_apply()
 
 	if not Engine.is_editor_hint():
-		var vision_signals := get_node_or_null("/root/VisionSignals")
+		var vision_signals := get_node_or_null("/root/SignalBus")
 		if vision_signals:
 			vision_signals.darken_vision_changed.connect(_on_darken_vision_changed)
 		else:
-			push_warning("PollutedAtmosphere: VisionSignals autoload not found - add it in Project Settings > Autoload. Blackout effect will be disabled.")
+			push_warning("PollutedAtmosphere: SignalBus autoload not found - add it in Project Settings > Autoload. Blackout effect will be disabled.")
 
 func _build() -> void:
 	if sky_shader == null:

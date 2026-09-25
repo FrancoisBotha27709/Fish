@@ -45,13 +45,11 @@ func _ready() -> void:
 
 
 func _on_end_day_btn_pressed() -> void:
-	# Time set night
-	get_tree().change_scene_to_file("res://GameState/Fishing/Fishing.tscn")
+	SceneLoader.goto_scene("res://GameState/Fishing/Fishing.tscn")
 
 
 func _on_end_night_btn_pressed() -> void:
-	# Time set night
-	get_tree().change_scene_to_file("res://GameState/Market/game.tscn")
+	SceneLoader.goto_scene("res://GameState/Market/GameMarket.tscn")
 
 func _on_radial_btn_pressed() -> void:
 	_viewing = !_viewing
@@ -63,22 +61,10 @@ func _on_radial_btn_pressed() -> void:
 	if _viewing:
 		inventory_radial.visible = true
 		inventory_radial.scale = Vector2.ZERO
-		tween.tween_property(
-			inventory_radial,
-			"scale",
-			Vector2.ONE,
-			0.1
-		)
+		tween.tween_property(inventory_radial, "scale", Vector2.ONE, 0.1)
 	else:
-		tween.tween_property(
-			inventory_radial,
-			"scale",
-			Vector2.ZERO,
-			0.1
-		)
-		tween.tween_callback(func():
-			inventory_radial.visible = false
-		)
+		tween.tween_property(inventory_radial, "scale", Vector2.ZERO, 0.1)
+		tween.tween_callback(func(): inventory_radial.visible = false)
 
 ## Rebuilds the inventory grid AND the radial menu's category popouts from
 ## scratch, so neither ever shows stale/sold items.

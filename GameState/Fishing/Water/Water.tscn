@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b74k5xyan3dvv"]
 
-[ext_resource type="Material" uid="uid://b4hinf08q1cma" path="res://GameState/Fishing/Water/Realistic/real_water.tres" id="1_w61qf"]
+[ext_resource type="Material" uid="uid://cd0g3ld65rkbp" path="res://GameState/Fishing/Water/Stylized/style_water.tres" id="1_w61qf"]
 [ext_resource type="Script" uid="uid://cnpby6s4prbu4" path="res://GameState/Fishing/Water/WaterManager.gd" id="2_fy73t"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_cjfj7"]
@@ -13,22 +13,7 @@ orientation = 1
 [node name="Water" type="MeshInstance3D" unique_id=2069854430]
 mesh = SubResource("QuadMesh_cjfj7")
 script = ExtResource("2_fy73t")
-ripple_lifetime = 8.725
-ripple_wavelength = 2.79
-ripple_width = 2.77
-ripple_amplitude = 0.34
-swell_amplitude = 0.175
-swell_wavelength_scale = 0.23
-chop_amplitude = 0.215
-wave_choppiness = 0.0
-wind_direction_deg = 0.0
-wave_direction_jitter = 0.0
-chop_patchiness = 0.0
-mesh_vertex_spacing = 0.0
-domain_warp_amount = 0.0
-domain_warp_scale = 0.0
-domain_warp_speed = 0.0
-sea_state_max = 0.3
-sea_state_period = 0.0
-sea_state_jitter = 0.0
-sea_state_speed_influence = 0.0
+ripple_lifetime = 7.08
+ripple_speed = 4.455
+ripple_wavelength = 2.85
+ripple_width = 3.275
