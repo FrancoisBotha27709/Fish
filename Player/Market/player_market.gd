@@ -6,9 +6,11 @@ class_name PlayerMarket
 signal negotiation_started(customer : Customer)
 ## Emitted whenever the customer has something new to say.
 signal dialog_updated(text : String)
-## Emitted once a customer is fully resolved (sold or walked away) and the UI
-## should refresh the inventory grid and unlock all fish buttons again.
-signal deal_finished()
+
+## Emitted once a customer is fully resolved and the UI should refresh the
+## inventory grid and unlock all fish buttons again. `sold` is true only when
+## accept_deal() actually went through.
+signal deal_finished(sold : bool)
 
 var active_customer : Customer = null
 var requested_amount : float = 0.0
@@ -29,10 +31,7 @@ func start_negotiating(customer : Customer) -> void:
 
 		active_customer = null
 		if market:
-			market.play_exit_animation("End", func():
-				market.on_customer_done()
-				deal_finished.emit()
-			)
+			market.play_exit_animation("End", _on_exit_animation_done.bind(false))
 		return
 
 	requested_amount = active_customer.get_current_offer()
@@ -60,10 +59,7 @@ func accept_deal() -> void:
 	active_customer = null
 
 	if market:
-		market.play_exit_animation("Accept", func():
-			market.on_customer_done()
-			deal_finished.emit()
-		)
+		market.play_exit_animation("Accept", _on_exit_animation_done.bind(true))
 
 
 func try_haggle() -> void:
@@ -88,7 +84,12 @@ func try_haggle() -> void:
 			dialog_updated.emit(active_customer.dialog_text)
 			active_customer = null
 			if market:
-				market.play_exit_animation("End", func():
-					market.on_customer_done()
-					deal_finished.emit()
-)
+				market.play_exit_animation("End", _on_exit_animation_done.bind(false))
+
+
+## Runs once market's exit animation finishes, for any of the three paths that
+## end a negotiation (no matching item, accepted, or walked away). `sold`
+## distinguishes an actual sale from the other two.
+func _on_exit_animation_done(sold : bool) -> void:
+	market.on_customer_done()
+	deal_finished.emit(sold)

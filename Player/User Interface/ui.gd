@@ -20,7 +20,10 @@ class_name UserInterface
 @export var preview_label : RichTextLabel
 @export var preview_symbol_container : HBoxContainer
 @export var preview_description : RichTextLabel
-@export var preview_sprite : Sprite2D
+@export var preview_screenshot : Screenshot
+@export var preview_viewport_container : SubViewportContainer
+
+var _preview_tween : Tween
 
 
 var offer_value : float = 0.0
@@ -29,6 +32,10 @@ var _viewing : bool = false
 func _ready() -> void:
 	inventory_radial.visible = false
 	inventory_radial.scale = Vector2.ZERO
+
+	preview_viewport_container.visible = false
+	preview_viewport_container.modulate.a = 0.0
+	preview_viewport_container.scale = Vector2(0.02, 0.02)
 
 	end_day_btn.pressed.connect(_on_end_day_btn_pressed)
 	end_night_btn.pressed.connect(_on_end_night_btn_pressed)
@@ -213,31 +220,80 @@ func _on_price_slider_value_changed(value : float) -> void:
 func _on_offer_btn_pressed() -> void:
 	player_market.try_haggle()
 
-
-## A customer is fully resolved (sold or walked away): refresh the inventory
-## (the sold fish is gone from UtilityStates.items) and unlock every button.
-func _on_deal_finished() -> void:
+## A customer is fully resolved: refresh the inventory (the sold fish is gone
+## from UtilityStates.items if sold) and unlock every button. On an actual
+## sale, play the "sold" animation first and hold the preview open until it
+## finishes before powering the screen off.
+func _on_deal_finished(sold : bool) -> void:
 	set_items(UtilityStates.items)
-	UtilityStates.money += offer_value
+	if sold:
+		UtilityStates.money += offer_value
 	_clear_inventory_highlight()
-	_clear_preview()
 	money_label.text = "Money: [color=light_green][b][i]$%0.2d[/i][/b][/color]" % UtilityStates.money
 
+	if sold:
+		var anim_length := preview_screenshot.play_sold()
+		get_tree().create_timer(anim_length).timeout.connect(_clear_preview)
+	else:
+		_clear_preview()
+
 func _preview_item(customer : Customer) -> void:
-	_clear_preview()
 	var item : Item = customer.want_item
 	preview_label.text = "[color=%s][b]%s[/b][/color] [i](%s)[/i]" % [item.rarity.color.to_html(), item.display_name, item.rarity.display_name]
-	# for symbol in customer.want_item.get_symbols():
-	# 	var sprite : Sprite2D = Sprite2D.new()
-	# 	sprite.texture = symbol
-	# 	preview_symbol_container.add_child(sprite)
 	preview_description.text = item.get_description()
-	preview_sprite.texture = item.icon
+	preview_screenshot.start(item)
+	_play_crt_on(preview_viewport_container)
+
 
 func _clear_preview() -> void:
 	preview_description.text = "[color=red]Please[/color] wait for someone to show up"
 	preview_label.text = "Nothing of note..."
-	preview_sprite.texture = null
 	if preview_symbol_container.get_children() != []:
 		for child in preview_symbol_container:
 			child.queue_free()
+
+	_play_crt_off(preview_viewport_container, func(): preview_screenshot.clear_item())
+
+## Plays a CRT "power-on" effect: a thin bright line snaps out horizontally,
+## then opens up vertically to reveal the full picture.
+func _play_crt_on(target : Control) -> void:
+	if _preview_tween:
+		_preview_tween.kill()
+
+	target.pivot_offset = target.size / 2.0
+	target.visible = true
+	target.modulate.a = 1.0
+	target.scale = Vector2(0.02, 0.02)
+
+	_preview_tween = create_tween()
+	_preview_tween.set_trans(Tween.TRANS_QUAD)
+	_preview_tween.tween_property(target, "scale:x", 1.0, 0.08).set_ease(Tween.EASE_OUT)
+	_preview_tween.tween_property(target, "scale:y", 1.0, 0.12).set_ease(Tween.EASE_OUT)
+
+
+## Plays a CRT "power-off" effect: the picture collapses to a thin horizontal
+## line, then that line shrinks away and fades. Calls on_finished once the
+## container is fully hidden (use this to actually clear the 3D model, so it
+## doesn't vanish mid-collapse).
+func _play_crt_off(target : Control, on_finished : Callable = Callable()) -> void:
+	if _preview_tween:
+		_preview_tween.kill()
+
+	target.pivot_offset = target.size / 2.0
+
+	_preview_tween = create_tween()
+	_preview_tween.set_trans(Tween.TRANS_QUAD)
+	_preview_tween.tween_property(target, "scale:y", 0.02, 0.12).set_ease(Tween.EASE_IN)
+	_preview_tween.tween_property(target, "scale:x", 0.0, 0.1).set_ease(Tween.EASE_IN)
+	_preview_tween.parallel().tween_property(target, "modulate:a", 0.0, 0.1)
+	_preview_tween.tween_callback(_on_crt_off_finished.bind(target, on_finished))
+
+
+## Runs once the power-off tween completes: hides the container, resets its
+## scale for next time, then lets the caller do its own cleanup (e.g. freeing
+## the 3D model) now that it's safely offscreen.
+func _on_crt_off_finished(target : Control, on_finished : Callable) -> void:
+	target.visible = false
+	target.scale = Vector2(0.02, 0.02)
+	if on_finished.is_valid():
+		on_finished.call()

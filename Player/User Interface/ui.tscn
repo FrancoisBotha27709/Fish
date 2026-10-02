@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://d2vbvhw4dahng" path="res://Player/User Interface/Item_box/Item_box.tscn" id="2_uxcms"]
 [ext_resource type="Script" uid="uid://c4x0np2q7ul41" path="res://addons/radial_menu/addons/advanced_radial_menu/radial_menu_class.gd" id="3_5matg"]
 [ext_resource type="PackedScene" uid="uid://c04b8im58d68s" path="res://Player/User Interface/radial_category_slot.tscn" id="4_e3yml"]
+[ext_resource type="PackedScene" uid="uid://bk3xtcyivuwi2" path="res://GameState/Market/screenshot.tscn" id="6_gtmpl"]
 
 [sub_resource type="GDScript" id="GDScript_e3yml"]
 resource_name = "radial_menu_example_script"
@@ -34,7 +35,7 @@ func _input(event: InputEvent) -> void:
 		radial_menu.set_temporary_selection(-2)
 "
 
-[node name="UI" type="Control" unique_id=2005672883 node_paths=PackedStringArray("end_day_btn", "end_night_btn", "view_radial_btn", "inventory_lbl", "inventory_grid", "inventory_radial", "dialog_lbl", "price_slider", "money_label", "offer_btn", "preview_label", "preview_symbol_container", "preview_description", "preview_sprite")]
+[node name="UI" type="Control" unique_id=2005672883 node_paths=PackedStringArray("end_day_btn", "end_night_btn", "view_radial_btn", "inventory_lbl", "inventory_grid", "inventory_radial", "dialog_lbl", "price_slider", "money_label", "offer_btn", "preview_label", "preview_symbol_container", "preview_description", "preview_screenshot", "preview_viewport_container")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -58,7 +59,8 @@ offer_btn = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContai
 preview_label = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/RichTextLabel")
 preview_symbol_container = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/SymbolsContainer")
 preview_description = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/RichTextLabel")
-preview_sprite = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/Control/Sprite2D")
+preview_screenshot = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/Control/SubViewportContainer/SubViewport/Screenshot")
+preview_viewport_container = NodePath("MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/Control/SubViewportContainer")
 
 [node name="GridContainer" type="GridContainer" parent="." unique_id=384191173]
 visible = false
@@ -183,10 +185,10 @@ text = "End the Night..."
 [node name="MarginContainer3" type="MarginContainer" parent="." unique_id=1537911011]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.75000006
+anchor_left = 0.78300005
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -0.00012207031
+offset_left = 0.6398926
 grow_horizontal = 0
 grow_vertical = 0
 
@@ -244,10 +246,29 @@ fit_content = true
 
 [node name="Control" type="Control" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer" unique_id=31915305]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 6
+size_flags_vertical = 3
 
-[node name="Sprite2D" type="Sprite2D" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/Control" unique_id=914497783]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/Control" unique_id=1280998000]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.316
+anchor_right = 1.0
+anchor_bottom = 0.70500004
+offset_left = 3.0
+offset_top = -0.34802246
+offset_right = 3.0
+offset_bottom = 0.38494873
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/Control/SubViewportContainer" unique_id=1685690680]
+handle_input_locally = false
+size = Vector2i(360, 352)
+render_target_update_mode = 4
+
+[node name="Screenshot" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer/ItemPreview/PanelContainer/MarginContainer/VBoxContainer/Control/SubViewportContainer/SubViewport" unique_id=1386367765 instance=ExtResource("6_gtmpl")]
+transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, 3.2838767, -0.019686103, 0)
 
 [node name="HSlider" type="HSlider" parent="MarginContainer3/PanelContainer/MarginContainer/VBoxContainer" unique_id=381088020]
 layout_mode = 2

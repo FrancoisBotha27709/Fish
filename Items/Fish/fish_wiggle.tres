@@ -36,6 +36,8 @@ uniform float wiggle_ramp = 1.0;
 uniform float wiggle_amplitude = 0.15;   // how far the body swings side to side
 uniform float wiggle_frequency = 3.0;    // how many waves fit along the body
 uniform float wiggle_speed = 6.0;        // how fast the wave travels (tie to swim speed)
+// Master toggle: 1.0 = normal swimming wiggle, 0.0 = perfectly still (dead fish).
+uniform float wiggle_amount : hint_range(0.0, 1.0) = 1.0;
 
 // Small extra bob so it doesn't look perfectly flat.
 uniform float vertical_bob_amplitude = 0.03;
@@ -58,7 +60,7 @@ void vertex() {
 	mask = mask * mask; // sharpen so the head stays nearly still
 
 	float phase = body_pos * wiggle_frequency - TIME * wiggle_speed;
-	float lateral = sin(phase) * wiggle_amplitude * mask;
+	float lateral = sin(phase) * wiggle_amplitude * mask * wiggle_amount;
 
 	// Displace sideways, perpendicular to the body axis.
 	if (body_axis == 0) {
@@ -68,10 +70,10 @@ void vertex() {
 	}
 
 	// Gentle vertical bob, strongest toward the tail as well.
-	VERTEX.y += sin(TIME * vertical_bob_speed + body_pos * wiggle_frequency) * vertical_bob_amplitude * mask;
+	VERTEX.y += sin(TIME * vertical_bob_speed + body_pos * wiggle_frequency) * vertical_bob_amplitude * mask * wiggle_amount;
 
 	// Bend the normal to roughly follow the wiggle so shading doesn't look flat/wrong.
-	float d_lateral = cos(phase) * wiggle_amplitude * wiggle_frequency * mask;
+	float d_lateral = cos(phase) * wiggle_amplitude * wiggle_frequency * mask * wiggle_amount;
 	if (body_axis == 0) {
 		NORMAL = normalize(NORMAL + vec3(0.0, 0.0, d_lateral));
 	} else {
@@ -115,5 +117,6 @@ shader_parameter/wiggle_ramp = 0.16
 shader_parameter/wiggle_amplitude = 0.15
 shader_parameter/wiggle_frequency = 3.0
 shader_parameter/wiggle_speed = 6.0
+shader_parameter/wiggle_amount = 1.0
 shader_parameter/vertical_bob_amplitude = 0.03
 shader_parameter/vertical_bob_speed = 4.0

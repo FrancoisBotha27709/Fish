@@ -35,6 +35,9 @@ class_name PlayerFish
 @export var float_weight : float = 10.0
 @export_subgroup("Collisions")
 @export var collision_shapes : Array[CollisionShape3D] = []
+@export_subgroup("Buoyancy Gate")
+@export var buoyancy_system: BuoyancySys       # drag in the node running BuoyancySys.gd
+@export var min_submersion_to_move: float = 0.4  # 0..1, height-wise fraction that must be underwater
 
 @export_group("Camera")
 @export var camera_target: Node3D
@@ -93,6 +96,11 @@ func _handle_movement(delta: float) -> void:
 		else:
 			throttle = Input.get_axis("boat_reverse", "boat_forward")
 			steer = Input.get_axis("boat_turn_left", "boat_turn_right")
+
+		# Require at least min_submersion_to_move of the hull underwater to respond to input
+		if buoyancy_system and buoyancy_system.get_submersion(self) < min_submersion_to_move:
+			throttle = 0.0
+			steer = 0.0
 
 		if throttle > 0.0:
 			analog_motion_sensor.forward(delta)

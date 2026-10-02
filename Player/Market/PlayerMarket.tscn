@@ -11,9 +11,8 @@ size = Vector3(0.1, 0.5, 2)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5gt1b"]
 
-[node name="Player" type="CharacterBody3D" unique_id=581411738 node_paths=PackedStringArray("camera_fx", "ui_node")]
+[node name="Player" type="CharacterBody3D" unique_id=581411738 node_paths=PackedStringArray("ui_node")]
 script = ExtResource("1_5gt1b")
-camera_fx = NodePath("")
 ui_node = NodePath("CanvasLayer/UI")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1102374348]

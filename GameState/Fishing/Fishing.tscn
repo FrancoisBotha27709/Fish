@@ -90,7 +90,7 @@ shader_parameter/wind_direction_deg = 30.0
 shader_parameter/fade_start = 500.0
 shader_parameter/fade_end = 1100.0
 shader_parameter/sun_direction = Vector3(0.1313573, -0.47239694, 0.8715426)
-shader_parameter/sun_color = Color(0.92, 0.86, 0.64, 1)
+shader_parameter/sun_color = Color(0.7831971, 0.6966935, 0.39377183, 1)
 shader_parameter/sun_energy = 0.7
 shader_parameter/hatch_style = 0
 shader_parameter/hatch_scale = 25.0
@@ -132,7 +132,7 @@ material_override = SubResource("ShaderMaterial_88b6t")
 mesh = SubResource("PlaneMesh_80ial")
 
 [node name="CameraRig" parent="." unique_id=2083488559 node_paths=PackedStringArray("target", "camera_target", "character_target") instance=ExtResource("5_08esg")]
-transform = Transform3D(-4.371138e-08, 0, -0.9999999, 0, 1, 0, 0.9999999, 0, -4.371138e-08, 177.45784, 16.68062, 18.386274)
+transform = Transform3D(-4.371138e-08, 0, -0.9999999, 0, 1, 0, 0.9999999, 0, -4.371138e-08, -111.54216, 20.953295, -139.61372)
 target = NodePath("../PlayerFish")
 camera_target = NodePath("../PlayerFish/CameraTarget")
 character_target = NodePath("../PlayerFish")
@@ -142,13 +142,15 @@ distance = 13.44
 pitch = 8.0
 orbit_smoothing = 4.505
 
-[node name="PlayerFish" parent="." unique_id=1016697865 node_paths=PackedStringArray("cam_rig") instance=ExtResource("5_ndv5f")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 198.68529, 17.543598, 18.386274)
+[node name="PlayerFish" parent="." unique_id=1016697865 node_paths=PackedStringArray("buoyancy_system", "cam_rig") instance=ExtResource("5_ndv5f")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -90.31471, 21.816273, -139.61372)
 max_speed = 5.0
 acceleration = 0.9
 deceleration = 1.2
 turn_speed = 0.385
 drift_factor = 0.66
+buoyancy_system = NodePath("../Systems/Buyoncy")
+min_submersion_to_move = 0.1
 cam_rig = NodePath("../CameraRig")
 
 [node name="FishingSpots" type="Node3D" parent="." unique_id=1010515394]
