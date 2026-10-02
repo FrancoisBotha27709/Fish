@@ -157,6 +157,21 @@ func get_water_height_at(world_xz: Vector2) -> float:
 			p = world_xz - Vector2(o.x, o.z)   # rest position whose displaced vertex lands on world_xz
 	return o.y + _turbulence(wp, m[0]) + _ripple_h(p, m[1])
 
+## Same surface as get_water_height_at but WITHOUT ripples. Use for hull tilt
+## so the boat's own wake doesn't feed back into its orientation.
+func get_wave_height_at(world_xz: Vector2) -> float:
+	var p := world_xz
+	var m: Array
+	var o := Vector3.ZERO
+	var wp := Vector2.ZERO
+	for i in HEIGHT_ITERATIONS:
+		m = _biomes_at(p)
+		wp = _domain_warp(p)
+		o = _gerstner(wp, m[0])
+		if i < HEIGHT_ITERATIONS - 1:
+			p = world_xz - Vector2(o.x, o.z)
+	return o.y + _turbulence(wp, m[0])
+
 ## Absolute world-space Y of the water surface.
 func get_water_world_y(world_pos: Vector3) -> float:
 	return global_position.y + get_water_height_at(Vector2(world_pos.x, world_pos.z))

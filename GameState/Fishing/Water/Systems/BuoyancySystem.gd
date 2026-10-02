@@ -36,6 +36,9 @@ signal object_exited_water(body: Node3D, world_pos: Vector3)
 @export var tilt_reference_weight: float = 1.0 # float_weight considered a "normal" object for tilt-speed scaling
 @export var tilt_size_influence: float = 1.0   # 0 = size doesn't affect tilt rate; 1 = full inverse scaling (double the size -> half the rate)
 @export var tilt_weight_influence: float = 1.0 # 0 = weight doesn't affect tilt rate; 1 = full inverse scaling (double the weight -> half the rate)
+@export var recover_deg_per_sec: float = 6.0     # after leaving land: constant angular speed back toward the wave slope (lower = slower/heavier)
+@export var recover_done_angle_deg: float = 0.3  # recovery ends once within this many degrees of the (smoothed) wave normal; keep small so no residual tilt is left to the slow blend
+@export var normal_smoothing: float = 1.5        # low-pass on the wave normal for the player boat; lower = calmer/slower (1.5 is ~0.7s response)
 
 @export_group("Stick To Surface")
 @export var stick_to_surface_depth: float = 0.15      # world units the object's collision-shape center sits below the local water surface
@@ -53,6 +56,8 @@ var _wake_timer: Dictionary = {}          # instance_id -> float
 var _was_submerged: Dictionary = {}       # instance_id -> bool
 var _manual_vel_y: Dictionary = {}        # instance_id -> float; vertical velocity for Area3D/plain Node3D (no native physics velocity)
 var _first_seen: Dictionary = {}          # instance_id -> float (elapsed time when first processed), used for spawn_ease_time
+var _recovering: Dictionary = {}          # instance_id -> bool; true after being beached until tilt is back to the wave slope
+var _smoothed_normal: Dictionary = {}     # instance_id -> Vector3; low-passed wave normal for bodies that opt in
 var _elapsed_time: float = 0.0
 
 func _ready() -> void:
@@ -96,11 +101,20 @@ func _is_stick_to_surface(body: Node3D) -> bool:
 	if "stick_to_surface" in body:
 		return bool(body.get("stick_to_surface"))
 	return false
+
 ## Call if a body's "stick_to_surface" metadata changes after it's already
 ## been cached (e.g. toggling behavior at runtime). Forces the next frame
 ## to re-read metadata and, for a RigidBody3D, re-evaluate freeze state.
 func refresh_stick_flag(body: Node3D) -> void:
 	_shape_cache.erase(body.get_instance_id())
+
+## True if the body exposes an "is_out_of_water" property (e.g. PlayerFish)
+## and it is currently set. Used to stop forcing the body level with the
+## wave slope while it is resting on land.
+func _is_beached(body: Node3D) -> bool:
+	if "is_out_of_water" in body:
+		return bool(body.get("is_out_of_water"))
+	return false
 
 ## Buoyant force at FULL submersion, in Newtons-equivalent — deliberately a
 ## function of shape volume only, never of the body's own weight/mass.
@@ -216,6 +230,14 @@ func _water_height_at(world_pos: Vector3) -> float:
 		return water_base_height + _water.get_ripple_height_at(Vector2(world_pos.x, world_pos.z))
 	return water_base_height
 
+## Wave surface height WITHOUT ripples, used for hull tilt so the boat's own
+## wake can't feed back into its orientation. Falls back to the full surface
+## if the water script doesn't expose get_wave_height_at.
+func _wave_height_at(world_pos: Vector3) -> float:
+	if _water != null and _water.has_method("get_wave_height_at"):
+		return water_base_height + _water.get_wave_height_at(Vector2(world_pos.x, world_pos.z))
+	return _water_height_at(world_pos)
+
 # --------------------------------------------------------- wave slope / tilt
 
 ## Estimates the local wave-surface normal from 4 corner samples (water
@@ -244,13 +266,25 @@ func _estimate_wave_normal(origin: Vector3, corners: Array[Vector3], corner_wate
 ## RigidBody3D. Non-frozen RigidBody3D uses a torque instead (see
 ## _process_rigid_body) so normal physics does the rocking. rate_scale
 ## comes from _tilt_response_scale — bigger/heavier bodies blend slower.
-func _apply_visual_tilt(body: Node3D, origin: Vector3, corners: Array[Vector3], corner_water_y: Array[float], strength: float, delta: float, rate_scale: float) -> void:
+##
+## recover_deg_per_sec > 0 rotates toward the target at a constant angular
+## speed (ignores weight/size/submersion), used to unwind a tilt picked up on
+## land. smooth_normal low-passes the wave normal so chop doesn't jitter a
+## large hull. Returns the angle (radians) between the body's up and the
+## (smoothed) wave normal before this frame's blend.
+func _apply_visual_tilt(body: Node3D, origin: Vector3, corners: Array[Vector3], corner_water_y: Array[float], strength: float, delta: float, rate_scale: float, recover_deg_per_sec: float = 0.0, smooth_normal: bool = false) -> float:
 	var wave_normal := _estimate_wave_normal(origin, corners, corner_water_y)
+	if smooth_normal:
+		var nid := body.get_instance_id()
+		var prev: Vector3 = _smoothed_normal.get(nid, wave_normal)
+		wave_normal = prev.slerp(wave_normal, 1.0 - exp(-normal_smoothing * delta)).normalized()
+		_smoothed_normal[nid] = wave_normal
 	var current_basis: Basis = body.global_transform.basis
+	var error: float = current_basis.y.normalized().angle_to(wave_normal)
 	var forward: Vector3 = -current_basis.z # Godot forward is -Z
 	var right: Vector3 = forward.cross(wave_normal)
 	if right.length_squared() < 0.0001:
-		return
+		return error
 	right = right.normalized()
 	var new_forward: Vector3 = wave_normal.cross(right).normalized()
 	var scale := current_basis.get_scale()
@@ -259,11 +293,18 @@ func _apply_visual_tilt(body: Node3D, origin: Vector3, corners: Array[Vector3], 
 	var current_quat := current_basis.orthonormalized().get_rotation_quaternion()
 	var target_quat := target_basis.get_rotation_quaternion()
 	var blend: float = clamp(tilt_speed * rate_scale * delta * clamp(strength, 0.0, 1.0), 0.0, 1.0)
+	if recover_deg_per_sec > 0.0:
+		# Constant angular speed, independent of weight/size/submersion, so a
+		# land tilt unwinds smoothly and steadily instead of snapping.
+		var angle_left: float = current_quat.angle_to(target_quat)
+		if angle_left > 0.0001:
+			blend = max(blend, clamp(deg_to_rad(recover_deg_per_sec) * delta / angle_left, 0.0, 1.0))
 	var new_quat := current_quat.slerp(target_quat, blend)
 
 	var t := body.global_transform
 	t.basis = Basis(new_quat).scaled(scale)
 	body.global_transform = t
+	return error
 
 # ------------------------------------------------------------- rigid body
 
@@ -382,9 +423,25 @@ func _process_character_body(body: CharacterBody3D, delta: float) -> void:
 	# Hard clamp — same launch-spike protection as the RigidBody path.
 	body.velocity.y = clamp(body.velocity.y, -max_vertical_speed, max_vertical_speed)
 
-	if enable_boat_tilt and sample_corners and corners.size() == 4:
+	# Skip the wave-slope levelling while the body reports it's out of the
+	# water (e.g. PlayerFish.is_out_of_water), so it can tilt with the
+	# terrain it's resting on instead. Resumes automatically on re-entry.
+	var body_id := body.get_instance_id()
+	var beached := _is_beached(body)
+	if beached:
+		_recovering[body_id] = true
+		_smoothed_normal.erase(body_id)
+
+	if enable_boat_tilt and sample_corners and corners.size() == 4 and not beached:
 		var rate_scale := _tilt_response_scale(body, half, weight)
-		_apply_visual_tilt(body, origin, corners, corner_water_y, avg_submersion, delta, rate_scale)
+		var recover_speed: float = recover_deg_per_sec if _recovering.get(body_id, false) else 0.0
+		# Tilt target comes from the ripple-free wave surface
+		var corner_wave_y: Array[float] = []
+		for offset in corners:
+			corner_wave_y.append(_wave_height_at(origin + offset))
+		var tilt_error := _apply_visual_tilt(body, origin, corners, corner_wave_y, avg_submersion, delta, rate_scale, recover_speed, true)
+		if recover_speed > 0.0 and tilt_error < deg_to_rad(recover_done_angle_deg):
+			_recovering.erase(body_id)
 
 	_handle_wake(body, origin, any_submerged, delta)
 
@@ -565,3 +622,5 @@ func _on_floatable_freed(id: int) -> void:
 	_was_submerged.erase(id)
 	_manual_vel_y.erase(id)
 	_first_seen.erase(id)
+	_recovering.erase(id)
+	_smoothed_normal.erase(id)

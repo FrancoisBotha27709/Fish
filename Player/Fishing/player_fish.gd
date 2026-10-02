@@ -38,6 +38,11 @@ class_name PlayerFish
 @export_subgroup("Buoyancy Gate")
 @export var buoyancy_system: BuoyancySys       # drag in the node running BuoyancySys.gd
 @export var min_submersion_to_move: float = 0.4  # 0..1, height-wise fraction that must be underwater
+@export var submersion_hysteresis: float = 0.15  # once beached, hull must reach min_submersion_to_move + this before counting as in the water again (stops flicker at the waterline)
+
+@export_group("Land")
+@export var land_align_speed: float = 3.0      # how quickly the boat settles onto the terrain slope (lower = slower/heavier)
+@export var land_friction: float = 1.5         # horizontal slow-down while beached (0 = slides forever)
 
 @export_group("Camera")
 @export var camera_target: Node3D
@@ -48,6 +53,11 @@ class_name PlayerFish
 
 @export_group("Border")
 @export var border_steer_gain: float = 2.0
+
+## True while too little of the hull is underwater to respond to input.
+## BuoyancySys reads this (via `"is_out_of_water" in body`) to stop forcing
+## the boat level with the wave slope.
+var is_out_of_water: bool = false
 
 var _wobble_time: float = 0.0
 var _wobble_offset: float = 0.0
@@ -72,7 +82,31 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_handle_movement(delta)
+	if is_out_of_water and not playing_minigame:
+		_handle_land(delta)
 	move_and_slide()
+
+# Gravity is handled by BuoyancySys (it owns velocity.y for CharacterBody3D
+# in the "floating" group), so only orientation and friction live here.
+func _handle_land(delta: float) -> void:
+	# Slowly settle onto whatever we're resting on
+	if is_on_floor():
+		var target := _basis_from_normal(get_floor_normal())
+		var t := 1.0 - exp(-land_align_speed * delta)
+		var q := global_basis.get_rotation_quaternion().slerp(target.get_rotation_quaternion(), t)
+		global_basis = Basis(q)
+
+	# Scrub off horizontal speed so the boat doesn't slide forever
+	var friction := clampf(land_friction * delta, 0.0, 1.0)
+	velocity.x = lerpf(velocity.x, 0.0, friction)
+	velocity.z = lerpf(velocity.z, 0.0, friction)
+
+# Keeps the boat's current heading but tilts "up" to match the surface normal
+func _basis_from_normal(n: Vector3) -> Basis:
+	var fwd := -global_basis.z
+	fwd = (fwd - n * fwd.dot(n)).normalized()
+	var right := fwd.cross(n).normalized()
+	return Basis(right, n, -fwd)
 
 func _handle_movement(delta: float) -> void:
 	if not playing_minigame:
@@ -97,8 +131,15 @@ func _handle_movement(delta: float) -> void:
 			throttle = Input.get_axis("boat_reverse", "boat_forward")
 			steer = Input.get_axis("boat_turn_left", "boat_turn_right")
 
-		# Require at least min_submersion_to_move of the hull underwater to respond to input
-		if buoyancy_system and buoyancy_system.get_submersion(self) < min_submersion_to_move:
+		# Require at least min_submersion_to_move of the hull underwater to respond to input.
+		# Hysteresis: once out of the water, it takes a bit more submersion to count as back in.
+		if buoyancy_system != null:
+			var submersion := buoyancy_system.get_submersion(self)
+			var threshold := min_submersion_to_move + (submersion_hysteresis if is_out_of_water else 0.0)
+			is_out_of_water = submersion < threshold
+		else:
+			is_out_of_water = false
+		if is_out_of_water:
 			throttle = 0.0
 			steer = 0.0
 
@@ -183,8 +224,11 @@ func _handle_movement(delta: float) -> void:
 		var forward := -global_transform.basis.z
 		var target_velocity := forward * _current_speed
 
-		velocity.x = lerp(velocity.x, target_velocity.x, (1.0 - drift_factor) * delta * 10.0)
-		velocity.z = lerp(velocity.z, target_velocity.z, (1.0 - drift_factor) * delta * 10.0)
+		# While beached, don't pull velocity toward the drive target; let
+		# momentum carry the boat (land_friction in _handle_land slows it).
+		if not is_out_of_water:
+			velocity.x = lerp(velocity.x, target_velocity.x, (1.0 - drift_factor) * delta * 10.0)
+			velocity.z = lerp(velocity.z, target_velocity.z, (1.0 - drift_factor) * delta * 10.0)
 
 		model.aim_lights(cam_rig.get_ray_target(), delta)
 	else:
