@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cxhya6l2oceb1" path="res://GameState/Fishing/spots/spot.gd" id="1_j63ni"]
 [ext_resource type="Resource" uid="uid://db5u6fhyhwtf2" path="res://Items/Fish/Salmon/SalmonFish.tres" id="1_tt0sf"]
-[ext_resource type="Resource" uid="uid://7wjtiu8ly50r" path="res://GameState/Fishing/Minigames/BasicFishing.tres" id="2_sdthe"]
+[ext_resource type="Resource" uid="uid://7wjtiu8ly50r" path="res://GameState/Fishing/Minigames/Resources/BasicFishing.tres" id="2_sdthe"]
 
 [resource]
 script = ExtResource("1_j63ni")

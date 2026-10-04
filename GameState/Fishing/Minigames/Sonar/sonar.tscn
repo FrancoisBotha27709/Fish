@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://dbtd845d0pkfr"]
+
+[ext_resource type="Script" uid="uid://cl7aqdw27yaym" path="res://GameState/Fishing/Minigames/Sonar/sonar.gd" id="2_k525x"]
+[ext_resource type="PackedScene" uid="uid://uudymlyts78" path="res://GameState/Fishing/Minigames/Sonar/circle.tscn" id="2_nus1s"]
+[ext_resource type="PackedScene" uid="uid://dam1goba0aeo5" path="res://GameState/Fishing/Minigames/Sonar/Blip/blip.tscn" id="3_nus1s"]
+
+[node name="Sonar" type="Control" unique_id=130178740 node_paths=PackedStringArray("circle", "fish_area", "leave_button", "catch_progress_bar")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_k525x")
+circle = NodePath("PanelContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/Circle")
+blip_scene = ExtResource("3_nus1s")
+fish_area = NodePath("Area2D")
+leave_button = NodePath("PanelContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/LeaveBtn")
+catch_progress_bar = NodePath("PanelContainer/MarginContainer/Panel/MarginContainer/VBoxContainer/ProgressBar")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=778749083]
+custom_minimum_size = Vector2(256, 320)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=1115732710]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="PanelContainer/MarginContainer" unique_id=1758943642]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MarginContainer/Panel" unique_id=1367467109]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/Panel/MarginContainer" unique_id=1418721013]
+layout_mode = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="PanelContainer/MarginContainer/Panel/MarginContainer/VBoxContainer" unique_id=325564589]
+layout_mode = 2
+
+[node name="Circle" parent="PanelContainer/MarginContainer/Panel/MarginContainer/VBoxContainer" unique_id=1081041500 instance=ExtResource("2_nus1s")]
+layout_mode = 2
+rotation_speed = 118.984
+
+[node name="LeaveBtn" type="Button" parent="PanelContainer/MarginContainer/Panel/MarginContainer/VBoxContainer" unique_id=980059103]
+layout_mode = 2
+text = "Leave"
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1351470743]

@@ -39,7 +39,6 @@ func _ready() -> void:
 		leave_button.pressed.connect(_on_leave_button_pressed)
 	visible = false
 
-
 func _physics_process(delta: float) -> void:
 	if not started:
 		return

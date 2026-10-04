@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://c1n36vv1ows0h" path="res://GameState/Fishing/spots/fishing_spot.gd" id="1_opw16"]
 [ext_resource type="Resource" uid="uid://bexb88rto5cvs" path="res://GameState/Fishing/spots/BasicSpot.tres" id="2_awlgp"]
 [ext_resource type="Script" uid="uid://ba6kn6lpvd0hp" path="res://GameState/Fishing/floaters/WoWsFloat.gd" id="3_fud2u"]
-[ext_resource type="PackedScene" uid="uid://c47md0jykphh2" path="res://GameState/Fishing/Minigames/StardewFishing.tscn" id="3_i61mi"]
 [ext_resource type="Texture2D" uid="uid://34t8f1g0x7fo" path="res://Assets/3D/Buoy/Buoy_0.png" id="4_7x6oc"]
 [ext_resource type="Texture2D" uid="uid://bbetgugf6wr0b" path="res://Assets/3D/Buoy/Buoy_1.png" id="5_734e6"]
 [ext_resource type="Script" uid="uid://chp1iqgmfn3ur" path="res://GameState/Fishing/spots/fish_models_spawn.gd" id="6_lddl5"]
@@ -12,7 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://86aen0adpwqu" path="res://Assets/3D/Buoy/Buoy_4.png" id="8_yh1et"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_awlgp"]
-size = Vector3(13, 5, 13)
+size = Vector3(13, 38.71527, 13)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cqy0j"]
 
@@ -833,17 +832,17 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_bskgx")
 
-[node name="fishingSpot" type="Area3D" unique_id=73682153 node_paths=PackedStringArray("collision", "popup_window", "minigame", "lantern_light", "lantern_light_rotater", "catch_message_label")]
+[node name="fishingSpot" type="Area3D" unique_id=73682153 node_paths=PackedStringArray("collision", "popup_window", "lantern_light", "lantern_light_rotater", "catch_message_label")]
 script = ExtResource("1_opw16")
 collision = NodePath("CollisionShape3D")
 popup_window = NodePath("PopupPanel")
-minigame = NodePath("PopupPanel/Minigame")
 lantern_light = NodePath("Buoy/blockbench_export/Base/Struct/lantern/glass")
 lantern_light_rotater = NodePath("Buoy/blockbench_export/Base/Struct/lantern/glass/LightContainer")
 data_resource = ExtResource("2_awlgp")
 catch_message_label = NodePath("CatchLbl")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2071046652]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.568695, 0)
 shape = SubResource("BoxShape3D_awlgp")
 
 [node name="Buoy" type="RigidBody3D" parent="." unique_id=570086992 groups=["floating"]]
@@ -1043,12 +1042,6 @@ initial_position = 1
 size = Vector2i(1122, 447)
 always_on_top = true
 extend_to_title = true
-
-[node name="Minigame" parent="PopupPanel" unique_id=403702767 instance=ExtResource("3_i61mi")]
-offset_left = 4.0
-offset_top = 4.0
-offset_right = 1118.0
-offset_bottom = 443.0
 
 [node name="FishModels" type="Marker3D" parent="." unique_id=1943415072]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.1907141, 0)

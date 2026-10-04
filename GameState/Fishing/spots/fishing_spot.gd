@@ -6,8 +6,7 @@ signal fish_removed()
 
 @export_group("Objects")
 @export var collision: CollisionShape3D
-@export var popup_window: PopupPanel
-@export var minigame: FishingMinigame
+@export var popup_window: PopupPanel  ## the minigame scene is spawned as a child of this
 @export var lantern_light : MeshInstance3D
 @export var lantern_light_rotater : Node3D
 
@@ -17,11 +16,6 @@ signal fish_removed()
 @export var flicker_amplitude := 0.6   ## how far it can swing above/below base
 @export var flicker_speed := 8.0       ## how fast it changes (higher = jittery)
 @export var flicker_smoothness := 10.0 ## higher = smoother interpolation
-
-var _lantern_material: StandardMaterial3D
-var _flicker_noise := FastNoiseLite.new()
-var _flicker_time := 0.0
-var _current_energy := 0.0
 
 @export_group("Data")
 @export var data_resource: FishingSpot
@@ -33,6 +27,13 @@ var _current_energy := 0.0
 @export var catch_pause_seconds := 1.2
 @export var catch_message_label: Label
 
+## Spawned from data_resource.minigame.scene in _ready().
+var minigame: FishingMinigame
+
+var _lantern_material: StandardMaterial3D
+var _flicker_noise := FastNoiseLite.new()
+var _flicker_time := 0.0
+var _current_energy := 0.0
 var _confirm_popup: ConfirmationDialog
 var _fishing_active := false
 
@@ -42,26 +43,48 @@ func _ready() -> void:
 		push_error("FishingSpotObject has no data_resource assigned.")
 		return
 
-	if minigame == null:
-		push_error("FishingSpotObject has no minigame assigned.")
+	if popup_window == null:
+		push_error("FishingSpotObject has no popup_window assigned.")
 		return
 
-	await get_tree().process_frame
+	if not _spawn_minigame():
+		return
 
-	data_resource.minigame.active_fish = data_resource.active_fish
-
-	if not minigame.fish_caught.is_connected(_on_fish_caught):
-		minigame.fish_caught.connect(_on_fish_caught)
-
-	if not minigame.leave_requested.is_connected(_on_leave_requested):
-		minigame.leave_requested.connect(_on_leave_requested)
-
+	_sync_minigame_data()
 	minigame.stop()
 	_setup_popup()
 	_setup_lantern_flicker()
 
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
+
+
+## Instantiates the minigame scene held by the Minigame resource and parents
+## it to the popup. Done once; start()/stop() reuse the same instance.
+func _spawn_minigame() -> bool:
+	var minigame_data := data_resource.minigame
+	if minigame_data == null or minigame_data.scene == null:
+		push_error("FishingSpot '%s' has no minigame, or the minigame has no scene." % data_resource.display_name)
+		return false
+
+	var instance := minigame_data.scene.instantiate()
+	if not instance is FishingMinigame:
+		push_error("Minigame scene root for '%s' isn't a FishingMinigame." % data_resource.display_name)
+		instance.queue_free()
+		return false
+
+	minigame = instance
+	popup_window.add_child(minigame)  # its _ready() runs here
+
+	minigame.fish_caught.connect(_on_fish_caught)
+	minigame.leave_requested.connect(_on_leave_requested)
+	return true
+
+
+## Tells the Minigame resource which fish is being caught. The minigame never
+## knows how many are left; this spot decides when to stop it.
+func _sync_minigame_data() -> void:
+	data_resource.minigame.active_fish = data_resource.active_fish
 
 
 func _setup_lantern_flicker() -> void:
@@ -83,8 +106,10 @@ func _setup_lantern_flicker() -> void:
 	_flicker_noise.frequency = 1.0
 	_current_energy = base_emission_energy
 
+
 func rotate_lantern_light(delta: float) -> void:
 	lantern_light_rotater.rotate_y(deg_to_rad(360.0 / 10.0) * delta)
+
 
 func _process(delta: float) -> void:
 	if not flicker_enabled or _lantern_material == null:
@@ -100,6 +125,7 @@ func _process(delta: float) -> void:
 	_current_energy = lerp(_current_energy, target_energy, clamp(delta * flicker_smoothness, 0.0, 1.0))
 
 	_lantern_material.emission_energy_multiplier = _current_energy
+
 
 func _setup_popup() -> void:
 	_confirm_popup = ConfirmationDialog.new()
@@ -135,8 +161,7 @@ func _on_body_exited(body: Node3D) -> void:
 	if body != player:
 		return
 
-	if popup_window:
-		popup_window.hide()
+	popup_window.hide()
 
 	if _confirm_popup:
 		_confirm_popup.hide()
@@ -145,8 +170,6 @@ func _on_body_exited(body: Node3D) -> void:
 
 
 func _on_fish_confirmed() -> void:
-	popup_window.show()
-
 	_start_fishing()
 
 
@@ -165,6 +188,7 @@ func _start_fishing() -> void:
 	if player:
 		player.start_minigame()
 
+	_sync_minigame_data()
 	minigame.start(data_resource.minigame)
 
 
@@ -177,7 +201,8 @@ func _stop_fishing() -> void:
 	minigame.stop()
 	popup_window.hide()
 
-	catch_message_label.hide()
+	if catch_message_label:
+		catch_message_label.hide()
 
 
 func _on_fish_caught(fish: Fish) -> void:
@@ -203,7 +228,7 @@ func _on_fish_caught(fish: Fish) -> void:
 	if not _fishing_active:
 		return
 
-	data_resource.minigame.active_fish = data_resource.active_fish
+	_sync_minigame_data()
 	minigame.start(data_resource.minigame)
 
 
@@ -212,9 +237,7 @@ func _celebrate_catch() -> void:
 		catch_message_label.text = "Nice catch!"
 		catch_message_label.show()
 
-	await get_tree().create_timer(
-		catch_pause_seconds
-	).timeout
+	await get_tree().create_timer(catch_pause_seconds).timeout
 
 	if catch_message_label:
 		catch_message_label.hide()
