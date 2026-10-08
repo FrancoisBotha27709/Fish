@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="Fish" format=3 uid="uid://dwouqf81ucy0y"]
+
+[ext_resource type="PackedScene" uid="uid://c6d2vcdhf06ni" path="res://Items/Fish/Sharks/Tiger/TigerSharkExternalMesh.tscn" id="1_tt62o"]
+[ext_resource type="Resource" uid="uid://eiexci1n8x7x" path="res://Items/Common.tres" id="2_3x5p8"]
+[ext_resource type="Script" uid="uid://c2hc32pqdutke" path="res://Items/Fish/Fish.gd" id="2_p6ynp"]
+[ext_resource type="Resource" uid="uid://5subco3cioup" path="res://Items/Fish/Sharks/Tiger/TigerSharkSpecies.tres" id="3_3x5p8"]
+[ext_resource type="PackedScene" uid="uid://d1a7u46gqr2gs" path="res://Items/Fish/Sharks/Tiger/TigerSharkWorld.tscn" id="5_ns08x"]
+
+[resource]
+script = ExtResource("2_p6ynp")
+species = ExtResource("3_3x5p8")
+id = "tigre"
+display_name = "Tiger Shark"
+description = "AAAAAAAAAAAAAAAAa"
+tags = Array[String](["fish"])
+rarity = ExtResource("2_3x5p8")
+world_scene = ExtResource("5_ns08x")
+outside_mesh_scene = ExtResource("1_tt62o")
+metadata/_custom_type_script = "uid://c2hc32pqdutke"

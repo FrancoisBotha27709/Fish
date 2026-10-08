@@ -5,10 +5,12 @@ class_name Screenshot
 @export var item_anim : AnimationPlayer
 @export var item_container : Node3D
 
-var item : Item = null
+@export var item : Item = null
+
+
 
 func _ready() -> void:
-	pass
+	start(item)
 
 ## Clears whatever is currently on display and shows active_item instead,
 ## replaying the drop-in animation from scratch. Safe to call repeatedly.

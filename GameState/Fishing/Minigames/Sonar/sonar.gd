@@ -7,10 +7,12 @@ class_name SonarMinigame
 @export var base_steps : int = 3                ## QTE steps per blip at difficulty 1.0
 @export var min_blips : int = 2                 ## blips on the radar each round (random between min and max)
 @export var max_blips : int = 4
+@export var max_misses : int = 3                ## misses allowed per fish before the minigame is failed
 
 var _pool : Array[Blip] = []     ## every blip ever created, reused between rounds
 var _active_count : int = 0      ## first N blips of the pool are in play
 var _steps_per_blip : int = 3
+var _misses : int = 0
 
 
 func _ready() -> void:
@@ -19,7 +21,7 @@ func _ready() -> void:
 	_get_blip(0)
 
 
-# Progress is pushed by QTE events (see _set_progress), not polled every frame.
+# Progress is pushed by QTE events (see _refresh_progress), not polled every frame.
 func _advance_progress(_delta : float) -> void:
 	pass
 
@@ -30,12 +32,18 @@ func _on_apply_difficulty(scale : float) -> void:
 
 
 func _on_start() -> void:
+	_misses = 0
 	circle.set_running(true)
 	_activate_blips(randi_range(maxi(1, min_blips), maxi(min_blips, max_blips)))
 
 
 func _on_catch() -> void:
 	_deactivate_blips()
+
+
+func _on_fail() -> void:
+	_deactivate_blips()
+	circle.set_running(false)
 
 
 func _on_stop() -> void:
@@ -80,11 +88,19 @@ func _set_progress(value : float) -> void:
 	catching_progress_changed.emit(value, minigame.goal_progress)
 
 
-func _on_blip_step_completed(done : int, total : int) -> void:
+## The bar follows the most advanced blip, and drops when blips retreat. It stops
+## just short of full until a blip is actually caught (after its final slide).
+func _refresh_progress() -> void:
 	if minigame == null:
 		return
-	# The bar shows the most advanced blip, and never goes backwards.
-	_set_progress(maxf(minigame.current_progress, minigame.goal_progress * done / total))
+	var best := 0.0
+	for i in _active_count:
+		best = maxf(best, _pool[i].get_progress())
+	_set_progress(minigame.goal_progress * minf(best, 0.99))
+
+
+func _on_blip_step_completed(_done : int, _total : int) -> void:
+	_refresh_progress()
 
 
 func _on_blip_caught(_blip : Blip) -> void:
@@ -97,5 +113,16 @@ func _on_blip_caught(_blip : Blip) -> void:
 	_set_progress(minigame.goal_progress)
 
 
+## Any failed QTE (wrong button or a blip fading unanswered) is a miss.
 func _on_blip_failed(_blip : Blip) -> void:
-	pass  # e.g. subtract a step of progress, or tween the blip back out
+	if not started or minigame == null:
+		return
+
+	_misses += 1
+	if _misses >= max_misses:
+		_fail_minigame()  # base class: stops the round and emits minigame_failed
+		return
+
+	for i in _active_count:  # punish: EVERY blip loses a step
+		_pool[i].retreat_one_step()
+	_refresh_progress()

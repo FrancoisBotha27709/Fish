@@ -832,14 +832,12 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_bskgx")
 
-[node name="fishingSpot" type="Area3D" unique_id=73682153 node_paths=PackedStringArray("collision", "popup_window", "lantern_light", "lantern_light_rotater", "catch_message_label")]
+[node name="fishingSpot" type="Area3D" unique_id=73682153 node_paths=PackedStringArray("collision", "lantern_light", "lantern_light_rotater")]
 script = ExtResource("1_opw16")
 collision = NodePath("CollisionShape3D")
-popup_window = NodePath("PopupPanel")
 lantern_light = NodePath("Buoy/blockbench_export/Base/Struct/lantern/glass")
 lantern_light_rotater = NodePath("Buoy/blockbench_export/Base/Struct/lantern/glass/LightContainer")
 data_resource = ExtResource("2_awlgp")
-catch_message_label = NodePath("CatchLbl")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2071046652]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.568695, 0)
@@ -1020,28 +1018,6 @@ mesh = SubResource("ArrayMesh_1sxpl")
 [node name="plane5" type="MeshInstance3D" parent="Buoy/blockbench_export/Base" unique_id=2053963411]
 transform = Transform3D(1, 0, 0, 0, 0.5, 0.8660254, 0, -0.8660254, 0.5, 0, 0.6625, -0.4375)
 mesh = SubResource("ArrayMesh_aehy5")
-
-[node name="CatchLbl" type="Label" parent="." unique_id=330683765]
-visible = false
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -65.0
-offset_top = -11.5
-offset_right = 65.0
-offset_bottom = 11.5
-grow_horizontal = 2
-grow_vertical = 2
-text = "Caught Fish!!!!!!!!!"
-
-[node name="PopupPanel" type="PopupPanel" parent="." unique_id=1885219939]
-oversampling_override = 1.0
-initial_position = 1
-size = Vector2i(1122, 447)
-always_on_top = true
-extend_to_title = true
 
 [node name="FishModels" type="Marker3D" parent="." unique_id=1943415072]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.1907141, 0)

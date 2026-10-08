@@ -49,6 +49,8 @@ layout_mode = 2
 
 [node name="Circle" parent="PanelContainer/MarginContainer/Panel/MarginContainer/VBoxContainer" unique_id=1081041500 instance=ExtResource("2_nus1s")]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
 rotation_speed = 118.984
 
 [node name="LeaveBtn" type="Button" parent="PanelContainer/MarginContainer/Panel/MarginContainer/VBoxContainer" unique_id=980059103]

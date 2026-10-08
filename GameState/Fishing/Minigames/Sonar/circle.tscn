@@ -1,9 +1,19 @@
 [gd_scene format=3 uid="uid://uudymlyts78"]
 
 [ext_resource type="Script" uid="uid://uekv70f3wfxw" path="res://GameState/Fishing/Minigames/Sonar/circle.gd" id="1_yunf0"]
+[ext_resource type="Shader" uid="uid://bn8sd60uveaff" path="res://GameState/Fishing/Minigames/Sonar/smear.gdshader" id="2_y0j87"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y0j87"]
+shader = ExtResource("2_y0j87")
+shader_parameter/bar_color = Color(0.2, 1, 0.4, 1)
+shader_parameter/bar_width = 0.03
+shader_parameter/copies = 40
+shader_parameter/copy_spacing = 0.03
+shader_parameter/falloff = 2.0
+shader_parameter/trail_dir = 1.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v5etl"]
-size = Vector2(20, 167)
+size = Vector2(6, 312)
 
 [node name="Circle" type="Control" unique_id=1081041500 node_paths=PackedStringArray("bar", "polygon")]
 layout_mode = 3
@@ -14,52 +24,48 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
 script = ExtResource("1_yunf0")
-perimiter_length = 110.0
-num_sides = 12
+perimiter_length = 200.0
+num_sides = 24
 bar = NodePath("Control/Area2D")
 polygon = NodePath("Control2/Polygon2D")
 
 [node name="Control2" type="Control" parent="." unique_id=655223856]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="Polygon2D" type="Polygon2D" parent="Control2" unique_id=1589670033]
-position = Vector2(20, 20)
-color = Color(0, 1, 1, 1)
+color = Color(0, 0.27450982, 0, 1)
 
 [node name="Control" type="Control" parent="." unique_id=1855199060]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="Area2D" type="Area2D" parent="Control" unique_id=1532362123]
-position = Vector2(20, 20)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Control/Area2D" unique_id=132930769]
-position = Vector2(0, -73.5)
-shape = SubResource("RectangleShape2D_v5etl")
+[node name="Trail" type="ColorRect" parent="Control/Area2D" unique_id=2083199491]
+material = SubResource("ShaderMaterial_y0j87")
+anchors_preset = -1
+anchor_right = 0.5
+offset_left = -312.0
+offset_top = -302.0
+offset_right = 312.0
+offset_bottom = 322.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.39215687, 0, 1)
 
 [node name="ColorRect" type="ColorRect" parent="Control/Area2D" unique_id=503803727]
-offset_left = -10.0
-offset_top = -157.0
-offset_right = 10.0
+offset_left = -3.0
+offset_top = -302.0
+offset_right = 3.0
 offset_bottom = 10.0
+color = Color(0.2, 1, 0.4, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Control/Area2D" unique_id=132930769]
+position = Vector2(0, -146)
+shape = SubResource("RectangleShape2D_v5etl")

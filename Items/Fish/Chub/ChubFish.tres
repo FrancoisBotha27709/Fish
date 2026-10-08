@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="Fish" format=3 uid="uid://cqii08ggctikl"]
+
+[ext_resource type="Script" uid="uid://c2hc32pqdutke" path="res://Items/Fish/Fish.gd" id="1_ud2et"]
+[ext_resource type="PackedScene" uid="uid://bcm4n6wydcnx4" path="res://Items/Fish/Chub/ChubExternalMesh.tscn" id="1_yiq2m"]
+[ext_resource type="Resource" uid="uid://ds5krhx6g28qq" path="res://Items/Fish/Chub/ChubSpecies.tres" id="2_1uwha"]
+[ext_resource type="Resource" uid="uid://eiexci1n8x7x" path="res://Items/Common.tres" id="2_p6rm1"]
+[ext_resource type="PackedScene" uid="uid://bbnkpncw4solb" path="res://Items/Fish/Chub/ChubWorld.tscn" id="4_p6rm1"]
+
+[resource]
+script = ExtResource("1_ud2et")
+species = ExtResource("2_1uwha")
+id = "chu"
+display_name = "Chub"
+description = "wwefwefwefwefwefwefwefwefefwfwe"
+tags = Array[String](["fish"])
+rarity = ExtResource("2_p6rm1")
+world_scene = ExtResource("4_p6rm1")
+outside_mesh_scene = ExtResource("1_yiq2m")
+metadata/_custom_type_script = "uid://c2hc32pqdutke"

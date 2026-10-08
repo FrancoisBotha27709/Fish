@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="Fish" format=3 uid="uid://by1mey7j4s4v7"]
+
+[ext_resource type="PackedScene" uid="uid://8xg5eokvetb0" path="res://Items/Fish/Empty/EmptyFishExternalMesh.tscn" id="1_1lgbd"]
+[ext_resource type="Script" uid="uid://c2hc32pqdutke" path="res://Items/Fish/Fish.gd" id="1_olncv"]
+[ext_resource type="Resource" uid="uid://eiexci1n8x7x" path="res://Items/Common.tres" id="2_vpo3j"]
+[ext_resource type="Resource" uid="uid://d0w3tt070w61j" path="res://Items/Fish/Empty/EmptySpecies.tres" id="4_c172a"]
+[ext_resource type="PackedScene" uid="uid://cijtiep0ljwde" path="res://Items/Fish/Empty/EmptyWorld.tscn" id="5_vf2ji"]
+
+[resource]
+script = ExtResource("1_olncv")
+species = ExtResource("4_c172a")
+id = "Em"
+display_name = "Empty"
+description = "Null"
+tags = Array[String](["fish"])
+rarity = ExtResource("2_vpo3j")
+world_scene = ExtResource("5_vf2ji")
+outside_mesh_scene = ExtResource("1_1lgbd")
+metadata/_custom_type_script = "uid://c2hc32pqdutke"

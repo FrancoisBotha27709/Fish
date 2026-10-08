@@ -39,11 +39,28 @@ uniform float wiggle_speed = 6.0;        // how fast the wave travels (tie to sw
 // Master toggle: 1.0 = normal swimming wiggle, 0.0 = perfectly still (dead fish).
 uniform float wiggle_amount : hint_range(0.0, 1.0) = 1.0;
 
+// ---- Wet / slime controls ----
+uniform float wet_roughness : hint_range(0.0, 1.0) = 0.12;
+uniform float wet_specular : hint_range(0.0, 1.0) = 0.8;
+uniform float wet_darken : hint_range(0.5, 1.0) = 0.85;
+uniform float wet_saturation : hint_range(1.0, 2.0) = 1.2;
+uniform vec3 slime_tint : source_color = vec3(0.75, 0.9, 0.8);
+uniform float rim_strength : hint_range(0.0, 1.0) = 0.6;
+uniform float rim_tint_amount : hint_range(0.0, 1.0) = 0.5;
+uniform float clearcoat_amount : hint_range(0.0, 1.0) = 1.0;
+uniform float clearcoat_rough : hint_range(0.0, 1.0) = 0.05;
+uniform float slime_bump_strength : hint_range(0.0, 1.0) = 0.25;
+uniform float slime_bump_scale = 45.0;   // model is tiny (~0.16 units), so this is high
+uniform float slime_flow_speed = 3.0;
+
+varying vec3 local_pos;
+
 // Small extra bob so it doesn't look perfectly flat.
 uniform float vertical_bob_amplitude = 0.03;
 uniform float vertical_bob_speed = 4.0;
 
 void vertex() {
+	local_pos = VERTEX;
 	UV = UV * uv1_scale.xy + uv1_offset.xy;
 
 	float body_pos = 0.0;
@@ -84,13 +101,37 @@ void vertex() {
 void fragment() {
 	vec2 base_uv = UV;
 	vec4 albedo_tex = texture(texture_albedo, base_uv);
-	ALBEDO = albedo.rgb * albedo_tex.rgb;
+	vec3 col = albedo.rgb * albedo_tex.rgb;
+
+	// Wet look: darker, more saturated, slightly tinted
+	float lum = dot(col, vec3(0.299, 0.587, 0.114));
+	col = mix(vec3(lum), col, wet_saturation);
+	col *= wet_darken;
+	col = mix(col, col * slime_tint, 0.4);
+	ALBEDO = col;
+
 	float metallic_tex = dot(texture(texture_metallic, base_uv), metallic_texture_channel);
 	METALLIC = metallic_tex * metallic;
-	SPECULAR = specular;
+	SPECULAR = max(specular, wet_specular);
+
 	vec4 roughness_texture_channel = vec4(1.0, 0.0, 0.0, 0.0);
 	float roughness_tex = dot(texture(texture_roughness, base_uv), roughness_texture_channel);
-	ROUGHNESS = roughness_tex * roughness;
+	ROUGHNESS = min(roughness_tex * roughness, wet_roughness);
+
+	CLEARCOAT = clearcoat_amount;
+	CLEARCOAT_ROUGHNESS = clearcoat_rough;
+	RIM = rim_strength;
+	RIM_TINT = rim_tint_amount;
+
+	// Lumpy, drifting slime so highlights aren't perfectly smooth
+	vec3 p = local_pos * slime_bump_scale + vec3(0.0, 0.0, TIME * slime_flow_speed);
+	vec3 bump = vec3(
+		sin(p.y * 1.7 + p.z * 2.3) + sin(p.z * 3.1 - p.x * 1.3),
+		sin(p.z * 1.3 + p.x * 2.9) + sin(p.x * 3.3 - p.y * 1.1),
+		sin(p.x * 1.9 + p.y * 2.1) + sin(p.y * 2.7 - p.z * 1.7)
+	) * 0.5;
+	vec3 bump_view = (VIEW_MATRIX * MODEL_MATRIX * vec4(bump, 0.0)).xyz;
+	NORMAL = normalize(NORMAL + bump_view * slime_bump_strength);
 }
 "
 
@@ -104,7 +145,7 @@ shader_parameter/albedo_texture_size = Vector2i(256, 256)
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 0.3
 shader_parameter/metallic_texture_channel = Vector4(1, 0, 0, 0)
-shader_parameter/specular = 0.5
+shader_parameter/specular = 0.0
 shader_parameter/metallic = 0.0
 shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
@@ -117,6 +158,18 @@ shader_parameter/wiggle_ramp = 0.16
 shader_parameter/wiggle_amplitude = 0.15
 shader_parameter/wiggle_frequency = 3.0
 shader_parameter/wiggle_speed = 6.0
-shader_parameter/wiggle_amount = 1.0
+shader_parameter/wiggle_amount = 0.0
+shader_parameter/wet_roughness = 0.0
+shader_parameter/wet_specular = 0.8
+shader_parameter/wet_darken = 0.85
+shader_parameter/wet_saturation = 1.2
+shader_parameter/slime_tint = Color(0.75, 0.9, 0.8, 1)
+shader_parameter/rim_strength = 0.6
+shader_parameter/rim_tint_amount = 0.5
+shader_parameter/clearcoat_amount = 1.0
+shader_parameter/clearcoat_rough = 0.0
+shader_parameter/slime_bump_strength = 0.0
+shader_parameter/slime_bump_scale = 45.0
+shader_parameter/slime_flow_speed = 3.0
 shader_parameter/vertical_bob_amplitude = 0.03
 shader_parameter/vertical_bob_speed = 4.0

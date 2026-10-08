@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="Fish" format=3 uid="uid://dtdvb8dw7eude"]
+
+[ext_resource type="Script" uid="uid://c2hc32pqdutke" path="res://Items/Fish/Fish.gd" id="1_a40tr"]
+[ext_resource type="PackedScene" uid="uid://bwcpawdixmbi1" path="res://Items/Fish/Perch/PerchExternalMesh.tscn" id="1_xj13u"]
+[ext_resource type="Resource" uid="uid://eiexci1n8x7x" path="res://Items/Common.tres" id="2_ioi7f"]
+[ext_resource type="Resource" uid="uid://cofnsy4xpe3e6" path="res://Items/Fish/Perch/PerchSpecies.tres" id="4_umbug"]
+[ext_resource type="PackedScene" uid="uid://b7njb4ft53jn8" path="res://Items/Fish/Perch/PerchWorld.tscn" id="5_ubeq8"]
+
+[resource]
+script = ExtResource("1_a40tr")
+species = ExtResource("4_umbug")
+id = "pepe"
+display_name = "Perch"
+description = "erergergergergergergergergergergerg"
+tags = Array[String](["fish"])
+rarity = ExtResource("2_ioi7f")
+world_scene = ExtResource("5_ubeq8")
+outside_mesh_scene = ExtResource("1_xj13u")
+metadata/_custom_type_script = "uid://c2hc32pqdutke"

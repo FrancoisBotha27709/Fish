@@ -8,6 +8,8 @@ var items : Array[Item] = []
 var requests : Array[String] = []
 var tiers : Array[Rarity] = []
 var money : float = 0.0
+var fail_streak : int = 0
+
 const COMMON = preload("uid://eiexci1n8x7x")
 # add one const per tier as you create the .tres resources, e.g.:
 # const UNCOMMON = preload("uid://...")
@@ -15,6 +17,7 @@ const COMMON = preload("uid://eiexci1n8x7x")
 # const LEGENDARY = preload("uid://...")
 
 const SALMON_FISH = preload("uid://db5u6fhyhwtf2")
+
 var img_save_path : String = "user://screenshot/"
 
 func _ready() -> void:
@@ -57,3 +60,19 @@ func get_total_value() -> float:
 	for item in items:
 		total += item.get_value()
 	return total
+
+func flash_red(item: CanvasItem, duration: float = 1.0, flash_color: Color = Color.RED, original : Color = Color.WHITE) -> Tween:
+	if not is_instance_valid(item):
+		return null
+
+	# Remember the real original color across restarts.
+	var half := maxf(duration, 0.01) * 0.5
+	var tween := item.create_tween()  # bound to the item, so it dies with it
+	tween.tween_property(item, "self_modulate", flash_color, half)
+	tween.tween_property(item, "self_modulate", original, half)
+	tween.finished.connect(_on_flash_finished.bind(item))
+
+	return tween
+
+func _on_flash_finished(item: CanvasItem) -> void:
+	pass

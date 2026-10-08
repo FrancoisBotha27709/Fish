@@ -24,7 +24,6 @@ var active_qte : Node = null
 
 var _speed_rad : float = deg_to_rad(30.0)
 
-
 func _ready() -> void:
 	_speed_rad = deg_to_rad(rotation_speed)
 	# Blips are Area2Ds, so area_exited is all we need.
@@ -32,18 +31,17 @@ func _ready() -> void:
 	_generate_circle()
 	set_process(false)  # the minigame turns the sweep on via set_running()
 
-
 func _process(delta : float) -> void:
 	bar.rotation += _speed_rad * delta
 
+func get_sweep_period() -> float:
+	return TAU / maxf(_speed_rad, 0.001)
 
-## Starts/stops the sweep. Starting also restarts the bar at angle 0.
 func set_running(running : bool) -> void:
 	if running:
 		bar.rotation = 0.0
 		active_qte = null
 	set_process(running)
-
 
 func _generate_circle() -> void:
 	var line_length : float = (perimiter_length * 10.0) / num_sides
@@ -56,20 +54,12 @@ func _generate_circle() -> void:
 		points[i] = Vector2(cos(angle), sin(angle)) * radius
 	polygon.polygon = points
 
-
-## Center of the drawn circle, in this node's local space. Accounts for the
-## polygon's position, scale and offset, so it's right wherever you put it.
 func get_center() -> Vector2:
 	return polygon.transform * polygon.offset
 
-
-## Radius of the drawn circle in this node's local space (includes polygon scale).
 func get_scaled_radius() -> float:
 	return radius * absf(polygon.scale.x)
 
-
-## Returns `count` points inside the circle, uniformly distributed by area and
-## kept at least `min_separation_frac * radius` apart where possible.
 func get_spawn_points(count : int, min_separation_frac : float = 0.2,
 		min_frac : float = 0.4, max_frac : float = 0.9) -> PackedVector2Array:
 	var points := PackedVector2Array()
