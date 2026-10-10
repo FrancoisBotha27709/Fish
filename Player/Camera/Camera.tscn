@@ -1,7 +1,10 @@
 [gd_scene format=3 uid="uid://dppygydb1n6sa"]
 
 [ext_resource type="Script" uid="uid://fntsyr3r28lw" path="res://Player/Camera/CameraFX.gd" id="1_duwd7"]
+[ext_resource type="Theme" uid="uid://bxi4lg4xa8uq4" path="res://Assets/2D/UI/pastel/pastel/pastel.tres" id="2_hmim1"]
 [ext_resource type="Shader" uid="uid://cjkalew0gi5uy" path="res://Player/Camera/camera_fx.gdshader" id="2_pmsri"]
+[ext_resource type="Texture2D" uid="uid://dn7w5800tcw3" path="res://Assets/2D/UI/Radial/rec_button.png" id="3_ka0eo"]
+[ext_resource type="Texture2D" uid="uid://dji1tfeo1wwyg" path="res://Assets/2D/UI/Radial/Group 1.png" id="4_581ra"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_pmsri"]
 seed = 102
@@ -46,9 +49,13 @@ shader_parameter/vignette_softness = 0.8
 shader_parameter/letterbox_enabled = false
 shader_parameter/letterbox_size = 0.1
 
-[node name="CanvasLayer" type="CanvasLayer" unique_id=1481063301]
+[node name="CanvasLayer" type="CanvasLayer" unique_id=1481063301 node_paths=PackedStringArray("cam_timer", "ui_container", "rec_orb")]
 layer = 100
 script = ExtResource("1_duwd7")
+cam_fx_enabled = true
+cam_timer = NodePath("Control/MarginContainer/HBoxContainer/Label")
+ui_container = NodePath("Control/MarginContainer")
+rec_orb = NodePath("Control/MarginContainer/HBoxContainer/Control/RecButton")
 vhs_enabled = false
 ca_enabled = false
 ca_strength = 0.001
@@ -62,10 +69,79 @@ lens_barrel_amount = 0.02499999999999991
 grain_enabled = false
 vignette_enabled = false
 letterbox_size = 0.0
-rect_path = NodePath("ColorRect")
+rect_path = NodePath("Control/ColorRect")
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=761132647]
+[node name="Control" type="Control" parent="." unique_id=826433664]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme = ExtResource("2_hmim1")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control" unique_id=2013799228]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_top = 16
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer" unique_id=519648745]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 16
+
+[node name="Control2" type="Control" parent="Control/MarginContainer/HBoxContainer" unique_id=538718985]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="Control/MarginContainer/HBoxContainer" unique_id=1579604564]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="RecButton" type="Sprite2D" parent="Control/MarginContainer/HBoxContainer/Control" unique_id=1229412192]
+position = Vector2(2, 2)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("3_ka0eo")
+
+[node name="Label" type="Label" parent="Control/MarginContainer/HBoxContainer/Control" unique_id=1331144143]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 20.0
+offset_top = -9.0
+offset_right = 55.0
+offset_bottom = 21.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 32
+text = "REC"
+
+[node name="Label" type="Label" parent="Control/MarginContainer/HBoxContainer" unique_id=2072507731]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_font_sizes/font_size = 32
+text = "efefefefeffeff"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Control" type="Control" parent="Control/MarginContainer" unique_id=59225711]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Group1" type="Sprite2D" parent="Control/MarginContainer/Control" unique_id=553466076]
+texture = ExtResource("4_581ra")
+
+[node name="ColorRect" type="ColorRect" parent="Control" unique_id=761132647]
 material = SubResource("ShaderMaterial_ka0eo")
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

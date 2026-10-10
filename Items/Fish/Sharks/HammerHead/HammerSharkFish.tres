@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="Fish" format=3 uid="uid://ckifb8hniqod0"]
+
+[ext_resource type="Texture2D" uid="uid://bwo7mme2is4j0" path="res://Items/Fish/Sharks/HammerHead/Icons/Hammerhead Bones_photo.png" id="1_bq24p"]
+[ext_resource type="PackedScene" uid="uid://7223dioif4sj" path="res://Items/Fish/Sharks/HammerHead/HammerSharkExternalMesh.tscn" id="1_fnr6l"]
+[ext_resource type="Resource" uid="uid://eiexci1n8x7x" path="res://Items/Common.tres" id="2_f31pu"]
+[ext_resource type="Texture2D" uid="uid://baa4to6s8lfly" path="res://Items/Fish/Sharks/HammerHead/Icons/Hammerhead_photo.png" id="2_idyvu"]
+[ext_resource type="Script" uid="uid://c2hc32pqdutke" path="res://Items/Fish/Fish.gd" id="3_degxa"]
+[ext_resource type="Resource" uid="uid://cw8a85747gyic" path="res://Items/Fish/Sharks/HammerHead/HammerSharkSpecies.tres" id="4_bq24p"]
+[ext_resource type="PackedScene" uid="uid://dd1qu6ntumhtl" path="res://Items/Fish/Sharks/HammerHead/HammerSharkWorld.tscn" id="5_idyvu"]
+[ext_resource type="Texture2D" uid="uid://c4ugifp4yxahm" path="res://Items/Fish/Sharks/HammerHead/Icons/Hammerhead Steak_photo.png" id="7_lns8j"]
+
+[resource]
+script = ExtResource("3_degxa")
+species = ExtResource("4_bq24p")
+dead_scene = ExtResource("1_bq24p")
+steak_scene = ExtResource("7_lns8j")
+id = "ham"
+display_name = "Hammer"
+tags = Array[String](["fish"])
+rarity = ExtResource("2_f31pu")
+icon = ExtResource("2_idyvu")
+world_scene = ExtResource("5_idyvu")
+outside_mesh_scene = ExtResource("1_fnr6l")
+metadata/_custom_type_script = "uid://dsbtlmhqbd8gc"

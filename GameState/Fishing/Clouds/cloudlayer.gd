@@ -1,18 +1,6 @@
 @tool
 class_name CloudLayer
 extends MeshInstance3D
-## A big flat world-space cloud plane, floating above the water, using
-## clouds.gdshader. Unlike the old cloud layer baked into the sky shader,
-## this one has a real world position - which is the whole point: it reads
-## the same biome_data your water reads (via WaterBiomeSystem.gd's optional
-## cloud_path), so a storm biome visibly thickens and darkens the clouds
-## sitting above it.
-##
-## USAGE: add this node anywhere in the scene (it repositions itself every
-## frame, so where you place it doesn't matter). Point atmosphere_path at
-## your PollutedAtmosphere node so the clouds catch light from the same sun.
-## Point WaterBiomeSystem's own cloud_path export at THIS node so biomes
-## reach the clouds too.
 
 @export var cloud_shader: Shader   ## Leave empty to auto-load clouds.gdshader from this script's folder.
 @export var atmosphere_path: NodePath   ## Your PollutedAtmosphere node - optional, but without it the clouds use a fixed default sun.
@@ -67,13 +55,6 @@ var _atmosphere: Node
 
 
 func _ready() -> void:
-	# Read the camera position AFTER other _process-driven movement/camera
-	# scripts have run this frame (Node.process_priority: lower runs first,
-	# so a high number here runs last). Without this, if something else
-	# moves the camera in _process (rather than _physics_process) and
-	# happens to run after this node in the scene tree, this plane would
-	# follow one frame late - a small, constant lag that reads as jitter
-	# exactly when the camera is moving.
 	process_priority = 4096
 
 	if cloud_shader == null:
@@ -114,9 +95,6 @@ func _rebuild_mesh() -> void:
 
 
 func _reposition() -> void:
-	# In the editor (or with follow_camera off) we don't have a gameplay
-	# camera to chase, so just pin the altitude and leave X/Z wherever the
-	# node was placed.
 	if not follow_camera or Engine.is_editor_hint():
 		global_position.y = altitude
 
@@ -140,11 +118,6 @@ func _apply() -> void:
 	_mat.set_shader_parameter("hatch_angle_deg", hatch_angle_deg)
 	_mat.set_shader_parameter("hatch_sharpness", hatch_sharpness)
 
-
-## Pulls sun_elevation_deg/sun_azimuth_deg/sun_color/sun_energy straight off
-## PollutedAtmosphere's own exported values (via its get_sun_direction()
-## helper) rather than hunting for the DirectionalLight3D node it builds -
-## keeps this script decoupled from PollutedAtmosphere's internals.
 func _push_sun() -> void:
 	if _mat == null or _atmosphere == null:
 		return

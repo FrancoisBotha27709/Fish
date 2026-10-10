@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Minigame" format=3 uid="uid://7wjtiu8ly50r"]
+
+[ext_resource type="PackedScene" uid="uid://c47md0jykphh2" path="res://GameState/Fishing/Minigames/StardewFishing.tscn" id="1_b0goa"]
+[ext_resource type="Script" uid="uid://d2eqlen4tof58" path="res://GameState/Fishing/Minigames/Minigame.gd" id="2_2c8wb"]
+
+[resource]
+script = ExtResource("2_2c8wb")
+difficulty = 2
+goal_progress = 100.0
+scene = ExtResource("1_b0goa")
+metadata/_custom_type_script = "uid://d2eqlen4tof58"

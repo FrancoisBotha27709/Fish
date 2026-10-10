@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="FishSpecies" format=3 uid="uid://ds5krhx6g28qq"]
+
+[ext_resource type="Script" uid="uid://dsbtlmhqbd8gc" path="res://Items/Fish/FishSpecies.gd" id="1_1sf4q"]
+
+[resource]
+script = ExtResource("1_1sf4q")
+display_name = "Chub"
+scientific_name = "chuchu"
+metadata/_custom_type_script = "uid://dsbtlmhqbd8gc"

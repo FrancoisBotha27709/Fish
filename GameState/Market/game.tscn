@@ -6,9 +6,70 @@
 [ext_resource type="PackedScene" uid="uid://dvfb5h7e2l0jh" path="res://GameState/environment.tscn" id="3_8mqhf"]
 [ext_resource type="Resource" uid="uid://cpomm6qfa348h" path="res://GameState/Market/Customers/Christina/Christina.tres" id="3_mcvvr"]
 [ext_resource type="Resource" uid="uid://crgtw78sywhp5" path="res://GameState/Market/Customers/Iris/Iris.tres" id="4_mcvvr"]
+[ext_resource type="Shader" uid="uid://b020471pgomv8" path="res://GameState/new_sky.gdshader" id="7_bs0pb"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ryrav"]
 size = Vector2(50, 50)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_74ohg"]
+shader = ExtResource("7_bs0pb")
+shader_parameter/zenith_color = Color(0.05, 0.06, 0.055, 1)
+shader_parameter/horizon_color = Color(0.42, 0.4, 0.33, 1)
+shader_parameter/ground_color = Color(0.16, 0.15, 0.12, 1)
+shader_parameter/smog_light_color = Color(0.55, 0.52, 0.42, 1)
+shader_parameter/smog_dark_color = Color(0.11, 0.12, 0.1, 1)
+shader_parameter/smog_coverage = 0.496
+shader_parameter/smog_density = 0.608
+shader_parameter/smog_scale = 3.671
+shader_parameter/smog_speed = 0.05
+shader_parameter/haze_strength = 0.381
+shader_parameter/hatch_style = 2
+shader_parameter/hatch_scale = 1.185
+shader_parameter/hatch_strength = 2.0
+shader_parameter/hatch_angle_deg = 45.0
+shader_parameter/hatch_offset = 0.359
+shader_parameter/hatch_sharpness = 8.0
+shader_parameter/sun_glow = 0.9
+
+[sub_resource type="Sky" id="Sky_00cln"]
+sky_material = SubResource("ShaderMaterial_74ohg")
+process_mode = 2
+
+[sub_resource type="Environment" id="Environment_o5sag"]
+background_mode = 2
+sky = SubResource("Sky_00cln")
+ambient_light_source = 3
+ambient_light_energy = 1.7
+reflected_light_source = 2
+tonemap_mode = 3
+tonemap_exposure = 1.35
+tonemap_white = 4.0
+ssao_enabled = true
+ssao_intensity = 1.1
+ssao_power = 1.0
+ssil_enabled = true
+ssil_intensity = 1.2
+glow_enabled = true
+glow_intensity = 0.45
+glow_bloom = 0.06
+glow_blend_mode = 2
+glow_hdr_threshold = 0.9
+fog_enabled = true
+fog_light_color = Color(0.357, 0.34, 0.28050002, 1)
+fog_sun_scatter = 0.08
+fog_density = 0.0035
+fog_aerial_perspective = 0.2
+fog_sky_affect = 0.35
+fog_height = 25.0
+fog_height_density = 0.016
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.017
+volumetric_fog_albedo = Color(0.55, 0.52, 0.42, 1)
+volumetric_fog_anisotropy = 0.0
+volumetric_fog_length = 143.434
+adjustment_enabled = true
+adjustment_contrast = 1.05
+adjustment_saturation = 0.55
 
 [sub_resource type="BoxMesh" id="BoxMesh_mcvvr"]
 size = Vector3(20, 30, 10)
@@ -33,7 +94,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.0319426, 0)
 market = NodePath("..")
 
 [node name="Environment" parent="." unique_id=2110845524 instance=ExtResource("3_8mqhf")]
-transform = Transform3D(0.4956254, 0, 0.86853635, 0, 1, 0, -0.86853635, 0, 0.4956254, 0, 0, 0)
+environment = SubResource("Environment_o5sag")
 
 [node name="SpawnPos" type="Marker3D" parent="." unique_id=661072943]
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)

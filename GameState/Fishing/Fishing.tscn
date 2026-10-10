@@ -9,14 +9,15 @@
 [ext_resource type="PackedScene" uid="uid://cmnu6yv52pp56" path="res://GameState/Fishing/spots/fishing_spot.tscn" id="6_45qf1"]
 [ext_resource type="Resource" uid="uid://bob04x8k5wx5y" path="res://Items/Fish/Cod/CodFish.tres" id="6_f01pc"]
 [ext_resource type="Script" uid="uid://chavq1q5fnwrr" path="res://GameState/Fishing/Water/Systems/BuoyancySystem.gd" id="7_08esg"]
-[ext_resource type="Resource" uid="uid://7wjtiu8ly50r" path="res://GameState/Fishing/Minigames/BasicFishing.tres" id="7_dcgj5"]
 [ext_resource type="PackedScene" uid="uid://b74k5xyan3dvv" path="res://GameState/Fishing/Water/Water.tscn" id="7_ib3f6"]
 [ext_resource type="Script" uid="uid://cxhya6l2oceb1" path="res://GameState/Fishing/spots/spot.gd" id="8_55pe8"]
 [ext_resource type="Script" uid="uid://qb20sj6bngyb" path="res://GameState/Fishing/Water/Systems/WaterBiomeSystem.gd" id="8_ib3f6"]
+[ext_resource type="Resource" uid="uid://bcjf2o8hqr24l" path="res://GameState/Fishing/Minigames/Sonar/Sonar.tres" id="9_wvi11"]
 [ext_resource type="PackedScene" uid="uid://djypbw33m7rmv" path="res://Assets/3D/Nature/World/World.tscn" id="10_45qf1"]
+[ext_resource type="Shader" uid="uid://b4s5mpyeq2gck" path="res://GameState/Fishing/Water/Realistic/water.gdshader" id="12_yio6j"]
 [ext_resource type="PackedScene" uid="uid://r1nxjulb6o82" path="res://GameState/WorldBorder.tscn" id="15_wvi11"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_wvi11"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_21ls3"]
 shader = ExtResource("3_55pe8")
 shader_parameter/zenith_color = Color(0.05, 0.06, 0.055, 1)
 shader_parameter/horizon_color = Color(0.42, 0.4, 0.33, 1)
@@ -36,13 +37,13 @@ shader_parameter/hatch_offset = 0.359
 shader_parameter/hatch_sharpness = 8.0
 shader_parameter/sun_glow = 0.9
 
-[sub_resource type="Sky" id="Sky_yio6j"]
-sky_material = SubResource("ShaderMaterial_wvi11")
+[sub_resource type="Sky" id="Sky_88b6t"]
+sky_material = SubResource("ShaderMaterial_21ls3")
 process_mode = 2
 
-[sub_resource type="Environment" id="Environment_21ls3"]
+[sub_resource type="Environment" id="Environment_80ial"]
 background_mode = 2
-sky = SubResource("Sky_yio6j")
+sky = SubResource("Sky_88b6t")
 ambient_light_source = 3
 ambient_light_energy = 1.7
 reflected_light_source = 2
@@ -76,7 +77,7 @@ adjustment_enabled = true
 adjustment_contrast = 1.05
 adjustment_saturation = 0.55
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_88b6t"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jq6em"]
 render_priority = 0
 shader = ExtResource("4_wvi11")
 shader_parameter/cloud_coverage = 0.686
@@ -103,7 +104,7 @@ shader_parameter/biome_cloud = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 shader_parameter/biome_look = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 shader_parameter/biome_tint = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_80ial"]
+[sub_resource type="PlaneMesh" id="PlaneMesh_yyx5k"]
 size = Vector2(3000, 3000)
 
 [sub_resource type="Resource" id="Resource_wvi11"]
@@ -111,8 +112,106 @@ script = ExtResource("8_55pe8")
 display_name = "Basic"
 active_fish = ExtResource("6_f01pc")
 current_amount_available = 4
-minigame = ExtResource("7_dcgj5")
+minigame = ExtResource("9_wvi11")
 metadata/_custom_type_script = "uid://cxhya6l2oceb1"
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_fy73t"]
+seed = 40
+frequency = 0.05
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cjfj7"]
+noise = SubResource("FastNoiseLite_fy73t")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qgq7r"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("12_yio6j")
+shader_parameter/wave_time = 0.0
+shader_parameter/wave_dir = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/wave_par = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/swell_amplitude = 1.2
+shader_parameter/chop_amplitude = 0.35
+shader_parameter/chop_patchiness = 0.5
+shader_parameter/domain_warp_amount = 35.0
+shader_parameter/domain_warp_scale = 0.004
+shader_parameter/domain_warp_speed = 0.02
+shader_parameter/meters_per_unit = 1.0
+shader_parameter/mesh_vertex_spacing = 1.25
+shader_parameter/biome_data = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/biome_count = 0
+shader_parameter/biome_chop = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/biome_ripple = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/biome_look = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/biome_tint = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/wind_direction_deg = 0.0
+shader_parameter/color_absorption = Vector3(1.3, 0.4, 0.6)
+shader_parameter/absorption_strength = 1.25
+shader_parameter/color_scatter = Color(0.035, 0.18, 0.16, 1)
+shader_parameter/color_crest_scatter = Color(0.14, 0.4, 0.32, 1)
+shader_parameter/crest_scatter_amount = 0.4
+shader_parameter/color_variation_tint = Color(0.1, 0.2, 0.05, 1)
+shader_parameter/color_variation_scale = 0.005
+shader_parameter/color_variation_speed = 0.003
+shader_parameter/color_variation_strength = 0.35
+shader_parameter/water_roughness = 0.06
+shader_parameter/specular_amount = 0.5
+shader_parameter/far_roughen_start = 80.0
+shader_parameter/far_roughen_end = 500.0
+shader_parameter/enable_reflections = true
+shader_parameter/reflection_strength = 1.430000067925
+shader_parameter/reflection_min = 0.0
+shader_parameter/reflection_blur = 0.30000001192093
+shader_parameter/reflection_step = 0.5
+shader_parameter/detail_height = 0.050000002375
+shader_parameter/detail_scale = 1.17000005394506
+shader_parameter/detail_speed = 0.690000032775
+shader_parameter/detail_fade_start = 60.0000026125
+shader_parameter/detail_fade_end = 110.00000475
+shader_parameter/enable_refraction = true
+shader_parameter/refraction_strength = 0.06
+shader_parameter/underwater_blur = 0.25
+shader_parameter/caustics_strength = 1.2
+shader_parameter/caustics_scale = 0.6
+shader_parameter/caustics_depth = 4.0
+shader_parameter/pollution_amount = 0.282000013395
+shader_parameter/pollution_murk = 3.0
+shader_parameter/slick_scale = 0.09950000472625
+shader_parameter/slick_sheen = 0.478000022705
+shader_parameter/scum_color = Color(0.22, 0.24, 0.07, 1)
+shader_parameter/scum_scale = 0.09950000472625
+shader_parameter/scum_strength = 0.3010000142975
+shader_parameter/foam_origin = Vector2(0, 0)
+shader_parameter/foam_size = 256.0
+shader_parameter/color_foam = Color(0.76221997, 0.9180413, 0.8757051, 1)
+shader_parameter/foam_jacobian_threshold = 0.75
+shader_parameter/foam_edge_softness = 0.55
+shader_parameter/foam_threshold_jitter = 0.5
+shader_parameter/foam_noise_scale = 0.15
+shader_parameter/foam_scroll_speed = 0.2
+shader_parameter/foam_amount = 0.65
+shader_parameter/foam_crispness = 0.6
+shader_parameter/foam_dither_amount = 0.010000000475
+shader_parameter/use_custom_foam_texture = true
+shader_parameter/foam_texture = SubResource("NoiseTexture2D_cjfj7")
+shader_parameter/foam_uv_scale = 2.0
+shader_parameter/foam_uv_scale_2 = 2.70000012662006
+shader_parameter/foam_warp_amount = 0.5
+shader_parameter/foam_speed = 0.12
+shader_parameter/foam_crest_threshold = 0.5
+shader_parameter/foam_crest_softness = 0.3
+shader_parameter/enable_shore_foam = true
+shader_parameter/shore_foam_distance = 0.8
+shader_parameter/shore_band_speed = 1.2
+shader_parameter/ripple_data = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/ripple_count = 0
+shader_parameter/sim_time = 0.0
+shader_parameter/ripple_lifetime = 6.0
+shader_parameter/ripple_speed = 2.2
+shader_parameter/ripple_wavelength = 0.7
+shader_parameter/ripple_width = 1.2
+shader_parameter/ripple_amplitude = 0.4
+shader_parameter/ripple_detail_height = 0.035
 
 [sub_resource type="FogMaterial" id="FogMaterial_os8xo"]
 density = 0.05
@@ -125,14 +224,14 @@ world_origin_poi = NodePath("CenterOriginPOI")
 world_borders = [NodePath("Borders/Area3D"), NodePath("Borders/Area3D2"), NodePath("Borders/Area3D3"), NodePath("Borders/Area3D4")]
 
 [node name="WorldEnvironment" parent="." unique_id=200964977 instance=ExtResource("4_cgxg8")]
-environment = SubResource("Environment_21ls3")
+environment = SubResource("Environment_80ial")
 
 [node name="CloudLayer" parent="WorldEnvironment" index="0" unique_id=2030599833]
-material_override = SubResource("ShaderMaterial_88b6t")
-mesh = SubResource("PlaneMesh_80ial")
+material_override = SubResource("ShaderMaterial_jq6em")
+mesh = SubResource("PlaneMesh_yyx5k")
 
 [node name="CameraRig" parent="." unique_id=2083488559 node_paths=PackedStringArray("target", "camera_target", "character_target") instance=ExtResource("5_08esg")]
-transform = Transform3D(-4.371138e-08, 0, -0.9999999, 0, 1, 0, 0.9999999, 0, -4.371138e-08, -111.54216, 20.953295, -139.61372)
+transform = Transform3D(-4.371138e-08, 0, -0.9999999, 0, 1, 0, 0.9999999, 0, -4.371138e-08, -98.37035, 20.953295, -52.585876)
 target = NodePath("../PlayerFish")
 camera_target = NodePath("../PlayerFish/CameraTarget")
 character_target = NodePath("../PlayerFish")
@@ -143,7 +242,7 @@ pitch = 8.0
 orbit_smoothing = 4.505
 
 [node name="PlayerFish" parent="." unique_id=1016697865 node_paths=PackedStringArray("buoyancy_system", "cam_rig") instance=ExtResource("5_ndv5f")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -90.31471, 21.816273, -139.61372)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -77.14291, 21.816273, -52.585876)
 max_speed = 5.0
 acceleration = 0.9
 deceleration = 1.2
@@ -159,19 +258,20 @@ cam_rig = NodePath("../CameraRig")
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 1, -169.90634, 16.68062, -91.787155)
 player = NodePath("../../PlayerFish")
 
-[node name="Buoy" parent="FishingSpots/fishingSpot" index="1" unique_id=570086992]
-water_path = NodePath("../../../WoWs Water")
+[node name="glass" parent="FishingSpots/fishingSpot/Buoy/blockbench_export/Base/Struct/lantern" parent_id_path=PackedInt32Array(73682153, 1987259387) index="2" unique_id=1921806362]
+surface_material_override/0 = null
 
 [node name="fishingSpot2" parent="FishingSpots" unique_id=1605237646 node_paths=PackedStringArray("player") instance=ExtResource("6_45qf1")]
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 1, -60.90634, 16.68062, -58.787155)
 data_resource = SubResource("Resource_wvi11")
 player = NodePath("../../PlayerFish")
 
-[node name="Buoy" parent="FishingSpots/fishingSpot2" index="1" unique_id=570086992]
-water_path = NodePath("../../../WoWs Water")
+[node name="glass" parent="FishingSpots/fishingSpot2/Buoy/blockbench_export/Base/Struct/lantern" parent_id_path=PackedInt32Array(1605237646, 1987259387) index="2" unique_id=1921806362]
+surface_material_override/0 = null
 
 [node name="WoWs Water" parent="." unique_id=2069854430 instance=ExtResource("7_ib3f6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.531, 0)
+material_override = SubResource("ShaderMaterial_qgq7r")
 ripple_wavelength = 6.045
 swell_wavelength_scale = 3.426
 chop_amplitude = 0.225
@@ -187,7 +287,6 @@ material = SubResource("FogMaterial_os8xo")
 [node name="Buyoncy" type="Node" parent="Systems" unique_id=730281467 groups=["buoyancy_system"]]
 script = ExtResource("7_08esg")
 water_path = NodePath("../../WoWs Water")
-water_base_height = 16.6
 
 [node name="WaterBiome" type="Node" parent="Systems" unique_id=504966038]
 script = ExtResource("8_ib3f6")

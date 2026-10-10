@@ -1,9 +1,14 @@
 extends CanvasLayer
-## Full-screen camera FX overlay: VHS, chromatic aberration, lens scuffs,
-## color correction, and polluted-world atmosphere.
-## Attach to a CanvasLayer in your main scene (layer = 100+ so it draws on top).
-## All properties are exported for live inspector tweaking / screenshot & trailer work.
-## Runtime API: get_fx_material() to tween params, or call apply_preset(name).
+
+@export_group("CameraFX")
+@export var cam_fx_enabled : bool = false : set = set_cam_fx_enabled
+@export var cam_timer : Label
+@export var ui_container : MarginContainer
+@export var rec_orb : Sprite2D
+@export_subgroup("Start Time")
+@export_range(0, 99) var start_hours : int = 0
+@export_range(0, 59) var start_minutes : int = 0
+@export_range(0, 59) var start_seconds : int = 0
 
 @export_group("VHS")
 @export var vhs_enabled: bool = true : set = set_vhs_enabled
@@ -51,10 +56,6 @@ extends CanvasLayer
 @export var letterbox_enabled: bool = false : set = set_letterbox_enabled
 @export_range(0.0, 0.5) var letterbox_size: float = 0.1 : set = set_letterbox_size
 
-## This script creates NOTHING. Build the scene yourself (see setup notes),
-## point `rect_path` at your full-screen ColorRect, and give that ColorRect
-## a ShaderMaterial using camera_fx.gdshader in the editor. This script only
-## reads that existing material and pushes the exported values into it.
 @export var rect_path: NodePath = ^"Rect"
 
 const TWEEN_DUR := 0.6
@@ -62,6 +63,7 @@ const TWEEN_DUR := 0.6
 var _mat: ShaderMaterial
 var _blackout_active: bool = false
 var _vhs_baseline: Dictionary = {}
+var _time_passed : float
 
 func _ready() -> void:
 	var rect := get_node_or_null(rect_path) as ColorRect
@@ -72,13 +74,39 @@ func _ready() -> void:
 	if _mat == null:
 		push_error("CameraFX: the ColorRect's material is not a ShaderMaterial using camera_fx.gdshader.")
 		return
-
-	# Adjust these signal names to whatever your SignalBus autoload actually defines.
+	if ui_container:
+		ui_container.visible = cam_fx_enabled
 	SignalBus.connect("blackout", _on_blackout)
 	SignalBus.connect("loaded", _on_loaded)
 	SignalBus.connect("loading_started", _on_loading_started)
 
 	_push_all_params()
+
+func _process(delta: float) -> void:
+	if cam_fx_enabled:
+		_update_time(delta)
+		_blip_rec_orb()
+
+func _blip_rec_orb() -> void:
+	if rec_orb == null:
+		return
+	rec_orb.visible = int(_time_passed) % 2 == 0
+
+func _get_start_offset() -> int:
+	return start_hours * 3600 + start_minutes * 60 + start_seconds
+
+func _update_time(delta: float) -> void:
+	_time_passed += delta
+	_refresh_timer_label()
+
+func _refresh_timer_label() -> void:
+	if cam_timer == null:
+		return
+	var total_seconds : int = int(_time_passed) + _get_start_offset()
+	var hours := total_seconds / 3600
+	var mins := (total_seconds / 60) % 60
+	var sec := total_seconds % 60
+	cam_timer.text = "%02d : %02d : %02d" % [hours, mins, sec]
 
 func get_fx_material() -> ShaderMaterial:
 	return _mat
@@ -124,6 +152,10 @@ func _push_all_params() -> void:
 	set_letterbox_size(letterbox_size)
 
 func set_vhs_enabled(v: bool) -> void: vhs_enabled = v; _p(&"vhs_enabled", v)
+func set_cam_fx_enabled(v: bool) -> void:
+	cam_fx_enabled = v
+	if ui_container:
+		ui_container.visible = v
 func set_vhs_scanline_intensity(v: float) -> void: vhs_scanline_intensity = v; _p(&"vhs_scanline_intensity", v)
 func set_vhs_scanline_count(v: float) -> void: vhs_scanline_count = v; _p(&"vhs_scanline_count", v)
 func set_vhs_noise_intensity(v: float) -> void: vhs_noise_intensity = v; _p(&"vhs_noise_intensity", v)

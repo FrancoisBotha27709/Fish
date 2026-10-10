@@ -2,7 +2,7 @@ extends Control
 class_name FishingMinigame
 ## Base class for every fishing minigame variant. Handles the parts every
 ## variant needs -- wiring to a Minigame resource, pushing progress to the
-## UI, the catch/leave flow, difficulty scaling, and swapping in the fish's
+## UI, the catch/leave/fail flow, difficulty scaling, and swapping in the fish's
 ## visual -- and nothing about the actual gameplay feel.
 ##
 ## To make a new minigame type, extend this script and override whichever
@@ -24,6 +24,8 @@ signal catching_progress_changed(current: float, goal: float)
 signal fish_caught(fish: Fish)
 ## Emitted when the player presses the in-minigame leave button.
 signal leave_requested()
+## Emitted when the player fails the round (the variant decides what counts as failing).
+signal minigame_failed()
 
 var minigame : Minigame
 var fish : Fish
@@ -38,7 +40,6 @@ func _ready() -> void:
 	if leave_button:
 		leave_button.pressed.connect(_on_leave_button_pressed)
 	visible = false
-
 
 func _physics_process(delta: float) -> void:
 	if not started:
@@ -80,6 +81,17 @@ func _catch_fish() -> void:
 	fish_caught_count += 1
 	_on_catch()
 	fish_caught.emit(caught)
+
+
+## Variants call this when the player has failed the round. Stops it and reports it.
+func _fail_minigame() -> void:
+	if not started:
+		return
+	started = false
+	minigame.reset()
+	catch_progress_bar.value = 0
+	_on_fail()
+	minigame_failed.emit()
 
 
 func _on_leave_button_pressed() -> void:
@@ -177,6 +189,10 @@ func _on_start() -> void:
 ## Called right after a fish is caught, before fish_caught fires -- good
 ## place to reposition a target / shrink a hitbox / ramp difficulty up.
 func _on_catch() -> void:
+	pass
+
+## Called right after the round is failed, before minigame_failed fires.
+func _on_fail() -> void:
 	pass
 
 ## Called from stop() for any variant-specific cleanup (resetting positions, etc).

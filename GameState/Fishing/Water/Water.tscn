@@ -1,19 +1,18 @@
 [gd_scene format=3 uid="uid://b74k5xyan3dvv"]
 
-[ext_resource type="Material" uid="uid://cd0g3ld65rkbp" path="res://GameState/Fishing/Water/Stylized/style_water.tres" id="1_w61qf"]
-[ext_resource type="Script" uid="uid://cnpby6s4prbu4" path="res://GameState/Fishing/Water/WaterManager.gd" id="2_fy73t"]
+[ext_resource type="Script" uid="uid://cnpby6s4prbu4" path="res://GameState/Fishing/Water/WaterManager.gd" id="1"]
+[ext_resource type="Material" uid="uid://b4hinf08q1cma" path="res://GameState/Fishing/Water/Realistic/water.tres" id="2"]
 
-[sub_resource type="QuadMesh" id="QuadMesh_cjfj7"]
-material = ExtResource("1_w61qf")
+[sub_resource type="QuadMesh" id="1"]
+material = ExtResource("2")
 size = Vector2(1000, 1000)
 subdivide_width = 800
 subdivide_depth = 800
 orientation = 1
 
-[node name="Water" type="MeshInstance3D" unique_id=2069854430]
-mesh = SubResource("QuadMesh_cjfj7")
-script = ExtResource("2_fy73t")
-ripple_lifetime = 7.08
-ripple_speed = 4.455
-ripple_wavelength = 2.85
-ripple_width = 3.275
+[node name="Water" type="MeshInstance3D" unique_id=66147758]
+material_override = ExtResource("2")
+cast_shadow = 0
+extra_cull_margin = 32.0
+mesh = SubResource("1")
+script = ExtResource("1")

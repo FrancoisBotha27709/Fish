@@ -7,7 +7,7 @@ class_name LoadingScene
 var progress: Array[float] = []
 
 func _ready() -> void:
-    progress_bar.visible = false
+    progress_bar.visible = true
     if SceneLoader.pending_scene_path != "":
         next_scene_path = SceneLoader.pending_scene_path
     SignalBus.prepared_load.connect(_on_prepared_load, CONNECT_ONE_SHOT)

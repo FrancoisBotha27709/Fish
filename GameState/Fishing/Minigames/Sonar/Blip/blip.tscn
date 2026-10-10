@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://dam1goba0aeo5"]
+
+[ext_resource type="Script" uid="uid://1vveywvle2q6" path="res://GameState/Fishing/Minigames/Sonar/Blip/blip.gd" id="1_0my0y"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0my0y"]
+size = Vector2(40, 40)
+
+[node name="Blip" type="Area2D" unique_id=1559946876 node_paths=PackedStringArray("prompt_label", "visual")]
+script = ExtResource("1_0my0y")
+prompt_label = NodePath("Label")
+visual = NodePath("ColorRect")
+fade_time = 1.7
+
+[node name="Label" type="Label" parent="." unique_id=908540794]
+offset_left = -21.0
+offset_top = -45.0
+offset_right = 19.0
+offset_bottom = -22.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1656139567]
+shape = SubResource("RectangleShape2D_0my0y")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1157826700]
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+color = Color(0.96862745, 0, 1, 1)

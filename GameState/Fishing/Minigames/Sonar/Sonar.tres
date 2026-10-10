@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Minigame" format=3 uid="uid://bcjf2o8hqr24l"]
+
+[ext_resource type="PackedScene" uid="uid://dbtd845d0pkfr" path="res://GameState/Fishing/Minigames/Sonar/sonar.tscn" id="1_7hc6b"]
+[ext_resource type="Script" uid="uid://d2eqlen4tof58" path="res://GameState/Fishing/Minigames/Minigame.gd" id="1_pfiiq"]
+
+[resource]
+script = ExtResource("1_pfiiq")
+goal_progress = 400.0
+scene = ExtResource("1_7hc6b")
+metadata/_custom_type_script = "uid://d2eqlen4tof58"

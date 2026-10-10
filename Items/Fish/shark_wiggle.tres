@@ -1,0 +1,175 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://nkmr6oxnf6ej"]
+
+[ext_resource type="Texture2D" uid="uid://v4jwqdox2toh" path="res://Assets/3D/Fish/fish-texture.png" id="1_ee7vq"]
+
+[sub_resource type="Shader" id="Shader_7gs53"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.6.3.stable's StandardMaterial3D.
+shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_burley, specular_schlick_ggx;
+uniform vec4 albedo : source_color;
+uniform sampler2D texture_albedo : source_color, filter_nearest_mipmap, repeat_enable;
+uniform ivec2 albedo_texture_size;
+uniform float point_size : hint_range(0.1, 128.0, 0.1);
+uniform float roughness : hint_range(0.0, 1.0);
+uniform sampler2D texture_metallic : hint_default_white, filter_nearest_mipmap, repeat_enable;
+uniform vec4 metallic_texture_channel;
+uniform sampler2D texture_roughness : hint_roughness_r, filter_nearest_mipmap, repeat_enable;
+uniform float specular : hint_range(0.0, 1.0, 0.01);
+uniform float metallic : hint_range(0.0, 1.0, 0.01);
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+
+// ---- Wiggle controls ----
+// Which local axis runs along the fish's body, head-to-tail.
+// 0 = X, 1 = Y, 2 = Z (most imported fish models use Z, facing -Z).
+uniform int body_axis : hint_range(0, 2) = 2;
+// Flip if the wiggle mask is backwards (head wiggles instead of tail).
+uniform float axis_sign = 1.0;
+
+// How far along the body (local units, head=0) the wiggle starts fading in.
+uniform float wiggle_start = 0.0;
+// Local-space length over which the wiggle ramps up to full strength (roughly body length).
+uniform float wiggle_ramp = 1.0;
+
+uniform float wiggle_amplitude = 0.15;   // how far the body swings side to side
+uniform float wiggle_frequency = 3.0;    // how many waves fit along the body
+uniform float wiggle_speed = 6.0;        // how fast the wave travels (tie to swim speed)
+// Master toggle: 1.0 = normal swimming wiggle, 0.0 = perfectly still (dead fish).
+uniform float wiggle_amount : hint_range(0.0, 1.0) = 1.0;
+
+// ---- Wet / slime controls ----
+uniform float wet_roughness : hint_range(0.0, 1.0) = 0.12;
+uniform float wet_specular : hint_range(0.0, 1.0) = 0.8;
+uniform float wet_darken : hint_range(0.5, 1.0) = 0.85;
+uniform float wet_saturation : hint_range(1.0, 2.0) = 1.2;
+uniform vec3 slime_tint : source_color = vec3(0.75, 0.9, 0.8);
+uniform float rim_strength : hint_range(0.0, 1.0) = 0.6;
+uniform float rim_tint_amount : hint_range(0.0, 1.0) = 0.5;
+uniform float clearcoat_amount : hint_range(0.0, 1.0) = 1.0;
+uniform float clearcoat_rough : hint_range(0.0, 1.0) = 0.05;
+uniform float slime_bump_strength : hint_range(0.0, 1.0) = 0.25;
+uniform float slime_bump_scale = 45.0;   // model is tiny (~0.16 units), so this is high
+uniform float slime_flow_speed = 3.0;
+
+varying vec3 local_pos;
+
+// Small extra bob so it doesn't look perfectly flat.
+uniform float vertical_bob_amplitude = 0.03;
+uniform float vertical_bob_speed = 4.0;
+
+void vertex() {
+	local_pos = VERTEX;
+	UV = UV * uv1_scale.xy + uv1_offset.xy;
+
+	float body_pos = 0.0;
+	if (body_axis == 0) {
+		body_pos = VERTEX.x * axis_sign;
+	} else if (body_axis == 1) {
+		body_pos = VERTEX.y * axis_sign;
+	} else {
+		body_pos = VERTEX.z * axis_sign;
+	}
+
+	// 0 near the head, 1 by the tail -> tail whips more than the head.
+	float mask = smoothstep(wiggle_start, wiggle_start + max(wiggle_ramp, 0.001), body_pos);
+	mask = mask * mask; // sharpen so the head stays nearly still
+
+	float phase = body_pos * wiggle_frequency - TIME * wiggle_speed;
+	float lateral = sin(phase) * wiggle_amplitude * mask * wiggle_amount;
+
+	// Displace sideways, perpendicular to the body axis.
+	if (body_axis == 0) {
+		VERTEX.z += lateral;
+	} else {
+		VERTEX.x += lateral;
+	}
+
+	// Gentle vertical bob, strongest toward the tail as well.
+	VERTEX.y += sin(TIME * vertical_bob_speed + body_pos * wiggle_frequency) * vertical_bob_amplitude * mask * wiggle_amount;
+
+	// Bend the normal to roughly follow the wiggle so shading doesn't look flat/wrong.
+	float d_lateral = cos(phase) * wiggle_amplitude * wiggle_frequency * mask * wiggle_amount;
+	if (body_axis == 0) {
+		NORMAL = normalize(NORMAL + vec3(0.0, 0.0, d_lateral));
+	} else {
+		NORMAL = normalize(NORMAL + vec3(d_lateral, 0.0, 0.0));
+	}
+}
+
+void fragment() {
+	vec2 base_uv = UV;
+	vec4 albedo_tex = texture(texture_albedo, base_uv);
+	vec3 col = albedo.rgb * albedo_tex.rgb;
+
+	// Wet look: darker, more saturated, slightly tinted
+	float lum = dot(col, vec3(0.299, 0.587, 0.114));
+	col = mix(vec3(lum), col, wet_saturation);
+	col *= wet_darken;
+	col = mix(col, col * slime_tint, 0.4);
+	ALBEDO = col;
+
+	float metallic_tex = dot(texture(texture_metallic, base_uv), metallic_texture_channel);
+	METALLIC = metallic_tex * metallic;
+	SPECULAR = max(specular, wet_specular);
+
+	vec4 roughness_texture_channel = vec4(1.0, 0.0, 0.0, 0.0);
+	float roughness_tex = dot(texture(texture_roughness, base_uv), roughness_texture_channel);
+	ROUGHNESS = min(roughness_tex * roughness, wet_roughness);
+
+	CLEARCOAT = clearcoat_amount;
+	CLEARCOAT_ROUGHNESS = clearcoat_rough;
+	RIM = rim_strength;
+	RIM_TINT = rim_tint_amount;
+
+	// Lumpy, drifting slime so highlights aren't perfectly smooth
+	vec3 p = local_pos * slime_bump_scale + vec3(0.0, 0.0, TIME * slime_flow_speed);
+	vec3 bump = vec3(
+		sin(p.y * 1.7 + p.z * 2.3) + sin(p.z * 3.1 - p.x * 1.3),
+		sin(p.z * 1.3 + p.x * 2.9) + sin(p.x * 3.3 - p.y * 1.1),
+		sin(p.x * 1.9 + p.y * 2.1) + sin(p.y * 2.7 - p.z * 1.7)
+	) * 0.5;
+	vec3 bump_view = (VIEW_MATRIX * MODEL_MATRIX * vec4(bump, 0.0)).xyz;
+	NORMAL = normalize(NORMAL + bump_view * slime_bump_strength);
+}
+"
+
+[resource]
+resource_name = "Fish_Material"
+render_priority = 0
+shader = SubResource("Shader_7gs53")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/texture_albedo = ExtResource("1_ee7vq")
+shader_parameter/albedo_texture_size = Vector2i(256, 256)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 0.3
+shader_parameter/metallic_texture_channel = Vector4(1, 0, 0, 0)
+shader_parameter/specular = 0.0
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/body_axis = 2
+shader_parameter/axis_sign = 1.0
+shader_parameter/wiggle_start = -0.19
+shader_parameter/wiggle_ramp = 1.725
+shader_parameter/wiggle_amplitude = -0.155
+shader_parameter/wiggle_frequency = 3.0
+shader_parameter/wiggle_speed = 5.0
+shader_parameter/wiggle_amount = 0.0
+shader_parameter/wet_roughness = 0.0
+shader_parameter/wet_specular = 0.8
+shader_parameter/wet_darken = 0.85
+shader_parameter/wet_saturation = 1.2
+shader_parameter/slime_tint = Color(0.75, 0.9, 0.8, 1)
+shader_parameter/rim_strength = 0.6
+shader_parameter/rim_tint_amount = 0.5
+shader_parameter/clearcoat_amount = 1.0
+shader_parameter/clearcoat_rough = 0.0
+shader_parameter/slime_bump_strength = 0.0
+shader_parameter/slime_bump_scale = 45.0
+shader_parameter/slime_flow_speed = 3.0
+shader_parameter/vertical_bob_amplitude = 0.03
+shader_parameter/vertical_bob_speed = 4.0
