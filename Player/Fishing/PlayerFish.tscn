@@ -57,6 +57,33 @@ fishing_camera = NodePath("FishingCamera")
 minigame_holder = NodePath("MinigameLayer/MinigameHolder")
 catch_message_label = NodePath("MinigameLayer/MinigameHolder/CatchLbl")
 
+[node name="MinigameLayer" type="CanvasLayer" parent="." unique_id=1530112042]
+layer = 2
+
+[node name="MinigameHolder" type="Control" parent="MinigameLayer" unique_id=1530112043]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CatchLbl" type="Label" parent="MinigameLayer/MinigameHolder" unique_id=1530112044]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -65.0
+offset_top = 24.0
+offset_right = 65.0
+offset_bottom = 47.0
+grow_horizontal = 2
+text = "Nice catch!"
+horizontal_alignment = 1
+
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1770705033]
 layer = 0
 
@@ -149,30 +176,3 @@ shape = SubResource("ConvexPolygonShape3D_aupj5")
 
 [node name="FishingCamera" type="Camera3D" parent="." unique_id=1530112041]
 transform = Transform3D(1, 0, 0, 0, 0.9378648, 0.34700114, 0, -0.34700114, 0.9378648, 0.4438907, 2.154009, 5.7336903)
-
-[node name="MinigameLayer" type="CanvasLayer" parent="." unique_id=1530112042]
-layer = 2
-
-[node name="MinigameHolder" type="Control" parent="MinigameLayer" unique_id=1530112043]
-visible = false
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="CatchLbl" type="Label" parent="MinigameLayer/MinigameHolder" unique_id=1530112044]
-visible = false
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -65.0
-offset_top = 24.0
-offset_right = 65.0
-offset_bottom = 47.0
-grow_horizontal = 2
-text = "Nice catch!"
-horizontal_alignment = 1

@@ -1,19 +1,25 @@
 [gd_resource type="Resource" script_class="Fish" format=3 uid="uid://dtdvb8dw7eude"]
 
 [ext_resource type="Script" uid="uid://c2hc32pqdutke" path="res://Items/Fish/Fish.gd" id="1_a40tr"]
+[ext_resource type="Texture2D" uid="uid://1yohbgg1qpeq" path="res://Items/Fish/Perch/Icons/Perch Bones_photo.png" id="1_ubeq8"]
 [ext_resource type="PackedScene" uid="uid://bwcpawdixmbi1" path="res://Items/Fish/Perch/PerchExternalMesh.tscn" id="1_xj13u"]
 [ext_resource type="Resource" uid="uid://eiexci1n8x7x" path="res://Items/Common.tres" id="2_ioi7f"]
+[ext_resource type="Texture2D" uid="uid://k4vb1fs2a03y" path="res://Items/Fish/Perch/Icons/Perch_photo.png" id="2_tmsnl"]
 [ext_resource type="Resource" uid="uid://cofnsy4xpe3e6" path="res://Items/Fish/Perch/PerchSpecies.tres" id="4_umbug"]
 [ext_resource type="PackedScene" uid="uid://b7njb4ft53jn8" path="res://Items/Fish/Perch/PerchWorld.tscn" id="5_ubeq8"]
+[ext_resource type="Texture2D" uid="uid://d2bkmqf4mdt71" path="res://Items/Fish/Perch/Icons/Perch Steak_photo.png" id="7_1e7mo"]
 
 [resource]
 script = ExtResource("1_a40tr")
 species = ExtResource("4_umbug")
+dead_scene = ExtResource("1_ubeq8")
+steak_scene = ExtResource("7_1e7mo")
 id = "pepe"
 display_name = "Perch"
 description = "erergergergergergergergergergergerg"
 tags = Array[String](["fish"])
 rarity = ExtResource("2_ioi7f")
+icon = ExtResource("2_tmsnl")
 world_scene = ExtResource("5_ubeq8")
 outside_mesh_scene = ExtResource("1_xj13u")
 metadata/_custom_type_script = "uid://c2hc32pqdutke"

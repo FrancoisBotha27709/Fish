@@ -57,7 +57,7 @@ fog_sky_affect = 0.35
 fog_height = 25.0
 fog_height_density = 0.016
 volumetric_fog_enabled = true
-volumetric_fog_density = 0.012
+volumetric_fog_density = 0.017
 volumetric_fog_albedo = Color(0.55, 0.52, 0.42, 1)
 volumetric_fog_anisotropy = 0.0
 volumetric_fog_length = 143.434
@@ -110,6 +110,7 @@ sun_elevation_deg = 28.19
 sun_azimuth_deg = 8.570999999999998
 sun_energy = 0.7
 sun_color = Color(0.7831971, 0.6966935, 0.39377183, 1)
+fill_energy = 1.0
 smog_coverage = 0.496
 smog_density = 0.608
 smog_scale = 3.671
@@ -122,8 +123,10 @@ hatch_offset = 0.359
 hatch_sharpness = 8.0
 fog_density = 0.0035
 ground_smog = 0.016
+vol_fog_density = 0.017
 vol_fog_anisotropy = 0.0
 vol_fog_length = 143.434
+blackout_color = Color(0, 0, 0, 0.54509807)
 
 [node name="CloudLayer" type="MeshInstance3D" parent="." unique_id=2030599833]
 process_priority = 4096

@@ -3,7 +3,6 @@
 [ext_resource type="Texture2D" uid="uid://b3b1w4c1s7ujm" path="res://Assets/3D/New Items/furniture_collection_2_gltf/textures/material_2_baseColor.png" id="1_874tk"]
 [ext_resource type="Script" uid="uid://bxawnwu3gcmsv" path="res://GameState/Market/screenshot.gd" id="1_qwci8"]
 [ext_resource type="PackedScene" uid="uid://dppygydb1n6sa" path="res://Player/Camera/Camera.tscn" id="2_b3bsx"]
-[ext_resource type="Resource" uid="uid://dtdvb8dw7eude" path="res://Items/Fish/Perch/PerchFish.tres" id="2_hl6ex"]
 [ext_resource type="Texture2D" uid="uid://dlr0geain8ar5" path="res://Assets/3D/New Items/money_stacks_set_wb_v1_1/gltf/money_pile2_0.png" id="4_0l65x"]
 [ext_resource type="Texture2D" uid="uid://dgwcxm6ybxrgw" path="res://Assets/3D/New Items/money_stacks_set_wb_v1_1/gltf/money_pile3_0.png" id="5_15dtf"]
 [ext_resource type="Texture2D" uid="uid://dyhlj3j7m74rq" path="res://Assets/3D/New Items/PSXForest/woodtest.png" id="7_15dtf"]
@@ -1312,7 +1311,6 @@ script = ExtResource("1_qwci8")
 anim_players = [NodePath("Table/Coins/blockbench_export2/AnimationPlayer"), NodePath("Table/Coins/blockbench_export3/AnimationPlayer")]
 item_anim = NodePath("AnimationPlayer")
 item_container = NodePath("Table/ItemContainer")
-item = ExtResource("2_hl6ex")
 
 [node name="Table" type="Node3D" parent="." unique_id=1328923053]
 

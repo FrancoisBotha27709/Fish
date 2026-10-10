@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://hgbvttq36s6x"
-path="res://.godot/imported/SalmonSteak-removebg-preview.png-8c82e1af8b43be5c501cd8bc019bfc20.ctex"
+uid="uid://bccslt3nqc2mo"
+path="res://.godot/imported/Tiger Shark_photo.png-4d3c486c5d2ecb883b28632561d1117b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Items/Fish/Salmon/Icons/SalmonSteak-removebg-preview.png"
-dest_files=["res://.godot/imported/SalmonSteak-removebg-preview.png-8c82e1af8b43be5c501cd8bc019bfc20.ctex"]
+source_file="res://Items/Fish/Sharks/Tiger/Icons/Tiger Shark_photo.png"
+dest_files=["res://.godot/imported/Tiger Shark_photo.png-4d3c486c5d2ecb883b28632561d1117b.ctex"]
 
 [params]
 

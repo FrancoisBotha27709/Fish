@@ -1,330 +1,375 @@
-extends MeshInstance3D
 class_name WaterManager
+extends MeshInstance3D
 
 const MAX_RIPPLES := 16
-const JITTER_RATE := 0.002      # must match the shader
-const HEIGHT_ITERATIONS := 3    # inverts the horizontal Gerstner shift; 2 is fine if you need speed
+const MAX_HULLS := 16
+const GK := 9.8 / TAU
+const ANG: Array[float] = [0.0, 24.0, 61.0, -37.0, 104.0, -73.0]
+const LEN: Array[float] = [85.0, 52.0, 22.0, 13.0, 6.0, 3.2]
+const STEEP: Array[float] = [0.8, 0.7, 0.45, 0.35, 0.22, 0.14]
+const AMP: Array[float] = [1.0, 0.6, 0.32, 0.2, 0.1, 0.05]
+const SPD: Array[float] = [0.9, 1.05, 1.3, 1.5, 1.9, 2.2]
 
-@export var follow_target: Node3D   # optional: water plane follows this, snapped to the vertex grid
+@export var follow_target: Node3D
+@export var meters_per_unit := 1.0
+@export var mesh_vertex_spacing := 1.25
 
-@export var ripple_lifetime: float = 5.0
-@export var ripple_speed: float = 4.0
-@export var ripple_wavelength: float = 1.5
-@export var ripple_width: float = 3.0
-@export var ripple_amplitude: float = 0.4
-@export var meters_per_unit: float = 1.0
+@export_group("Ripples")
+@export var ripple_lifetime := 5.0
+@export var ripple_speed := 4.0
+@export var ripple_wavelength := 1.5
+@export var ripple_width := 3.0
+@export var ripple_amplitude := 0.4
 
 @export_group("Waves")
-@export var swell_amplitude: float = 1.2
-@export var swell_wavelength_scale: float = 0.5
-@export var chop_amplitude: float = 0.6
-@export var wave_speed: float = 1.0
-@export var wave_choppiness: float = 0.6
-@export var wind_direction_deg: float = 30.0
-@export var wave_direction_jitter: float = 12.0
-@export var chop_patchiness: float = 0.5
-@export var mesh_vertex_spacing: float = 1.25   # keep equal to your mesh's real spacing
+@export var swell_amplitude := 1.2
+@export var swell_wavelength_scale := 0.5
+@export var chop_amplitude := 0.6
+@export var wave_speed := 1.0
+@export var wave_choppiness := 0.6
+@export var wind_direction_deg := 30.0
+@export var wave_direction_jitter := 12.0
+@export var chop_patchiness := 0.5
 
 @export_group("Large Scale Variation")
-@export var domain_warp_amount: float = 15.0
-@export var domain_warp_scale: float = 0.004
-@export var domain_warp_speed: float = 0.02
+@export var domain_warp_amount := 15.0
+@export var domain_warp_scale := 0.004
+@export var domain_warp_speed := 0.02
 
-@export_group("Sea State (Temporal Variation)")
-@export var enable_sea_state_variation: bool = true
-@export var sea_state_min: float = 0.6
-@export var sea_state_max: float = 1.0
-@export var sea_state_period: float = 120.0
-@export var sea_state_jitter: float = 0.15
-@export var sea_state_speed_influence: float = 0.15
+@export_group("Sea State")
+@export var enable_sea_state_variation := true
+@export var sea_state_min := 0.6
+@export var sea_state_max := 1.0
+@export var sea_state_period := 120.0
+@export var sea_state_jitter := 0.15
+@export var sea_state_speed_influence := 0.15
 
-const WAVE_COUNT := 6
-const IS_SWELL: Array[bool] = [true, true, false, false, false, false]
-const WAVE_ANGLES: Array[float] = [0.0, 24.0, 61.0, -37.0, 104.0, -73.0]
-const WAVE_BASE_LENGTHS: Array[float] = [85.0, 52.0, 22.0, 13.0, 6.0, 3.2]
-const WAVE_STEEPNESS: Array[float] = [0.8, 0.7, 0.45, 0.35, 0.22, 0.14]
-const WAVE_AMP_SCALE: Array[float] = [1.0, 0.6, 0.32, 0.2, 0.1, 0.05]
-const WAVE_SPEED_MULT: Array[float] = [0.9, 1.05, 1.3, 1.5, 1.9, 2.2]
+@export_group("Foam")
+@export var foam_res := 512
+@export var foam_window := 256.0
+@export var foam_fold_decay := 3.5
+@export var foam_contact_decay := 1.2
+@export var foam_fold_threshold := 0.75
+@export var foam_fold_softness := 0.55
 
-var _material: ShaderMaterial
-var _slot_pos: Array[Vector2] = []
-var _slot_time: Array[float] = []
-var _slot_strength: Array[float] = []
-var _next_slot := 0
-var _sim_time := 0.0      # ripples, pollution drift
-var _wave_clock := 0.0    # waves, warp, turbulence (speed-integrated)
-var _sea_state_phase := 0.0
-var _cur_swell: float
-var _cur_chop: float
-var _cur_speed: float
-var _dirs: Array[Vector2] = []
-var _b_n := 0
-var _b_data = null
-var _b_chop = null
-var _b_rip = null
+var _mat: ShaderMaterial
+var _mats: Array[ShaderMaterial] = []
+var _fm: Array[ShaderMaterial] = []
+var _fvp: Array[SubViewport] = []
+var _fi := 0
+var _forg := Vector2.ZERO
+var _t := 0.0
+var _wt := 0.0
+var _ph := 0.0
+var _cur_swell := 0.0
+var _cur_chop := 0.0
+var _cur_spd := 1.0
+var _dir := PackedVector2Array()
+var _par := PackedVector4Array()
+var _ck := PackedFloat32Array()
+var _ca := PackedFloat32Array()
+var _cw := PackedFloat32Array()
+var _cm := Vector4(1, 1, 1, 0)
+var _rm := Vector4(1, 1, 1, 0)
+var _warp := Vector2.ZERO
+var _rx := 0.0
+var _rz := 0.0
+var _rs := 0.0
+var _rk := 1.0
+var _rw := 1.0
+var _rip: Array[Vector4] = []
+var _rd := PackedVector4Array()
+var _rip_dirty := false
+var _ha := PackedVector4Array()
+var _hb := PackedVector4Array()
+var _hn := 0
+var _hf := 0
+var _bn := 0
+var _bd := PackedVector4Array()
+var _bc := PackedVector4Array()
+var _br := PackedVector4Array()
 
 func _ready() -> void:
-	if material_override is ShaderMaterial:
-		_material = material_override
-	elif mesh and mesh.surface_get_material(0) is ShaderMaterial:
-		_material = mesh.surface_get_material(0)
-	if _material == null:
-		push_warning("WaterManager: no ShaderMaterial found on this MeshInstance3D.")
+	_mat = material_override as ShaderMaterial
+	if _mat == null and mesh:
+		_mat = mesh.surface_get_material(0) as ShaderMaterial
+	if _mat == null:
+		push_warning("WaterManager: no ShaderMaterial")
+		return
+	_mats.append(_mat)
+	_dir.resize(6); _par.resize(6)
+	_ck.resize(6); _ca.resize(6); _cw.resize(6)
+	_rd.resize(MAX_RIPPLES); _ha.resize(MAX_HULLS); _hb.resize(MAX_HULLS)
+	_cur_swell = swell_amplitude; _cur_chop = chop_amplitude; _cur_spd = wave_speed
+	_pack()
+	_foam_init()
+	for k in ["ripple_lifetime", "ripple_speed", "ripple_wavelength", "ripple_width", "ripple_amplitude", "meters_per_unit", "mesh_vertex_spacing", "domain_warp_amount", "domain_warp_scale", "domain_warp_speed", "chop_patchiness", "wind_direction_deg"]:
+		_all(k, get(k))
+	_all("foam_size", foam_window)
+	for m in _fm:
+		m.set_shader_parameter("win_size", foam_window)
+		m.set_shader_parameter("fold_thr", foam_fold_threshold)
+		m.set_shader_parameter("fold_soft", foam_fold_softness)
 
-	_cur_swell = swell_amplitude
-	_cur_chop = chop_amplitude
-	_cur_speed = wave_speed
-	_slot_pos.resize(MAX_RIPPLES)
-	_slot_time.resize(MAX_RIPPLES)
-	_slot_strength.resize(MAX_RIPPLES)
-	for i in MAX_RIPPLES:
-		_slot_pos[i] = Vector2.ZERO
-		_slot_time[i] = -1000.0
-		_slot_strength[i] = 0.0
-	_dirs.resize(WAVE_COUNT)
-	_refresh_dirs()
-
-	if _material:
-		var p := {
-			"ripple_lifetime": ripple_lifetime, "ripple_speed": ripple_speed,
-			"ripple_wavelength": ripple_wavelength, "ripple_width": ripple_width,
-			"ripple_amplitude": ripple_amplitude, "meters_per_unit": meters_per_unit,
-			"swell_amplitude": _cur_swell, "swell_wavelength_scale": swell_wavelength_scale,
-			"chop_amplitude": _cur_chop, "wave_choppiness": wave_choppiness,
-			"wind_direction_deg": wind_direction_deg, "wave_direction_jitter": wave_direction_jitter,
-			"chop_patchiness": chop_patchiness, "domain_warp_amount": domain_warp_amount,
-			"domain_warp_scale": domain_warp_scale, "domain_warp_speed": domain_warp_speed,
-			"mesh_vertex_spacing": mesh_vertex_spacing,
-		}
-		for k in p:
-			_material.set_shader_parameter(k, p[k])
-
-func _process(delta: float) -> void:
-	_sim_time += delta
-	_update_sea_state(delta)
-	_wave_clock += delta * _cur_speed   # speed changes only affect the future, never scrub the past
-	_refresh_dirs()
-	_refresh_biomes()
+func _process(dt: float) -> void:
+	if _mat == null:
+		return
+	_t += dt
+	_sea(dt)
+	_wt += dt * _cur_spd
 	if follow_target:
 		global_position.x = snappedf(follow_target.global_position.x, mesh_vertex_spacing)
 		global_position.z = snappedf(follow_target.global_position.z, mesh_vertex_spacing)
-	if _material == null:
-		return
-	_material.set_shader_parameter("sim_time", _sim_time)
-	_material.set_shader_parameter("wave_time", _wave_clock)
-	_material.set_shader_parameter("swell_amplitude", _cur_swell)
-	_material.set_shader_parameter("chop_amplitude", _cur_chop)
+	_pack()
+	_all("wave_time", _wt)
+	_all("sim_time", _t)
+	_all("swell_amplitude", _cur_swell)
+	_all("chop_amplitude", _cur_chop)
+	_all("wave_dir", _dir)
+	_all("wave_par", _par)
+	var d := false
+	while not _rip.is_empty() and _t - _rip[0].z > ripple_lifetime:
+		_rip.remove_at(0)
+		d = true
+	if d or _rip_dirty:
+		_rip_dirty = false
+		for i in MAX_RIPPLES:
+			_rd[i] = _rip[i] if i < _rip.size() else Vector4.ZERO
+		_mat.set_shader_parameter("ripple_data", _rd)
+		_mat.set_shader_parameter("ripple_count", _rip.size())
+	if Engine.get_physics_frames() - _hf > 4:
+		_hn = 0
+	_foam_step(dt)
 
-func _update_sea_state(delta: float) -> void:
+func _all(k: StringName, v: Variant) -> void:
+	for m in _mats:
+		m.set_shader_parameter(k, v)
+
+func _sea(dt: float) -> void:
 	if not enable_sea_state_variation:
-		_cur_swell = swell_amplitude
-		_cur_chop = chop_amplitude
-		_cur_speed = wave_speed
+		_cur_swell = swell_amplitude; _cur_chop = chop_amplitude; _cur_spd = wave_speed
 		return
-	_sea_state_phase += delta * TAU / max(sea_state_period, 1.0)
-	var wave: float = 0.5 + 0.5 * sin(_sea_state_phase)
-	var jitter: float = clamp(_fbm(Vector2(_sea_state_phase * 0.15, 91.7)) / 0.9375, 0.0, 1.0)
-	var state: float = clamp(lerp(wave, jitter, sea_state_jitter), 0.0, 1.0)
-	var mult: float = lerp(sea_state_min, sea_state_max, state)
-	_cur_swell = swell_amplitude * mult
-	_cur_chop = chop_amplitude * mult
-	_cur_speed = wave_speed * lerp(1.0, mult, sea_state_speed_influence)
+	_ph += dt * TAU / maxf(sea_state_period, 1.0)
+	var s := clampf(lerpf(0.5 + 0.5 * sin(_ph), clampf(_fbm(Vector2(_ph * 0.15, 91.7)) / 0.9375, 0.0, 1.0), sea_state_jitter), 0.0, 1.0)
+	var m := lerpf(sea_state_min, sea_state_max, s)
+	_cur_swell = swell_amplitude * m
+	_cur_chop = chop_amplitude * m
+	_cur_spd = wave_speed * lerpf(1.0, m, sea_state_speed_influence)
 
-# ------------------------------------------------------------------
-# Public API
-# ------------------------------------------------------------------
-func spawn_ripple(world_pos: Vector3, strength: float = 1.0) -> void:
-	if _material == null:
-		return
-	var slot := _next_slot
-	_next_slot = (_next_slot + 1) % MAX_RIPPLES
-	_slot_pos[slot] = Vector2(world_pos.x, world_pos.z)
-	_slot_time[slot] = _sim_time
-	_slot_strength[slot] = strength
-	_push_to_shader()
-
-## Height offset from calm sea level at a world XZ point. Matches the rendered surface.
-func get_water_height_at(world_xz: Vector2) -> float:
-	var p := world_xz
-	var m: Array
-	var o := Vector3.ZERO
-	var wp := Vector2.ZERO
-	for i in HEIGHT_ITERATIONS:
-		m = _biomes_at(p)
-		wp = _domain_warp(p)
-		o = _gerstner(wp, m[0])
-		if i < HEIGHT_ITERATIONS - 1:
-			p = world_xz - Vector2(o.x, o.z)   # rest position whose displaced vertex lands on world_xz
-	return o.y + _turbulence(wp, m[0]) + _ripple_h(p, m[1])
-
-## Same surface as get_water_height_at but WITHOUT ripples. Use for hull tilt
-## so the boat's own wake doesn't feed back into its orientation.
-func get_wave_height_at(world_xz: Vector2) -> float:
-	var p := world_xz
-	var m: Array
-	var o := Vector3.ZERO
-	var wp := Vector2.ZERO
-	for i in HEIGHT_ITERATIONS:
-		m = _biomes_at(p)
-		wp = _domain_warp(p)
-		o = _gerstner(wp, m[0])
-		if i < HEIGHT_ITERATIONS - 1:
-			p = world_xz - Vector2(o.x, o.z)
-	return o.y + _turbulence(wp, m[0])
-
-## Absolute world-space Y of the water surface.
-func get_water_world_y(world_pos: Vector3) -> float:
-	return global_position.y + get_water_height_at(Vector2(world_pos.x, world_pos.z))
-
-## Surface normal (world space) via central differences. Use for aligning hulls.
-func get_water_normal_at(world_xz: Vector2, e: float = 1.0) -> Vector3:
-	var hx := get_water_height_at(world_xz + Vector2(e, 0)) - get_water_height_at(world_xz - Vector2(e, 0))
-	var hz := get_water_height_at(world_xz + Vector2(0, e)) - get_water_height_at(world_xz - Vector2(0, e))
-	return Vector3(-hx, 2.0 * e, -hz).normalized()
-
-func get_ripple_height_at(world_xz: Vector2) -> float:
-	return _ripple_h(world_xz, Vector4(1, 1, 1, 0))
-
-func _push_to_shader() -> void:
-	var data: Array[Vector4] = []
-	for i in MAX_RIPPLES:
-		data.append(Vector4(_slot_pos[i].x, _slot_pos[i].y, _slot_time[i], _slot_strength[i]))
-	_material.set_shader_parameter("ripple_data", data)
-	_material.set_shader_parameter("ripple_count", MAX_RIPPLES)
-
-# ------------------------------------------------------------------
-# Wave math (mirrors the shader)
-# ------------------------------------------------------------------
-func _refresh_dirs() -> void:
+func _pack() -> void:
 	var wind := deg_to_rad(wind_direction_deg)
-	for i in WAVE_COUNT:
-		var jit: float = (_fbm(Vector2(float(i) * 17.17, _wave_clock * JITTER_RATE)) - 0.5) * 2.0 * wave_direction_jitter
-		var ang: float = deg_to_rad(WAVE_ANGLES[i] + jit) + wind
-		_dirs[i] = Vector2(cos(ang), sin(ang))
+	var ms := mesh_vertex_spacing
+	for i in 6:
+		var a := deg_to_rad(ANG[i] + (_fbm(Vector2(i * 17.17, _wt * 0.015)) - 0.5) * 2.0 * wave_direction_jitter) + wind
+		_dir[i] = Vector2(cos(a), sin(a))
+		var wl := LEN[i]
+		var amp := AMP[i] * _cur_chop
+		if i < 2:
+			wl = maxf(wl * swell_wavelength_scale, 0.5)
+			amp = AMP[i] * _cur_swell * smoothstep(ms * 2.0, ms * 3.5, wl)
+		_par[i] = Vector4(wl, SPD[i], amp, STEEP[i] * wave_choppiness)
 
-func _refresh_biomes() -> void:
-	_b_n = 0
-	if _material == null:
-		return
-	var cnt = _material.get_shader_parameter("biome_count")
-	_b_data = _material.get_shader_parameter("biome_data")
-	_b_chop = _material.get_shader_parameter("biome_chop")
-	_b_rip = _material.get_shader_parameter("biome_ripple")
-	if cnt == null or _b_data == null or _b_chop == null:
-		return
-	_b_n = int(min(int(cnt), min(_b_data.size(), _b_chop.size())))
+func _foam_init() -> void:
+	var sh: Shader = load(get_script().resource_path.get_base_dir() + "/water_foam.gdshader")
+	for i in 2:
+		var vp := SubViewport.new()
+		vp.size = Vector2i(foam_res, foam_res)
+		vp.use_hdr_2d = true
+		vp.disable_3d = true
+		vp.render_target_update_mode = SubViewport.UPDATE_DISABLED
+		var m := ShaderMaterial.new()
+		m.shader = sh
+		var r := ColorRect.new()
+		r.size = Vector2(foam_res, foam_res)
+		r.material = m
+		vp.add_child(r)
+		add_child(vp)
+		_fvp.append(vp)
+		_fm.append(m)
+		_mats.append(m)
+	_fm[0].set_shader_parameter("prev", _fvp[1].get_texture())
+	_fm[1].set_shader_parameter("prev", _fvp[0].get_texture())
 
-## Returns [chop_mult, ripple_mult] blended at pos (same soft circles as the shader).
-func _biomes_at(pos: Vector2) -> Array:
-	var chop := Vector4(1, 1, 1, 0)
-	var rip := Vector4(1, 1, 1, 0)
-	for i in _b_n:
-		var bd: Vector4 = _b_data[i]
-		var w: float = 1.0 - smoothstep(bd.z, bd.z + max(bd.w, 0.001), pos.distance_to(Vector2(bd.x, bd.y)))
-		if w <= 0.001:
-			continue
-		chop = chop.lerp(_b_chop[i], w)
-		if _b_rip != null and i < _b_rip.size():
-			rip = rip.lerp(_b_rip[i], w)
-	return [chop, rip]
+func _foam_step(dt: float) -> void:
+	var c := global_position
+	if follow_target:
+		c = follow_target.global_position
+	elif get_viewport().get_camera_3d():
+		c = get_viewport().get_camera_3d().global_position
+	var tx := foam_window / foam_res
+	var org := Vector2(snappedf(c.x - foam_window * 0.5, tx), snappedf(c.z - foam_window * 0.5, tx))
+	var m := _fm[_fi]
+	m.set_shader_parameter("origin", org)
+	m.set_shader_parameter("shift", (org - _forg) / foam_window)
+	m.set_shader_parameter("decay", Vector2(exp(-foam_fold_decay * dt), exp(-foam_contact_decay * dt)))
+	m.set_shader_parameter("hull_a", _ha)
+	m.set_shader_parameter("hull_b", _hb)
+	m.set_shader_parameter("hull_n", _hn)
+	_fvp[_fi].render_target_update_mode = SubViewport.UPDATE_ONCE
+	_mat.set_shader_parameter("foam_map", _fvp[_fi].get_texture())
+	_mat.set_shader_parameter("foam_origin", org)
+	_forg = org
+	_fi = 1 - _fi
 
-func _domain_warp(pos: Vector2) -> Vector2:
-	var s := pos * domain_warp_scale
-	var t := _wave_clock * domain_warp_speed
-	var w := Vector2(_fbm(s + Vector2(0.0, t)), _fbm(s + Vector2(5.2, -t))) - Vector2(0.5, 0.5)
-	return pos + w * domain_warp_amount
+func set_biomes(n: int, data: PackedVector4Array, chop: PackedVector4Array, ripple: PackedVector4Array, look: PackedVector4Array, tint: PackedVector4Array) -> void:
+	_bn = mini(n, data.size())
+	_bd = data; _bc = chop; _br = ripple
+	_all("biome_count", n)
+	_all("biome_data", data)
+	_all("biome_chop", chop)
+	_all("biome_ripple", ripple)
+	_all("biome_look", look)
+	_all("biome_tint", tint)
 
-## Full Gerstner displacement: x/z horizontal shift, y height.
-func _gerstner(wp: Vector2, cm: Vector4) -> Vector3:
-	var cp: float = _fbm(wp * 0.015 + Vector2(4.0, 9.0))
-	var pm: float = lerp(1.0 - chop_patchiness * 0.7, 1.0 + chop_patchiness * 0.7, cp)
-	var o := Vector3.ZERO
-	for i in WAVE_COUNT:
+func spawn_ripple(pos: Vector3, strength := 1.0) -> void:
+	if _rip.size() >= MAX_RIPPLES:
+		_rip.remove_at(0)
+	_rip.append(Vector4(pos.x, pos.z, _t, strength))
+	_rip_dirty = true
+
+func stamp_hull(pos: Vector3, half: Vector2, axis_x: Vector2, strength: float) -> void:
+	var f := Engine.get_physics_frames()
+	if f != _hf:
+		_hf = f
+		_hn = 0
+	if _hn < MAX_HULLS:
+		_ha[_hn] = Vector4(pos.x, pos.z, maxf(half.x, 0.1), maxf(half.y, 0.1))
+		_hb[_hn] = Vector4(axis_x.x, axis_x.y, strength, 0.0)
+		_hn += 1
+
+func get_water_height_at(p: Vector2) -> float:
+	prep(p)
+	return surface(p.x, p.y) + ripples()
+
+func get_wave_height_at(p: Vector2) -> float:
+	prep(p)
+	return surface(p.x, p.y)
+
+func get_ripple_height_at(p: Vector2) -> float:
+	prep(p)
+	_rx = p.x; _rz = p.y
+	return ripples()
+
+func get_water_world_y(w: Vector3) -> float:
+	return global_position.y + get_water_height_at(Vector2(w.x, w.z))
+
+func get_water_normal_at(p: Vector2, e := 1.0) -> Vector3:
+	prep(p)
+	var a := surface(p.x + e, p.y) + ripples()
+	var b := surface(p.x - e, p.y) + ripples()
+	var c := surface(p.x, p.y + e) + ripples()
+	var d := surface(p.x, p.y - e) + ripples()
+	return Vector3(b - a, 2.0 * e, d - c).normalized()
+
+func prep(p: Vector2) -> void:
+	_cm = Vector4(1, 1, 1, 0)
+	_rm = Vector4(1, 1, 1, 0)
+	for i in _bn:
+		var d := _bd[i]
+		var w := 1.0 - smoothstep(d.z, d.z + maxf(d.w, 0.001), p.distance_to(Vector2(d.x, d.y)))
+		if w > 0.001:
+			_cm = _cm.lerp(_bc[i], w)
+			_rm = _rm.lerp(_br[i], w)
+	var s := p * domain_warp_scale
+	var t := _wt * domain_warp_speed
+	_warp = (Vector2(_fbm(s + Vector2(0.0, t)), _fbm(s + Vector2(5.2, -t))) - Vector2(0.5, 0.5)) * domain_warp_amount
+	var pm := lerpf(1.0 - chop_patchiness * 0.7, 1.0 + chop_patchiness * 0.7, _fbm((p + _warp) * 0.015 + Vector2(4.0, 9.0)))
+	var ms := mesh_vertex_spacing
+	for i in 6:
+		var q := _par[i]
 		var wl: float
-		var amp: float
-		var spd: float
-		if IS_SWELL[i]:
-			wl = max(WAVE_BASE_LENGTHS[i] * swell_wavelength_scale, 0.5)
-			amp = _cur_swell * lerp(1.0, cm.x, 0.35)
-			spd = lerp(1.0, cm.z, 0.35)
+		var a: float
+		var sp: float
+		if i < 2:
+			wl = q.x
+			a = q.z * lerpf(1.0, _cm.x, 0.35)
+			sp = lerpf(1.0, _cm.z, 0.35)
 		else:
-			wl = max(WAVE_BASE_LENGTHS[i] / max(cm.y, 0.01), 0.5)
-			amp = _cur_chop * pm * cm.x
-			spd = cm.z
-		amp *= smoothstep(mesh_vertex_spacing * 2.0, mesh_vertex_spacing * 3.5, wl)
-		var k: float = TAU / wl
-		var c: float = sqrt(9.8 / k) * WAVE_SPEED_MULT[i] * spd
-		var a: float = WAVE_AMP_SCALE[i] * amp
-		var st: float = WAVE_STEEPNESS[i] * wave_choppiness
-		var dir: Vector2 = _dirs[i]
-		var f: float = k * (dir.dot(wp) - c * _wave_clock)
-		var co := cos(f)
-		o.x += st * a * dir.x * co
-		o.z += st * a * dir.y * co
+			wl = maxf(q.x / maxf(_cm.y, 0.01), 0.5)
+			a = q.z * pm * _cm.x * smoothstep(ms * 2.0, ms * 3.5, wl)
+			sp = _cm.z
+		var k := TAU / wl
+		_ck[i] = k
+		_ca[i] = a
+		_cw[i] = k * sqrt(GK * wl) * q.y * sp
+	_rs = ripple_speed * _rm.x
+	_rk = TAU / maxf(ripple_wavelength * _rm.y, ms * 3.5)
+	_rw = maxf(ripple_width, ms * 2.0)
+
+func surface(x: float, z: float) -> float:
+	var rx := x
+	var rz := z
+	var o := Vector3.ZERO
+	for i in 3:
+		o = _gerst(rx, rz)
+		if i < 2:
+			rx = x - o.x
+			rz = z - o.z
+	_rx = rx
+	_rz = rz
+	if _cm.w > 0.01:
+		var sc := 1.0 / maxf(meters_per_unit, 0.001)
+		var tf := 0.03 * maxf(_cm.y, 0.01)
+		var fade := smoothstep(mesh_vertex_spacing * 2.0, mesh_vertex_spacing * 3.5, 1.0 / maxf(tf, 0.0001) / sc)
+		o.y += (_fbm(Vector2(rx + _warp.x, rz + _warp.y) * sc * tf + Vector2(_wt * 0.6, _wt * 0.45)) - 0.5) * _cur_chop * 1.5 * _cm.w * fade
+	return o.y
+
+func _gerst(px: float, pz: float) -> Vector3:
+	var wx := px + _warp.x
+	var wz := pz + _warp.y
+	var o := Vector3.ZERO
+	for i in 6:
+		var d := _dir[i]
+		var f := _ck[i] * (d.x * wx + d.y * wz) - _cw[i] * _wt
+		var a := _ca[i]
+		var sa := _par[i].w * a * cos(f)
+		o.x += sa * d.x
+		o.z += sa * d.y
 		o.y += a * sin(f)
 	return o
 
-func _turbulence(wp: Vector2, cm: Vector4) -> float:
-	if cm.w <= 0.01:
+func ripples() -> float:
+	if _rip.is_empty():
 		return 0.0
-	var sc: float = 1.0 / max(meters_per_unit, 0.001)
-	var tf: float = 0.03 * max(cm.y, 0.01)
-	var uv := wp * sc * tf + Vector2(_wave_clock * 0.6, _wave_clock * 0.45)
-	var fade: float = smoothstep(mesh_vertex_spacing * 2.0, mesh_vertex_spacing * 3.5, 1.0 / max(tf, 0.0001) / sc)
-	return (_fbm(uv) - 0.5) * _cur_chop * 1.5 * cm.w * fade
-
-func _ripple_env(age: float) -> float:
-	var u: float = clamp(age / max(ripple_lifetime, 0.001), 0.0, 1.0)
-	return smoothstep(0.0, 0.15, age) * (1.0 - u * u * (3.0 - 2.0 * u))
-
-func _ripple_h(pos: Vector2, rm: Vector4) -> float:
-	var total := 0.0
-	var sc: float = 1.0 / max(meters_per_unit, 0.001)
-	var spd: float = ripple_speed * rm.x
-	var k: float = TAU / max(ripple_wavelength * rm.y, mesh_vertex_spacing * 3.5)
-	var w0: float = max(ripple_width, mesh_vertex_spacing * 2.0)
-	for i in MAX_RIPPLES:
-		var s: float = _slot_strength[i]
-		if s <= 0.0001:
-			continue
-		var age: float = _sim_time - _slot_time[i]
-		if age < 0.0 or age > ripple_lifetime:
-			continue
-		var dist: float = ((pos - _slot_pos[i]) * sc).length()
-		var front: float = age * spd
-		var bx: float = (dist - front) / (w0 * (1.0 + age * 0.25))
-		var band: float = exp(-bx * bx)
+	var sc := 1.0 / maxf(meters_per_unit, 0.001)
+	var tot := 0.0
+	for r in _rip:
+		var age := _t - r.z
+		var d := Vector2(_rx - r.x, _rz - r.y).length() * sc
+		var fr := age * _rs
+		var bx := (d - fr) / (_rw * (1.0 + age * 0.25))
+		var band := exp(-bx * bx)
 		if band < 0.001:
 			continue
-		var decay: float = s * _ripple_env(age) / sqrt(1.0 + front * 0.5)
-		total += sin((dist - front) * k) * ripple_amplitude * rm.z * decay * band
-	return total
+		var u := clampf(age / maxf(ripple_lifetime, 0.001), 0.0, 1.0)
+		tot += sin((d - fr) * _rk) * ripple_amplitude * _rm.z * r.w * smoothstep(0.0, 0.15, age) * (1.0 - u * u * (3.0 - 2.0 * u)) / sqrt(1.0 + fr * 0.5) * band
+	return tot
 
-# ------------------------------------------------------------------
-# Noise (must match the shader's hash21 / value_noise / fbm)
-# ------------------------------------------------------------------
-static func _fract(x: float) -> float:
-	return x - floor(x)
+static func _hash(x: float, y: float) -> float:
+	x = fposmod(x, 289.0) * 123.34
+	y = fposmod(y, 289.0) * 456.21
+	x -= floorf(x)
+	y -= floorf(y)
+	var d := x * (x + 45.32) + y * (y + 45.32)
+	x += d
+	y += d
+	var m := x * y
+	return m - floorf(m)
 
-static func _hash21(p: Vector2) -> float:
-	var m := Vector2(fposmod(p.x, 289.0), fposmod(p.y, 289.0))
-	var p3 := Vector3(_fract(m.x * 0.1031), _fract(m.y * 0.1031), _fract(m.x * 0.1031))
-	var d: float = p3.dot(Vector3(p3.y, p3.z, p3.x) + Vector3(33.33, 33.33, 33.33))
-	p3 += Vector3(d, d, d)
-	return _fract((p3.x + p3.y) * p3.z)
-
-static func _value_noise(p: Vector2) -> float:
-	var i := Vector2(floor(p.x), floor(p.y))
-	var f := Vector2(_fract(p.x), _fract(p.y))
-	var u := Vector2(f.x * f.x * (3.0 - 2.0 * f.x), f.y * f.y * (3.0 - 2.0 * f.y))
-	return lerp(lerp(_hash21(i), _hash21(i + Vector2(1, 0)), u.x),
-			lerp(_hash21(i + Vector2(0, 1)), _hash21(i + Vector2(1, 1)), u.x), u.y)
+static func _vn(p: Vector2) -> float:
+	var ix := floorf(p.x)
+	var iy := floorf(p.y)
+	var fx := p.x - ix
+	var fy := p.y - iy
+	var ux := fx * fx * (3.0 - 2.0 * fx)
+	var uy := fy * fy * (3.0 - 2.0 * fy)
+	return lerpf(lerpf(_hash(ix, iy), _hash(ix + 1.0, iy), ux), lerpf(_hash(ix, iy + 1.0), _hash(ix + 1.0, iy + 1.0), ux), uy)
 
 static func _fbm(p: Vector2) -> float:
 	var v := 0.0
-	var amp := 0.5
+	var a := 0.5
 	for i in 4:
-		v += amp * _value_noise(p)
+		v += a * _vn(p)
 		p *= 2.03
-		amp *= 0.5
+		a *= 0.5
 	return v
